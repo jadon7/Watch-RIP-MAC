@@ -1,0 +1,590 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EA6E0EFA2D55F644009A4E0D /* Swifter in Frameworks */ = {isa = PBXBuildFile; productRef = EA6E0EF92D55F644009A4E0D /* Swifter */; };
+		EA6E0EFC2D55F644009A4E0D /* Example in Frameworks */ = {isa = PBXBuildFile; productRef = EA6E0EFB2D55F644009A4E0D /* Example */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		EA6E0ED82D55F4AF009A4E0D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EA6E0EBE2D55F4AE009A4E0D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EA6E0EC52D55F4AE009A4E0D;
+			remoteInfo = "watch rip";
+		};
+		EA6E0EE22D55F4AF009A4E0D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EA6E0EBE2D55F4AE009A4E0D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EA6E0EC52D55F4AE009A4E0D;
+			remoteInfo = "watch rip";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		EA6E0EC62D55F4AE009A4E0D /* watch rip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "watch rip.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA6E0ED72D55F4AF009A4E0D /* watch ripTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "watch ripTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA6E0EE12D55F4AF009A4E0D /* watch ripUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "watch ripUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		EA6E0EC82D55F4AE009A4E0D /* watch rip */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "watch rip";
+			sourceTree = "<group>";
+		};
+		EA6E0EDA2D55F4AF009A4E0D /* watch ripTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "watch ripTests";
+			sourceTree = "<group>";
+		};
+		EA6E0EE42D55F4AF009A4E0D /* watch ripUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "watch ripUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EA6E0EC32D55F4AE009A4E0D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EA6E0EFA2D55F644009A4E0D /* Swifter in Frameworks */,
+				EA6E0EFC2D55F644009A4E0D /* Example in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA6E0ED42D55F4AF009A4E0D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA6E0EDE2D55F4AF009A4E0D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EA6E0EBD2D55F4AE009A4E0D = {
+			isa = PBXGroup;
+			children = (
+				EA6E0EC82D55F4AE009A4E0D /* watch rip */,
+				EA6E0EDA2D55F4AF009A4E0D /* watch ripTests */,
+				EA6E0EE42D55F4AF009A4E0D /* watch ripUITests */,
+				EA6E0EC72D55F4AE009A4E0D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EA6E0EC72D55F4AE009A4E0D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EA6E0EC62D55F4AE009A4E0D /* watch rip.app */,
+				EA6E0ED72D55F4AF009A4E0D /* watch ripTests.xctest */,
+				EA6E0EE12D55F4AF009A4E0D /* watch ripUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EA6E0EC52D55F4AE009A4E0D /* watch rip */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA6E0EEB2D55F4AF009A4E0D /* Build configuration list for PBXNativeTarget "watch rip" */;
+			buildPhases = (
+				EA6E0EC22D55F4AE009A4E0D /* Sources */,
+				EA6E0EC32D55F4AE009A4E0D /* Frameworks */,
+				EA6E0EC42D55F4AE009A4E0D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				EA6E0EC82D55F4AE009A4E0D /* watch rip */,
+			);
+			name = "watch rip";
+			packageProductDependencies = (
+				EA6E0EF92D55F644009A4E0D /* Swifter */,
+				EA6E0EFB2D55F644009A4E0D /* Example */,
+			);
+			productName = "watch rip";
+			productReference = EA6E0EC62D55F4AE009A4E0D /* watch rip.app */;
+			productType = "com.apple.product-type.application";
+		};
+		EA6E0ED62D55F4AF009A4E0D /* watch ripTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA6E0EEE2D55F4AF009A4E0D /* Build configuration list for PBXNativeTarget "watch ripTests" */;
+			buildPhases = (
+				EA6E0ED32D55F4AF009A4E0D /* Sources */,
+				EA6E0ED42D55F4AF009A4E0D /* Frameworks */,
+				EA6E0ED52D55F4AF009A4E0D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EA6E0ED92D55F4AF009A4E0D /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				EA6E0EDA2D55F4AF009A4E0D /* watch ripTests */,
+			);
+			name = "watch ripTests";
+			packageProductDependencies = (
+			);
+			productName = "watch ripTests";
+			productReference = EA6E0ED72D55F4AF009A4E0D /* watch ripTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		EA6E0EE02D55F4AF009A4E0D /* watch ripUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA6E0EF12D55F4AF009A4E0D /* Build configuration list for PBXNativeTarget "watch ripUITests" */;
+			buildPhases = (
+				EA6E0EDD2D55F4AF009A4E0D /* Sources */,
+				EA6E0EDE2D55F4AF009A4E0D /* Frameworks */,
+				EA6E0EDF2D55F4AF009A4E0D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EA6E0EE32D55F4AF009A4E0D /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				EA6E0EE42D55F4AF009A4E0D /* watch ripUITests */,
+			);
+			name = "watch ripUITests";
+			packageProductDependencies = (
+			);
+			productName = "watch ripUITests";
+			productReference = EA6E0EE12D55F4AF009A4E0D /* watch ripUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EA6E0EBE2D55F4AE009A4E0D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					EA6E0EC52D55F4AE009A4E0D = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					EA6E0ED62D55F4AF009A4E0D = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = EA6E0EC52D55F4AE009A4E0D;
+					};
+					EA6E0EE02D55F4AF009A4E0D = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = EA6E0EC52D55F4AE009A4E0D;
+					};
+				};
+			};
+			buildConfigurationList = EA6E0EC12D55F4AE009A4E0D /* Build configuration list for PBXProject "watch rip" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EA6E0EBD2D55F4AE009A4E0D;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				EA6E0EF82D55F644009A4E0D /* XCRemoteSwiftPackageReference "swifter" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = EA6E0EC72D55F4AE009A4E0D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EA6E0EC52D55F4AE009A4E0D /* watch rip */,
+				EA6E0ED62D55F4AF009A4E0D /* watch ripTests */,
+				EA6E0EE02D55F4AF009A4E0D /* watch ripUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EA6E0EC42D55F4AE009A4E0D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA6E0ED52D55F4AF009A4E0D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA6E0EDF2D55F4AF009A4E0D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EA6E0EC22D55F4AE009A4E0D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA6E0ED32D55F4AF009A4E0D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA6E0EDD2D55F4AF009A4E0D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EA6E0ED92D55F4AF009A4E0D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EA6E0EC52D55F4AE009A4E0D /* watch rip */;
+			targetProxy = EA6E0ED82D55F4AF009A4E0D /* PBXContainerItemProxy */;
+		};
+		EA6E0EE32D55F4AF009A4E0D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EA6E0EC52D55F4AE009A4E0D /* watch rip */;
+			targetProxy = EA6E0EE22D55F4AF009A4E0D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		EA6E0EE92D55F4AF009A4E0D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		EA6E0EEA2D55F4AF009A4E0D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		EA6E0EEC2D55F4AF009A4E0D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "watch rip/watch_rip.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"watch rip/Preview Content\"";
+				DEVELOPMENT_TEAM = CJL7F393XB;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wenkui.watch-rip";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		EA6E0EED2D55F4AF009A4E0D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "watch rip/watch_rip.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"watch rip/Preview Content\"";
+				DEVELOPMENT_TEAM = CJL7F393XB;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wenkui.watch-rip";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		EA6E0EEF2D55F4AF009A4E0D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CJL7F393XB;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wenkui.watch-ripTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/watch rip.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/watch rip";
+			};
+			name = Debug;
+		};
+		EA6E0EF02D55F4AF009A4E0D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CJL7F393XB;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wenkui.watch-ripTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/watch rip.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/watch rip";
+			};
+			name = Release;
+		};
+		EA6E0EF22D55F4AF009A4E0D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CJL7F393XB;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wenkui.watch-ripUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "watch rip";
+			};
+			name = Debug;
+		};
+		EA6E0EF32D55F4AF009A4E0D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CJL7F393XB;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wenkui.watch-ripUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "watch rip";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EA6E0EC12D55F4AE009A4E0D /* Build configuration list for PBXProject "watch rip" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA6E0EE92D55F4AF009A4E0D /* Debug */,
+				EA6E0EEA2D55F4AF009A4E0D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EA6E0EEB2D55F4AF009A4E0D /* Build configuration list for PBXNativeTarget "watch rip" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA6E0EEC2D55F4AF009A4E0D /* Debug */,
+				EA6E0EED2D55F4AF009A4E0D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EA6E0EEE2D55F4AF009A4E0D /* Build configuration list for PBXNativeTarget "watch ripTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA6E0EEF2D55F4AF009A4E0D /* Debug */,
+				EA6E0EF02D55F4AF009A4E0D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EA6E0EF12D55F4AF009A4E0D /* Build configuration list for PBXNativeTarget "watch ripUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA6E0EF22D55F4AF009A4E0D /* Debug */,
+				EA6E0EF32D55F4AF009A4E0D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		EA6E0EF82D55F644009A4E0D /* XCRemoteSwiftPackageReference "swifter" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/httpswift/swifter";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EA6E0EF92D55F644009A4E0D /* Swifter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA6E0EF82D55F644009A4E0D /* XCRemoteSwiftPackageReference "swifter" */;
+			productName = Swifter;
+		};
+		EA6E0EFB2D55F644009A4E0D /* Example */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA6E0EF82D55F644009A4E0D /* XCRemoteSwiftPackageReference "swifter" */;
+			productName = Example;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = EA6E0EBE2D55F4AE009A4E0D /* Project object */;
+}
