@@ -32,6 +32,7 @@ struct ContentView: View {
     @State private var webSocketTask: URLSessionWebSocketTask?
     // 新增定时器用于定期检查 IP 地址
     @State private var ipCheckTimer: Timer?
+    @State private var cropperWindow: NSWindow?
     
     var body: some View {
         VStack(spacing: 12) {
@@ -161,28 +162,68 @@ struct ContentView: View {
 
             let files = panel.urls
             if selectedFileType == .mediaFile {
-                // 创建一个临时目录用于存放要打包的文件
                 let timestamp = Int(Date().timeIntervalSince1970)
                 let tempDir = uploadDir.appendingPathComponent("temp_\(timestamp)", isDirectory: true)
                 try? fm.createDirectory(at: tempDir, withIntermediateDirectories: true)
                 
-                // 复制所有文件到临时目录
-                for fileURL in files {
-                    let destURL = tempDir.appendingPathComponent(fileURL.lastPathComponent)
-                    try? fm.copyItem(at: fileURL, to: destURL)
+                // 依次处理每个文件
+                func processFiles(_ files: [URL], index: Int, tempDir: URL, completion: @escaping () -> Void) {
+                    if index >= files.count {
+                        completion()
+                        return
+                    }
+                    let fileURL = files[index]
+                    let ext = fileURL.pathExtension.lowercased()
+                    let imageExtensions = ["jpg", "jpeg", "png", "heic", "tiff", "bmp"]
+                    if imageExtensions.contains(ext) {
+                        if let image = NSImage(contentsOf: fileURL) {
+                            let width = image.size.width
+                            let height = image.size.height
+                            if abs(width - height) > 1 { // 非1:1，显示裁切弹窗
+                                presentImageCropper(for: image) { cropped in
+                                    let destURL = tempDir.appendingPathComponent(fileURL.lastPathComponent)
+                                    if let cropped = cropped,
+                                       let tiffData = cropped.tiffRepresentation,
+                                       let rep = NSBitmapImageRep(data: tiffData),
+                                       let data = rep.representation(using: .png, properties: [:]) {
+                                        try? data.write(to: destURL)
+                                    } else {
+                                        // 裁切取消则直接复制原文件
+                                        try? fm.copyItem(at: fileURL, to: destURL)
+                                    }
+                                    processFiles(files, index: index+1, tempDir: tempDir, completion: completion)
+                                }
+                                return
+                            } else {
+                                // 对于已1:1的图片，也应用自动缩放和填充黑色逻辑
+                                let destURL = tempDir.appendingPathComponent(fileURL.lastPathComponent)
+                                if let processed = processNonCroppedImage(image),
+                                   let tiffData = processed.tiffRepresentation,
+                                   let rep = NSBitmapImageRep(data: tiffData),
+                                   let data = rep.representation(using: .png, properties: [:]) {
+                                    try? data.write(to: destURL)
+                                }
+                            }
+                        }
+                    } else {
+                        let destURL = tempDir.appendingPathComponent(fileURL.lastPathComponent)
+                        try? fm.copyItem(at: fileURL, to: destURL)
+                    }
+                    processFiles(files, index: index+1, tempDir: tempDir, completion: completion)
                 }
                 
-                // 创建 zip 文件
-                let zipURL = uploadDir.appendingPathComponent("media_\(timestamp).zip")
-                try? fm.zipItem(at: tempDir, to: zipURL, shouldKeepParent: false)
-                
-                // 删除临时目录
-                try? fm.removeItem(at: tempDir)
-                
-                uploadStatus = "文件打包上传成功"
+                processFiles(files, index: 0, tempDir: tempDir) {
+                    let zipURL = uploadDir.appendingPathComponent("media_\(timestamp).zip")
+                    try? fm.zipItem(at: tempDir, to: zipURL, shouldKeepParent: false)
+                    try? fm.removeItem(at: tempDir)
+                    DispatchQueue.main.async {
+                        uploadStatus = "文件打包上传成功"
+                        UploadServer.shared.notifyClients()
+                    }
+                }
             } else {
                 // rive 文件处理保持不变
-                let fileURL = files[0] // rive 模式下只会选择一个文件
+                let fileURL = files[0] // 在 rive 模式下只会选择一个文件
                 let ext = fileURL.pathExtension
                 let destURL = uploadDir.appendingPathComponent("rive.\(ext)")
                 if fm.fileExists(atPath: destURL.path) {
@@ -194,10 +235,8 @@ struct ContentView: View {
                 } catch {
                     uploadStatus = "文件上传失败: \(error.localizedDescription)"
                 }
+                UploadServer.shared.notifyClients()
             }
-            
-            // 上传完成后通知所有 WebSocket 客户端更新
-            UploadServer.shared.notifyClients()
         }
     }
     
@@ -250,6 +289,52 @@ struct ContentView: View {
                 self.listenWebSocket()
             }
         }
+    }
+    
+    func presentImageCropper(for image: NSImage, completion: @escaping (NSImage?) -> Void) {
+        let cropperView = ImageCropperView(originalImage: image, onComplete: { croppedImage in
+            cropperWindow?.close()
+            cropperWindow = nil
+            completion(croppedImage)
+        }, onCancel: {
+            cropperWindow?.close()
+            cropperWindow = nil
+            completion(nil)
+        })
+        let hostingController = NSHostingController(rootView: cropperView)
+        let window = NSWindow(contentViewController: hostingController)
+        window.title = "裁切图片"
+        window.setContentSize(NSSize(width: 420, height: 500))
+        window.styleMask = [NSWindow.StyleMask.titled, NSWindow.StyleMask.closable]
+        window.center()
+        window.makeKeyAndOrderFront(nil as Any?)
+        cropperWindow = window
+    }
+    
+    // 新增辅助方法，将非裁剪的1:1图片自动缩放为512×512，空白部分填充黑色
+    func processNonCroppedImage(_ image: NSImage) -> NSImage? {
+        let targetSize = CGSize(width: 512, height: 512)
+        let scaledImage = NSImage(size: targetSize)
+        scaledImage.lockFocus()
+        // 填充背景为黑色
+        NSColor.black.setFill()
+        NSBezierPath.fill(NSRect(origin: .zero, size: targetSize))
+        
+        // 如果原图尺寸大于目标，按比例缩放填充，否则居中绘制
+        let drawRect: NSRect
+        if image.size.width > 512 {
+            drawRect = NSRect(origin: .zero, size: targetSize)
+        } else {
+            let x = (targetSize.width - image.size.width) / 2.0
+            let y = (targetSize.height - image.size.height) / 2.0
+            drawRect = NSRect(origin: CGPoint(x: x, y: y), size: image.size)
+        }
+        image.draw(in: drawRect,
+                   from: NSRect(origin: .zero, size: image.size),
+                   operation: .copy,
+                   fraction: 1.0)
+        scaledImage.unlockFocus()
+        return scaledImage
     }
 }
 
