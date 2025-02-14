@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- 允许传入网络连接 -->
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>需要访问本地网络以便其他设备能够连接到此应用</string>
+    <!-- 允许在本地网络中发现和连接 -->
+    <key>NSBonjourServices</key>
+    <array>
+        <string>_http._tcp</string>
+        <string>_ws._tcp</string>
+    </array>
+    <!-- 允许本地网络使用 -->
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>需要使用本地网络来传输文件</string>
+    <!-- 允许所有传入连接 -->
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+</dict>
+</plist> 

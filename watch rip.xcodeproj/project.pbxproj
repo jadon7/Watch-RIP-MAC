@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		EA6E0EFA2D55F644009A4E0D /* Swifter in Frameworks */ = {isa = PBXBuildFile; productRef = EA6E0EF92D55F644009A4E0D /* Swifter */; };
 		EA6E0EFC2D55F644009A4E0D /* Example in Frameworks */ = {isa = PBXBuildFile; productRef = EA6E0EFB2D55F644009A4E0D /* Example */; };
+		EAEE978E2D5EC36F001D65BA /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = EAEE978D2D5EC36F001D65BA /* ZIPFoundation */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 			files = (
 				EA6E0EFA2D55F644009A4E0D /* Swifter in Frameworks */,
 				EA6E0EFC2D55F644009A4E0D /* Example in Frameworks */,
+				EAEE978E2D5EC36F001D65BA /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +123,7 @@
 			packageProductDependencies = (
 				EA6E0EF92D55F644009A4E0D /* Swifter */,
 				EA6E0EFB2D55F644009A4E0D /* Example */,
+				EAEE978D2D5EC36F001D65BA /* ZIPFoundation */,
 			);
 			productName = "watch rip";
 			productReference = EA6E0EC62D55F4AE009A4E0D /* watch rip.app */;
@@ -206,6 +209,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				EA6E0EF82D55F644009A4E0D /* XCRemoteSwiftPackageReference "swifter" */,
+				EAEE978C2D5EC36F001D65BA /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EA6E0EC72D55F4AE009A4E0D /* Products */;
@@ -571,6 +575,14 @@
 				minimumVersion = 1.5.0;
 			};
 		};
+		EAEE978C2D5EC36F001D65BA /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weichsel/ZIPFoundation.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.19;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -583,6 +595,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EA6E0EF82D55F644009A4E0D /* XCRemoteSwiftPackageReference "swifter" */;
 			productName = Example;
+		};
+		EAEE978D2D5EC36F001D65BA /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAEE978C2D5EC36F001D65BA /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

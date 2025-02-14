@@ -9,30 +9,29 @@ import SwiftUI
 import AppKit  // 用于 NSOpenPanel
 import UniformTypeIdentifiers  // 新增，用于 allowedContentTypes
 import Network                // 新增导入 Network 框架
+import ZIPFoundation // 添加 ZIP 支持
 
 // 定义文件类型枚举，区分视频、rive文件和图片
 enum UploadFileType: String, CaseIterable, Identifiable {
     var id: String { self.rawValue }
-    case video = "视频"
+    case mediaFile = "图片/视频"
     case rive = "rive文件"
-    case images = "图片"
 }
 
 struct ContentView: View {
-    @State private var selectedFileType: UploadFileType = .video
+    @State private var selectedFileType: UploadFileType = .mediaFile
     @State private var uploadStatus: String = ""
     @State private var serverAddress: String = ""
-    // 新增 WebSocket 任务，用于建立长连接
-    @State private var webSocketTask: URLSessionWebSocketTask?
-    // 新增 NWPathMonitor，实时监听网络状态
-    @State private var pathMonitor = NWPathMonitor()
-    private let pathMonitorQueue = DispatchQueue.global(qos: .background)
     // 新增一个计算属性，用于在 UI 中只显示 IP 部分（去除端口号）
     private var displayServerAddress: String {
-        // 假设 serverAddress 格式为 "192.168.1.5:8080"，那么取 ":" 前面的部分
+        guard !serverAddress.isEmpty else { return "" }
         let components = serverAddress.split(separator: ":")
         return components.first.map(String.init) ?? serverAddress
     }
+    // 新增 WebSocket 任务，用于建立长连接
+    @State private var webSocketTask: URLSessionWebSocketTask?
+    // 新增定时器用于定期检查 IP 地址
+    @State private var ipCheckTimer: Timer?
     
     var body: some View {
         VStack(spacing: 12) {
@@ -40,19 +39,13 @@ struct ContentView: View {
                 .font(.title2)
                 .bold()
             
-            // 用三个按钮分别对应图片、视频和 Rive，点击后直接进入文件选择流程
+            // 修改按钮布局
             HStack(spacing: 10) {
                 Button(action: {
-                    selectedFileType = .images
+                    selectedFileType = .mediaFile
                     openFilePicker()
                 }) {
-                    Label("图片", systemImage: "photo.fill")
-                }
-                Button(action: {
-                    selectedFileType = .video
-                    openFilePicker()
-                }) {
-                    Label("视频", systemImage: "film.fill")
+                    Label("图片/视频", systemImage: "photo.fill.on.rectangle.fill")
                 }
                 Button(action: {
                     selectedFileType = .rive
@@ -91,37 +84,45 @@ struct ContentView: View {
                 }
             }
         }
-        .padding()
+        .padding(10)
         .frame(maxWidth: 400)
         .padding(8)
         .frame(width: 320)
         .onAppear {
             // 启动服务器
             UploadServer.shared.start()
-            if let ip = UploadServer.shared.getLocalIPAddress() {
-                serverAddress = ip
-                // 建立 WebSocket 长连接
-                connectWebSocket()
+            
+            // 添加重试逻辑
+            func tryGetIP(retryCount: Int = 3) {
+                if let ip = UploadServer.shared.getLocalIPAddress() {
+                    serverAddress = ip
+                    connectWebSocket()
+                } else if retryCount > 0 {
+                    // 如果获取失败，等待一秒后重试
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        tryGetIP(retryCount: retryCount - 1)
+                    }
+                }
             }
+            
+            tryGetIP()
 
-            // 新增：启动 NWPathMonitor
-            pathMonitor.pathUpdateHandler = { _ in
-                // 在网络变化回调中，重新获取最新 IP 并刷新 UI
+            // 创建定时器，每5秒检查一次 IP 地址
+            ipCheckTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
                 if let newIP = UploadServer.shared.getLocalIPAddress() {
                     DispatchQueue.main.async {
-                        // 如果 IP 地址有变化就更新，并重新建立 WebSocket
                         if newIP != serverAddress {
+                            print("检测到 IP 地址变化: \(newIP)")
                             serverAddress = newIP
                             connectWebSocket()
                         }
                     }
                 }
             }
-            pathMonitor.start(queue: pathMonitorQueue)
         }
-        // 在视图销毁时，记得停止监测，避免资源泄露（可选做法）
         .onDisappear {
-            pathMonitor.cancel()
+            ipCheckTimer?.invalidate()
+            ipCheckTimer = nil
         }
     }
     
@@ -130,10 +131,11 @@ struct ContentView: View {
         let panel = NSOpenPanel()
         panel.canChooseFiles = true
         panel.canChooseDirectories = false
-        panel.allowsMultipleSelection = (selectedFileType == .images)
+        panel.allowsMultipleSelection = (selectedFileType == .mediaFile)
+        
         switch selectedFileType {
-        case .video:
-            panel.allowedContentTypes = [UTType.movie]
+        case .mediaFile:
+            panel.allowedContentTypes = [UTType.image, UTType.movie]
         case .rive:
             // 如果能通过 filenameExtension 生成对应的 UTType，就使用该类型，否则回退为 data
             var allowedTypes: [UTType] = []
@@ -144,9 +146,8 @@ struct ContentView: View {
                 allowedTypes.append(t)
             }
             panel.allowedContentTypes = allowedTypes.isEmpty ? [UTType.data] : allowedTypes
-        case .images:
-            panel.allowedContentTypes = [UTType.image]
         }
+        
         // 显示文件选择对话框
         if panel.runModal() == .OK {
             let uploadDir = UploadServer.shared.uploadDirectory
@@ -159,32 +160,42 @@ struct ContentView: View {
             }
 
             let files = panel.urls
-            for fileURL in files {
-                let destURL: URL
-
-                if selectedFileType == .images {
-                    // 图片允许上传多个，文件名中加入时间戳防止重复
-                    let timestamp = Int(Date().timeIntervalSince1970)
-                    destURL = uploadDir.appendingPathComponent("\(timestamp)_\(fileURL.lastPathComponent)")
-                } else {
-                    // 视频或 rive 文件只允许上传一个，固定命名（上传时会覆盖先前上传的文件）
-                    let ext = fileURL.pathExtension
-                    let baseName = (selectedFileType == .video) ? "video" : "rive"
-                    destURL = uploadDir.appendingPathComponent("\(baseName).\(ext)")
-                    if fm.fileExists(atPath: destURL.path) {
-                        try? fm.removeItem(at: destURL)
-                    }
+            if selectedFileType == .mediaFile {
+                // 创建一个临时目录用于存放要打包的文件
+                let timestamp = Int(Date().timeIntervalSince1970)
+                let tempDir = uploadDir.appendingPathComponent("temp_\(timestamp)", isDirectory: true)
+                try? fm.createDirectory(at: tempDir, withIntermediateDirectories: true)
+                
+                // 复制所有文件到临时目录
+                for fileURL in files {
+                    let destURL = tempDir.appendingPathComponent(fileURL.lastPathComponent)
+                    try? fm.copyItem(at: fileURL, to: destURL)
+                }
+                
+                // 创建 zip 文件
+                let zipURL = uploadDir.appendingPathComponent("media_\(timestamp).zip")
+                try? fm.zipItem(at: tempDir, to: zipURL, shouldKeepParent: false)
+                
+                // 删除临时目录
+                try? fm.removeItem(at: tempDir)
+                
+                uploadStatus = "文件打包上传成功"
+            } else {
+                // rive 文件处理保持不变
+                let fileURL = files[0] // rive 模式下只会选择一个文件
+                let ext = fileURL.pathExtension
+                let destURL = uploadDir.appendingPathComponent("rive.\(ext)")
+                if fm.fileExists(atPath: destURL.path) {
+                    try? fm.removeItem(at: destURL)
                 }
                 do {
-                    if fm.fileExists(atPath: destURL.path) {
-                        try fm.removeItem(at: destURL)
-                    }
                     try fm.copyItem(at: fileURL, to: destURL)
                     uploadStatus = "文件上传成功: \(destURL.lastPathComponent)"
                 } catch {
                     uploadStatus = "文件上传失败: \(error.localizedDescription)"
                 }
             }
+            
             // 上传完成后通知所有 WebSocket 客户端更新
             UploadServer.shared.notifyClients()
         }
@@ -203,16 +214,23 @@ struct ContentView: View {
     
     /// 建立 WebSocket 连接到服务端 "/ws" 路径
     func connectWebSocket() {
-        guard let ip = UploadServer.shared.getLocalIPAddress() else { return }
-        let url = URL(string: "ws://\(ip):8080/ws")!
-        webSocketTask = URLSession.shared.webSocketTask(with: url)
-        webSocketTask?.resume()
-        listenWebSocket()
+        if let ip = UploadServer.shared.getLocalIPAddress(),
+           let url = URL(string: "ws://\(ip)/ws") {  // 不需要再加 :8080，因为 IP 已经包含端口
+            webSocketTask = URLSession.shared.webSocketTask(with: url)
+            webSocketTask?.resume()
+            listenWebSocket()
+        } else {
+            print("无法创建 WebSocket 连接：IP 地址无效")
+        }
     }
     
     /// 持续监听 WebSocket 消息
     func listenWebSocket() {
-        webSocketTask?.receive { result in
+        guard let task = webSocketTask else {
+            print("WebSocket 任务不存在")
+            return
+        }
+        task.receive { result in
             switch result {
             case .failure(let error):
                 print("WebSocket 接收错误: \(error)")

@@ -105,32 +105,52 @@ class UploadServer {
 
     // 辅助函数：获取 WiFi 接口的 IP 地址（即 en0 接口）
     func getLocalIPAddress() -> String? {
-        var address: String?
+        var addresses: [String] = []
         var ifaddr: UnsafeMutablePointer<ifaddrs>?
-        if getifaddrs(&ifaddr) == 0 {
-            var ptr = ifaddr
-            while ptr != nil {
-                guard let interface = ptr?.pointee else { break }
-                let addrFamily = interface.ifa_addr.pointee.sa_family
-                if addrFamily == UInt8(AF_INET) {
-                    let name = String(cString: interface.ifa_name)
-                    if name == "en0" { // WiFi 接口一般为 en0
-                        var addr = interface.ifa_addr.pointee
-                        let sockAddrIn = withUnsafePointer(to: &addr) {
-                            $0.withMemoryRebound(to: sockaddr_in.self, capacity: 1) {
-                                $0.pointee
-                            }
-                        }
-                        let ip = String(cString: inet_ntoa(sockAddrIn.sin_addr))
-                        address = ip
-                        break
+        
+        guard getifaddrs(&ifaddr) == 0 else {
+            print("获取网络接口失败")
+            return addresses.first
+        }
+        defer { freeifaddrs(ifaddr) }
+        
+        var ptr = ifaddr
+        while ptr != nil {
+            defer { ptr = ptr?.pointee.ifa_next }
+            
+            guard let interface = ptr?.pointee,
+                  let ifaName = interface.ifa_name,
+                  let ifaAddr = interface.ifa_addr else {
+                continue
+            }
+            let addrFamily = ifaAddr.pointee.sa_family
+            
+            if addrFamily == UInt8(AF_INET) {
+                let name = String(cString: ifaName)
+                
+                if name.hasPrefix("en") || name.hasPrefix("bridge") || name.hasPrefix("wlan") {
+                    var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                    getnameinfo(ifaAddr,
+                              socklen_t(ifaAddr.pointee.sa_len),
+                              &hostname,
+                              socklen_t(hostname.count),
+                              nil,
+                              0,
+                              NI_NUMERICHOST)
+                    let address = String(cString: hostname)
+                    if !address.hasPrefix("127.") && !address.hasPrefix("169.254.") {
+                        addresses.append(address)
                     }
                 }
-                ptr = interface.ifa_next
             }
-            freeifaddrs(ifaddr)
         }
-        return address
+        
+        if let firstAddress = addresses.first {
+            return "\(firstAddress):8080"
+        }
+        
+        print("未找到有效的网络地址")
+        return nil
     }
 
     /// 广播通知所有 WebSocket 连接，当文件更新时通知客户端
