@@ -10,6 +10,7 @@ import AppKit  // 用于 NSOpenPanel
 import UniformTypeIdentifiers  // 新增，用于 allowedContentTypes
 import Network                // 新增导入 Network 框架
 import ZIPFoundation // 添加 ZIP 支持
+import AVFoundation   // 新增：用于处理视频
 
 // 定义文件类型枚举，区分视频、rive文件和图片
 enum UploadFileType: String, CaseIterable, Identifiable {
@@ -205,6 +206,26 @@ struct ContentView: View {
                                 }
                             }
                         }
+                    } else if ["mp4", "mov", "m4v", "avi", "flv"].contains(ext) {
+                        let destURL = tempDir.appendingPathComponent(fileURL.lastPathComponent)
+                        let asset = AVAsset(url: fileURL)
+                        if let videoTrack = asset.tracks(withMediaType: .video).first,
+                           videoTrack.naturalSize.width != videoTrack.naturalSize.height {
+                            // 非1:1的视频，弹出裁切弹窗
+                            presentVideoCropper(for: fileURL) { processedURL in
+                                if let processedURL = processedURL {
+                                    try? fm.copyItem(at: processedURL, to: destURL)
+                                } else {
+                                    try? fm.copyItem(at: fileURL, to: destURL)
+                                }
+                                processFiles(files, index: index+1, tempDir: tempDir, completion: completion)
+                            }
+                            return
+                        } else {
+                            // 若视频已为1:1，则采用自动处理（可参考 processNonCroppedImage 逻辑，或直接复制）
+                            // 此处简单处理，直接复制
+                            try? fm.copyItem(at: fileURL, to: destURL)
+                        }
                     } else {
                         let destURL = tempDir.appendingPathComponent(fileURL.lastPathComponent)
                         try? fm.copyItem(at: fileURL, to: destURL)
@@ -335,6 +356,82 @@ struct ContentView: View {
                    fraction: 1.0)
         scaledImage.unlockFocus()
         return scaledImage
+    }
+    
+    // 新增辅助方法，处理视频文件
+    func processVideo(_ fileURL: URL) -> URL? {
+        let asset = AVAsset(url: fileURL)
+        guard let videoTrack = asset.tracks(withMediaType: .video).first else { return nil }
+        let originalSize = videoTrack.naturalSize
+        // 计算缩放因子，使用 min(512/width, 512/height) 保证整段视频显示在画面内
+        let scale = min(512 / originalSize.width, 512 / originalSize.height)
+        let scaledWidth = originalSize.width * scale
+        let scaledHeight = originalSize.height * scale
+        // 计算平移使视频居中于512×512画面
+        let tx = (512 - scaledWidth) / 2.0
+        let ty = (512 - scaledHeight) / 2.0
+        
+        // 构造变换：先缩放，再平移
+        let transform = CGAffineTransform(scaleX: scale, y: scale)
+            .concatenating(CGAffineTransform(translationX: tx, y: ty))
+        
+        // 创建合成对象
+        let composition = AVMutableComposition()
+        guard let compositionTrack = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid) else { return nil }
+        do {
+            try compositionTrack.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: videoTrack, at: .zero)
+        } catch {
+            return nil
+        }
+        
+        let videoComposition = AVMutableVideoComposition()
+        videoComposition.renderSize = CGSize(width: 512, height: 512)
+        videoComposition.frameDuration = CMTime(value: 1, timescale: 30)
+        
+        let instruction = AVMutableVideoCompositionInstruction()
+        instruction.timeRange = CMTimeRange(start: .zero, duration: asset.duration)
+        
+        let layerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: compositionTrack)
+        layerInstruction.setTransform(transform, at: .zero)
+        instruction.layerInstructions = [layerInstruction]
+        videoComposition.instructions = [instruction]
+        
+        // 导出视频到临时文件
+        let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(UUID().uuidString).mp4")
+        guard let exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality) else { return nil }
+        exporter.videoComposition = videoComposition
+        exporter.outputFileType = .mp4
+        exporter.outputURL = outputURL
+        
+        let semaphore = DispatchSemaphore(value: 0)
+        exporter.exportAsynchronously {
+            semaphore.signal()
+        }
+        semaphore.wait()
+        if exporter.status == .completed {
+            return outputURL
+        }
+        return nil
+    }
+    
+    func presentVideoCropper(for url: URL, completion: @escaping (URL?) -> Void) {
+        let cropperView = VideoCropperView(videoURL: url, onComplete: { processedURL in
+            cropperWindow?.close()
+            cropperWindow = nil
+            completion(processedURL)
+        }, onCancel: {
+            cropperWindow?.close()
+            cropperWindow = nil
+            completion(nil)
+        })
+        let hostingController = NSHostingController(rootView: cropperView)
+        let window = NSWindow(contentViewController: hostingController)
+        window.title = "裁切视频"
+        window.setContentSize(NSSize(width: 420, height: 500))
+        window.styleMask = [NSWindow.StyleMask.titled, NSWindow.StyleMask.closable]
+        window.center()
+        window.makeKeyAndOrderFront(nil as Any?)
+        cropperWindow = window
     }
 }
 
