@@ -6,17 +6,30 @@
 //
 
 import SwiftUI
+import AppKit
 
 @main
-struct watch_ripApp: App {
-    init() {
-        // 在应用启动时启动 HTTP 服务器
-        UploadServer.shared.start()
+class AppDelegate: NSObject, NSApplicationDelegate {
+    private var statusMenuController: StatusMenuController?
+    
+    private static let setup: Void = {
+        NSApplication.shared.setActivationPolicy(.accessory)
+    }()
+    
+    static func main() {
+        _ = setup  // 确保在应用启动时执行设置
+        
+        let app = NSApplication.shared
+        let delegate = AppDelegate()
+        app.delegate = delegate
+        app.run()
     }
     
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        // 启动服务器
+        UploadServer.shared.start()
+        
+        // 初始化状态菜单
+        statusMenuController = StatusMenuController()
     }
 }

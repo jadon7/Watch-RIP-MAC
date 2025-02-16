@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <!-- 设置为代理应用，隐藏 Dock 图标 -->
+    <key>LSUIElement</key>
+    <true/>
+    
     <!-- 允许传入网络连接 -->
     <key>NSLocalNetworkUsageDescription</key>
     <string>需要访问本地网络以便其他设备能够连接到此应用</string>
