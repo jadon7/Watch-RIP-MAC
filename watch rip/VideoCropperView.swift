@@ -39,7 +39,7 @@ struct VideoCropperView: View {
                         ZStack {
                             Image(nsImage: img)
                                 .resizable()
-                                .aspectRatio(contentMode: .fit)
+                                .aspectRatio(contentMode: .fill)
                                 .frame(width: size, height: size)
                                 .scaleEffect(zoomFactor)
                                 .offset(x: accumulatedOffset.width + currentDragOffset.width,
@@ -114,27 +114,34 @@ struct VideoCropperView: View {
             onComplete(nil)
             return
         }
-        // 使用经过预览调整后的有效尺寸；若未获取则退回使用 naturalSize
+        // 获取原始视频尺寸，优先使用预览图调整后的尺寸
         let originalSize = orientedSize ?? CGSize(width: abs(videoTrack.naturalSize.width), height: abs(videoTrack.naturalSize.height))
         
-        // 使用与图像裁切类似的交互参数计算
-        let baseScaleFactor = min(cropSize / originalSize.width, cropSize / originalSize.height)
-        let totalScaleFactor = baseScaleFactor * zoomFactor
-        let displayedSize = CGSize(width: originalSize.width * totalScaleFactor,
-                                   height: originalSize.height * totalScaleFactor)
-        let initialX = -(displayedSize.width - cropSize) / 2.0
-        let initialY = -(displayedSize.height - cropSize) / 2.0
-        let finalX = initialX + (accumulatedOffset.width + currentDragOffset.width)
-        let finalY = initialY + (accumulatedOffset.height + currentDragOffset.height)
+        // 使用与图片裁切相同的逻辑
+        let cropSizeValue = cropSize // 例如 400
+        let baseScale = max(cropSizeValue / originalSize.width, cropSizeValue / originalSize.height)
+        let scale = baseScale * zoomFactor
         
-        let cropDimension = cropSize / totalScaleFactor
-        let rawCropX = -finalX / totalScaleFactor
-        let rawCropY = -finalY / totalScaleFactor
-        // 参考 ImageCropperView 的逻辑，对 Y 坐标进行翻转，以便与预览中显示一致
-        let cropOrigin = CGPoint(x: rawCropX, y: (originalSize.height - cropDimension) - rawCropY)
-        let cropRect = CGRect(origin: cropOrigin, size: CGSize(width: cropDimension, height: cropDimension))
+        let scaledWidth = originalSize.width * scale
+        let scaledHeight = originalSize.height * scale
         
-        // 构造 AVMutableComposition，插入视频轨道
+        // 默认居中时的绘制位置
+        let defaultX = (cropSizeValue - scaledWidth) / 2.0
+        let defaultY = (cropSizeValue - scaledHeight) / 2.0
+        // 加上拖拽偏移
+        let totalOffset = CGSize(width: accumulatedOffset.width + currentDragOffset.width,
+                                 height: accumulatedOffset.height + currentDragOffset.height)
+        let finalOrigin = CGPoint(x: defaultX + totalOffset.width, y: defaultY + totalOffset.height)
+        
+        // 构造从原视频坐标到裁剪区域（虚拟画布为 cropSizeValue x cropSizeValue）的转换矩阵，直接使用 finalOrigin.y
+        let T_video = CGAffineTransform(a: scale, b: 0, c: 0, d: scale, tx: finalOrigin.x, ty: finalOrigin.y)
+        
+        // 最终导出视频尺寸为 outputSize x outputSize
+        let exporterScale = outputSize / cropSizeValue
+        let T_export = CGAffineTransform(scaleX: exporterScale, y: exporterScale)
+        let finalTransform = T_video.concatenating(T_export)
+        
+        // 构造组合视频
         let composition = AVMutableComposition()
         guard let compositionTrack = composition.addMutableTrack(withMediaType: .video,
                                                                   preferredTrackID: kCMPersistentTrackID_Invalid) else {
@@ -150,37 +157,32 @@ struct VideoCropperView: View {
             return
         }
         
-        // 计算导出时所需变换：将 cropRect 中的内容映射到 (0,0,outputSize,outputSize)
-        let scaleFactor = outputSize / cropRect.width
-        let exportTransform = CGAffineTransform(translationX: -cropRect.origin.x, y: -cropRect.origin.y)
-            .scaledBy(x: scaleFactor, y: scaleFactor)
-        
+        // 使用 AVMutableVideoComposition 应用转换矩阵
         let videoComposition = AVMutableVideoComposition()
         videoComposition.renderSize = CGSize(width: outputSize, height: outputSize)
         videoComposition.frameDuration = CMTime(value: 1, timescale: 30)
         let instruction = AVMutableVideoCompositionInstruction()
         instruction.timeRange = CMTimeRange(start: .zero, duration: asset.duration)
         let layerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: compositionTrack)
-        // 这里直接使用 exportTransform，因为预览图已应用了 preferredTransform
-        layerInstruction.setTransform(exportTransform, at: .zero)
+        layerInstruction.setTransform(finalTransform, at: .zero)
         instruction.layerInstructions = [layerInstruction]
         videoComposition.instructions = [instruction]
         
         let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(UUID().uuidString)_video.mp4")
-        guard let exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality) else {
+        guard let exporterSession = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality) else {
             onComplete(nil)
             return
         }
-        exporter.videoComposition = videoComposition
-        exporter.outputFileType = .mp4
-        exporter.outputURL = outputURL
+        exporterSession.videoComposition = videoComposition
+        exporterSession.outputFileType = .mp4
+        exporterSession.outputURL = outputURL
         
         let semaphore = DispatchSemaphore(value: 0)
-        exporter.exportAsynchronously {
+        exporterSession.exportAsynchronously {
             semaphore.signal()
         }
         semaphore.wait()
-        if exporter.status == .completed {
+        if exporterSession.status == .completed {
             onComplete(outputURL)
         } else {
             onComplete(nil)
