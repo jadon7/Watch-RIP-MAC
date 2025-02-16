@@ -84,51 +84,51 @@ struct ImageCropperView: View {
     /// 根据图片在裁剪框内的位置和原图大小计算裁剪区域，裁剪出对应区域
     func cropImage(cropSize: CGFloat) -> NSImage? {
         let imageSize = originalImage.size
-        // 基于aspectFill的原理，计算比例：保证图片填满裁剪区域
+        // 基于aspectFill计算比例，保证图片填满裁剪区域
         let baseScale = max(cropSize / imageSize.width, cropSize / imageSize.height)
         let scale = baseScale * zoomFactor
         
         let scaledWidth = imageSize.width * scale
         let scaledHeight = imageSize.height * scale
         
-        // 默认居中时图片的绘制位置
+        // 默认居中绘制时的起始位置
         let defaultX = (cropSize - scaledWidth) / 2.0
         let defaultY = (cropSize - scaledHeight) / 2.0
-        // 加上用户拖拽的偏移
-        let totalOffset = CGSize(width: accumulatedOffset.width + currentDragOffset.width, height: accumulatedOffset.height + currentDragOffset.height)
+        
+        // 加上用户拖拽偏移
+        let totalOffset = CGSize(width: accumulatedOffset.width + currentDragOffset.width,
+                                 height: accumulatedOffset.height + currentDragOffset.height)
         let finalOrigin = CGPoint(x: defaultX + totalOffset.width, y: defaultY + totalOffset.height)
         
-        // 新建输出图片，尺寸为裁剪区域大小
-        let outputSize = CGSize(width: cropSize, height: cropSize)
-        let outputImage = NSImage(size: outputSize)
-        outputImage.lockFocus()
+        // 在 400x400 裁切区域中，计算 y 轴校正
+        let correctY = cropSize - finalOrigin.y - scaledHeight
         
-        guard let context = NSGraphicsContext.current?.cgContext else {
-            outputImage.unlockFocus()
-            return nil
+        // 目标输出为512x512，不直接用400x400中间结果，而是利用转换系数
+        let targetSize = CGSize(width: 512, height: 512)
+        let exporterScale = targetSize.width / cropSize  // 例如当cropSize==400时，exporterScale = 512/400 = 1.28
+        
+        let finalImage = NSImage(size: targetSize)
+        finalImage.lockFocus()
+        
+        // 填充黑色背景
+        if let context = NSGraphicsContext.current?.cgContext {
+            context.setFillColor(NSColor.black.cgColor)
+            context.fill(CGRect(origin: .zero, size: targetSize))
         }
         
-        // 填充背景为黑色
-        context.setFillColor(NSColor.black.cgColor)
-        context.fill(CGRect(origin: .zero, size: outputSize))
+        // 计算最终绘制区域，直接在512x512画布上绘制
+        let drawingRect = CGRect(x: finalOrigin.x * exporterScale,
+                                  y: correctY * exporterScale,
+                                  width: scaledWidth * exporterScale,
+                                  height: scaledHeight * exporterScale)
         
-        // 使用 NSImage 的默认坐标系（原点在左下角），因此需要调整 y 坐标
-        let correctY = outputSize.height - finalOrigin.y - scaledHeight
-        let drawingRect = CGRect(x: finalOrigin.x, y: correctY, width: scaledWidth, height: scaledHeight)
-        originalImage.draw(in: drawingRect, from: NSRect(origin: .zero, size: imageSize), operation: .copy, fraction: 1.0)
+        originalImage.draw(in: drawingRect,
+                             from: NSRect(origin: .zero, size: imageSize),
+                             operation: .copy,
+                             fraction: 1.0)
         
-        outputImage.unlockFocus()
-        
-        // 如果裁切后的图片尺寸超过512，则自动缩放为512×512
-        if outputImage.size.width > 512 {
-            let targetSize = CGSize(width: 512, height: 512)
-            let scaledOutput = NSImage(size: targetSize)
-            scaledOutput.lockFocus()
-            outputImage.draw(in: CGRect(origin: .zero, size: targetSize), from: CGRect(origin: .zero, size: outputImage.size), operation: .copy, fraction: 1.0)
-            scaledOutput.unlockFocus()
-            return scaledOutput
-        }
-        return outputImage
+        finalImage.unlockFocus()
+        return finalImage
     }
 }
 
