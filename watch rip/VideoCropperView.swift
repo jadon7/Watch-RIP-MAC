@@ -32,9 +32,7 @@ struct VideoCropperView: View {
     let outputSize: CGFloat = 512
     
     var body: some View {
-        VStack {
-            Text("请裁切视频以保证1:1显示")
-                .font(.headline)
+        VStack(spacing: 16) {
             GeometryReader { geometry in
                 let size = min(geometry.size.width, geometry.size.height)
                 ZStack {
@@ -72,40 +70,36 @@ struct VideoCropperView: View {
             .frame(width: cropSize, height: cropSize)
             
             // 缩放滑块
-            VStack {
+            VStack(spacing: 4) {
                 Slider(value: $zoomFactor, in: 0.1...5)
                 Text("缩放: \(Int(zoomFactor * 100))%")
                     .font(.caption)
             }
-            .padding(.top, 8)
             
             // 新增：时间轴，用于切换预览帧
-            VStack {
+            VStack(spacing: 4) {
                 Slider(value: $previewTime, in: 0...(videoDuration > 0 ? videoDuration : 1), step: 0.1) {
                     Text("预览时间")
                 }
                 .onChange(of: previewTime) { newTime in
                     loadPreviewImage(at: newTime)
                 }
-                // Text(String(format: "当前预览时间: %.1f 秒", previewTime))
-                //     .font(.caption)
             }
-            .padding(.top, 8)
             
             HStack {
+                Spacer()
                 Button("取消") {
                     onCancel()
                 }
-                .buttonStyle(.borderedProminent)
-                Spacer()
+                .buttonStyle(.bordered)
+                .foregroundColor(.gray)
                 Button("裁切") {
                     processVideoCrop()
                 }
                 .buttonStyle(.borderedProminent)
             }
-            .padding(.top, 8)
         }
-        .frame(width: 400, height: 600)
+        .frame(width: 400)
         .padding()
         .onAppear {
             loadPreviewImage(at: 0.0)

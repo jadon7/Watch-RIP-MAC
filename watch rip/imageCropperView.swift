@@ -18,9 +18,7 @@ struct ImageCropperView: View {
     @State private var zoomFactor: CGFloat = 1.0
     
     var body: some View {
-        VStack {
-            Text("请裁切图片以保证1:1显示")
-                .font(.headline)
+        VStack(spacing: 16) {
             GeometryReader { geometry in
                 // 裁剪区域固定为正方形，取 min(width,height)
                 let cropSize = min(geometry.size.width, geometry.size.height)
@@ -58,7 +56,7 @@ struct ImageCropperView: View {
             .frame(width: 400, height: 400)
             
             // 新增缩放滑块
-            VStack {
+            VStack(spacing: 4) {
                 Slider(value: $zoomFactor, in: 0...5)
                 Text("缩放: \(Int(zoomFactor * 100))%")
                     .font(.caption)
@@ -66,11 +64,12 @@ struct ImageCropperView: View {
             
             HStack {
                 if #available(macOS 12.0, *) {
+                    Spacer()
                     Button("取消") {
                         onCancel()
                     }
-                    .buttonStyle(.borderedProminent)
-                    Spacer()
+                    .buttonStyle(.bordered)
+                    .foregroundColor(.gray)
                     Button("裁切") {
                         if let cropped = cropImage(cropSize: 400) {
                             onComplete(cropped)
@@ -78,11 +77,12 @@ struct ImageCropperView: View {
                     }
                     .buttonStyle(.borderedProminent)
                 } else {
+                    Spacer()
                     Button("取消") {
                         onCancel()
                     }
                     .buttonStyle(.bordered)
-                    Spacer()
+                    .foregroundColor(.gray)
                     Button("裁切") {
                         if let cropped = cropImage(cropSize: 400) {
                             onComplete(cropped)
@@ -91,9 +91,8 @@ struct ImageCropperView: View {
                     .buttonStyle(.bordered)
                 }
             }
-            .padding()
         }
-        .frame(width: 400, height: 530)
+        .frame(width: 400)
         .padding()
     }
     

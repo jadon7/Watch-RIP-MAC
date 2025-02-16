@@ -324,10 +324,21 @@ struct ContentView: View {
         })
         let hostingController = NSHostingController(rootView: cropperView)
         let window = NSWindow(contentViewController: hostingController)
-        window.title = "裁切图片"
-        window.setContentSize(NSSize(width: 420, height: 500))
+        window.title = "请裁切图片以保证1:1显示"
+        window.setContentSize(NSSize(width: 420, height: 0))  // 设置宽度，高度会自适应
         window.styleMask = [NSWindow.StyleMask.titled, NSWindow.StyleMask.closable]
-        window.center()
+        
+        // 获取主屏幕
+        if let screen = NSScreen.main {
+            let screenRect = screen.visibleFrame
+            let windowRect = window.frame
+            // 计算窗口在屏幕中央的位置
+            let x = screenRect.midX - windowRect.width / 2
+            let y = screenRect.midY - windowRect.height / 2
+            // 设置窗口位置
+            window.setFrameOrigin(NSPoint(x: x, y: y))
+        }
+        
         window.makeKeyAndOrderFront(nil as Any?)
         cropperWindow = window
     }
@@ -427,10 +438,21 @@ struct ContentView: View {
             })
             let hostingController = NSHostingController(rootView: cropperView)
             let window = NSWindow(contentViewController: hostingController)
-            window.title = "裁切视频"
-            window.setContentSize(NSSize(width: 420, height: 500))
+            window.title = "请裁切视频以保证1:1显示"
+            window.setContentSize(NSSize(width: 420, height: 0))  // 设置宽度，高度会自适应
             window.styleMask = [NSWindow.StyleMask.titled, NSWindow.StyleMask.closable]
-            window.center()
+            
+            // 获取主屏幕
+            if let screen = NSScreen.main {
+                let screenRect = screen.visibleFrame
+                let windowRect = window.frame
+                // 计算窗口在屏幕中央的位置
+                let x = screenRect.midX - windowRect.width / 2
+                let y = screenRect.midY - windowRect.height / 2
+                // 设置窗口位置
+                window.setFrameOrigin(NSPoint(x: x, y: y))
+            }
+            
             window.makeKeyAndOrderFront(nil as Any?)
             cropperWindow = window
         } else {
