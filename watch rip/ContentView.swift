@@ -415,23 +415,28 @@ struct ContentView: View {
     }
     
     func presentVideoCropper(for url: URL, completion: @escaping (URL?) -> Void) {
-        let cropperView = VideoCropperView(videoURL: url, onComplete: { processedURL in
-            cropperWindow?.close()
-            cropperWindow = nil
-            completion(processedURL)
-        }, onCancel: {
-            cropperWindow?.close()
-            cropperWindow = nil
+        if #available(macOS 12.0, *) {
+            let cropperView = VideoCropperView(videoURL: url, onComplete: { processedURL in
+                cropperWindow?.close()
+                cropperWindow = nil
+                completion(processedURL)
+            }, onCancel: {
+                cropperWindow?.close()
+                cropperWindow = nil
+                completion(nil)
+            })
+            let hostingController = NSHostingController(rootView: cropperView)
+            let window = NSWindow(contentViewController: hostingController)
+            window.title = "裁切视频"
+            window.setContentSize(NSSize(width: 420, height: 500))
+            window.styleMask = [NSWindow.StyleMask.titled, NSWindow.StyleMask.closable]
+            window.center()
+            window.makeKeyAndOrderFront(nil as Any?)
+            cropperWindow = window
+        } else {
+            // 对于不支持的系统版本，直接返回原始视频
             completion(nil)
-        })
-        let hostingController = NSHostingController(rootView: cropperView)
-        let window = NSWindow(contentViewController: hostingController)
-        window.title = "裁切视频"
-        window.setContentSize(NSSize(width: 420, height: 500))
-        window.styleMask = [NSWindow.StyleMask.titled, NSWindow.StyleMask.closable]
-        window.center()
-        window.makeKeyAndOrderFront(nil as Any?)
-        cropperWindow = window
+        }
     }
 }
 

@@ -8,20 +8,25 @@
 import SwiftUI
 import AVFoundation
 
+@available(macOS 12.0, *)
 struct VideoCropperView: View {
     let videoURL: URL
     var onComplete: (URL?) -> Void
     var onCancel: () -> Void
     
-    // 提取视频第一帧作为预览图，以及调整方向后的有效尺寸
+    // 提取视频预览帧和调整方向后的有效尺寸
     @State private var previewImage: NSImage?
     @State private var orientedSize: CGSize?
-    // 记录拖拽与缩放参数
+    // 记录拖拽和缩放参数
     @State private var accumulatedOffset: CGSize = .zero
     @State private var currentDragOffset: CGSize = .zero
     @State private var zoomFactor: CGFloat = 1.0
     
-    // 固定预览裁切区域大小 (例如 400)
+    // 新增：视频总时长和当前预览帧的时间
+    @State private var videoDuration: Double = 0.0
+    @State private var previewTime: Double = 0.0
+    
+    // 固定裁剪区域大小（例如400）
     let cropSize: CGFloat = 400
     // 输出视频大小 512×512
     let outputSize: CGFloat = 512
@@ -74,32 +79,48 @@ struct VideoCropperView: View {
             }
             .padding(.top, 8)
             
+            // 新增：时间轴，用于切换预览帧
+            VStack {
+                Slider(value: $previewTime, in: 0...(videoDuration > 0 ? videoDuration : 1), step: 0.1) {
+                    Text("预览时间")
+                }
+                .onChange(of: previewTime) { newTime in
+                    loadPreviewImage(at: newTime)
+                }
+                // Text(String(format: "当前预览时间: %.1f 秒", previewTime))
+                //     .font(.caption)
+            }
+            .padding(.top, 8)
+            
             HStack {
                 Button("取消") {
                     onCancel()
                 }
+                .buttonStyle(.borderedProminent)
                 Spacer()
                 Button("裁切") {
                     processVideoCrop()
                 }
+                .buttonStyle(.borderedProminent)
             }
             .padding(.top, 8)
         }
-        .frame(width: 420, height: 500)
+        .frame(width: 400, height: 600)
         .padding()
         .onAppear {
-            loadPreviewImage()
+            loadPreviewImage(at: 0.0)
         }
     }
     
-    // 利用 AVAssetImageGenerator 提取第一帧作为预览图
-    func loadPreviewImage() {
+    // 修改：根据指定时间提取视频预览帧
+    func loadPreviewImage(at time: Double) {
         let asset = AVAsset(url: videoURL)
+        videoDuration = CMTimeGetSeconds(asset.duration)
         let imgGenerator = AVAssetImageGenerator(asset: asset)
         imgGenerator.appliesPreferredTrackTransform = true
-        let time = CMTime(seconds: 0.0, preferredTimescale: 600)
+        let cmTime = CMTime(seconds: time, preferredTimescale: 600)
         do {
-            let cgImage = try imgGenerator.copyCGImage(at: time, actualTime: nil)
+            let cgImage = try imgGenerator.copyCGImage(at: cmTime, actualTime: nil)
             let img = NSImage(cgImage: cgImage, size: NSZeroSize)
             previewImage = img
             orientedSize = img.size
@@ -190,6 +211,7 @@ struct VideoCropperView: View {
     }
 }
 
+@available(macOS 12.0, *)
 struct VideoCropperView_Previews: PreviewProvider {
     static var previews: some View {
         // 请替换为有效的视频路径进行预览

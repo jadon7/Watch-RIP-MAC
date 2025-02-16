@@ -65,19 +65,35 @@ struct ImageCropperView: View {
             }
             
             HStack {
-                Button("取消") {
-                    onCancel()
-                }
-                Spacer()
-                Button("裁切") {
-                    if let cropped = cropImage(cropSize: 400) {
-                        onComplete(cropped)
+                if #available(macOS 12.0, *) {
+                    Button("取消") {
+                        onCancel()
                     }
+                    .buttonStyle(.borderedProminent)
+                    Spacer()
+                    Button("裁切") {
+                        if let cropped = cropImage(cropSize: 400) {
+                            onComplete(cropped)
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                } else {
+                    Button("取消") {
+                        onCancel()
+                    }
+                    .buttonStyle(.bordered)
+                    Spacer()
+                    Button("裁切") {
+                        if let cropped = cropImage(cropSize: 400) {
+                            onComplete(cropped)
+                        }
+                    }
+                    .buttonStyle(.bordered)
                 }
             }
             .padding()
         }
-        .frame(width: 420, height: 500)
+        .frame(width: 400, height: 530)
         .padding()
     }
     
