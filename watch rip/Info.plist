@@ -29,7 +29,7 @@
     <true/>
     <!-- 新增：Sparkle 更新源 URL -->
     <key>SUFeedURL</key>
-    <string>https://raw.githubusercontent.com/jadon7/Watch-RIP-MAC/main/appcast.xml</string>
+    <string>https://raw.githubusercontent.com/jadon7/Watch-RIP-MAC/refs/heads/main/appcast.xml</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
