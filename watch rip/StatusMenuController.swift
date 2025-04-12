@@ -9,7 +9,7 @@ class StatusMenuController: NSObject, NSMenuDelegate {
     private var ipCheckTimer: Timer?
     private var cropperWindow: NSWindow?
     private var currentUploadedFile: String = "暂无文件"
-    private var adbDevices: [String] = []
+    private var adbDevices: [String: String] = [:]
     private var selectedADBDeviceID: String? = nil
     private var adbExecutablePath: String? = nil
     private var adbStatusMenuItem: NSMenuItem?
@@ -44,7 +44,7 @@ class StatusMenuController: NSObject, NSMenuDelegate {
         let menu = NSMenu()
         
         // IP 地址显示项（分两行）
-        let titleItem = NSMenuItem(title: "手表端输入:", action: nil, keyEquivalent: "")
+        let titleItem = NSMenuItem(title: "WIFI模式下输入:", action: nil, keyEquivalent: "")
         titleItem.isEnabled = false
         menu.addItem(titleItem)
         
@@ -87,7 +87,7 @@ class StatusMenuController: NSObject, NSMenuDelegate {
         menu.addItem(NSMenuItem.separator())
         
         // 新增：ADB 设备显示区域
-        let adbTitleItem = NSMenuItem(title: "ADB 设备 (单选推送):", action: nil, keyEquivalent: "")
+        let adbTitleItem = NSMenuItem(title: "ADB 设备", action: nil, keyEquivalent: "")
         adbTitleItem.isEnabled = false
         menu.addItem(adbTitleItem)
         
@@ -628,33 +628,71 @@ class StatusMenuController: NSObject, NSMenuDelegate {
         }
     }
     
-    private func checkADBDevices(completion: @escaping ([String]) -> Void) {
+    private func checkADBDevices(completion: @escaping ([String: String]) -> Void) {
         guard let adbPath = self.adbExecutablePath else {
             print("[checkADBDevices] 无法执行检查，ADB 路径未知")
             self.updateMenuWithADBError("ADB 未找到")
-            completion([])
+            completion([:])
             return
         }
 
-        print("[checkADBDevices] 开始使用路径 '\(adbPath)' 检查设备...")
+        print("[checkADBDevices] 开始使用路径 '\(adbPath)' 检查设备序列号...")
         runADBCommand(adbPath: adbPath, arguments: ["devices"]) { [weak self] success, output in
-            guard let self = self else { return }
-            var devices: [String] = []
+            guard let self = self else { completion([:]); return }
+            
+            var serials: [String] = []
             if success {
                 let lines = output.components(separatedBy: .newlines)
                 for line in lines.dropFirst() {
                     let components = line.components(separatedBy: "\t").filter { !$0.isEmpty }
                     if components.count >= 2 && components[1] == "device" {
-                        devices.append(components[0].trimmingCharacters(in: .whitespacesAndNewlines))
+                        serials.append(components[0].trimmingCharacters(in: .whitespacesAndNewlines))
                     }
                 }
-                print("[checkADBDevices] 检查成功，发现设备: \(devices)")
-                self.updateMenuWithADBDevices(devices)
+                print("[checkADBDevices] 检查成功，发现序列号: \(serials)")
+                
+                // 如果没有找到设备，直接返回空字典
+                if serials.isEmpty {
+                    self.updateMenuWithADBDevices([:]) // 更新菜单
+                    completion([:])
+                    return
+                }
+                
+                // --- 获取设备名称 --- 
+                var devicesInfo: [String: String] = [:]
+                let group = DispatchGroup()
+                let queue = DispatchQueue(label: "com.jadon7.watchrip.getdevicename", attributes: .concurrent)
+                
+                for serial in serials {
+                    group.enter()
+                    queue.async {
+                        print("[checkADBDevices] 正在获取设备 \(serial) 的名称...")
+                        self.runADBCommand(adbPath: adbPath, arguments: ["-s", serial, "shell", "getprop", "ro.product.model"]) { nameSuccess, nameOutput in
+                            if nameSuccess && !nameOutput.isEmpty {
+                                print("[checkADBDevices] 设备 \(serial) 名称获取成功: \(nameOutput)")
+                                devicesInfo[serial] = nameOutput // 使用获取到的名称
+                            } else {
+                                print("[checkADBDevices] 设备 \(serial) 名称获取失败或为空，使用序列号。错误: \(nameOutput)")
+                                devicesInfo[serial] = serial // 获取失败则使用序列号作为名称
+                            }
+                            group.leave()
+                        }
+                    }
+                }
+                
+                // 等待所有 getprop 命令完成
+                group.notify(queue: .main) {
+                    print("[checkADBDevices] 所有设备名称获取完成: \(devicesInfo)")
+                    self.updateMenuWithADBDevices(devicesInfo) // 使用包含名称的信息更新菜单
+                    completion(devicesInfo) // 返回包含名称的字典
+                }
+                // --- 结束 获取设备名称 ---
+                
             } else {
                 print("[checkADBDevices] ADB devices 命令失败: \(output)")
                 self.updateMenuWithADBError("ADB 命令失败")
+                completion([:])
             }
-            completion(devices)
         }
     }
     
@@ -752,37 +790,42 @@ class StatusMenuController: NSObject, NSMenuDelegate {
         }
     }
     
-    private func updateMenuWithADBDevices(_ devices: [String]) {
+    private func updateMenuWithADBDevices(_ devices: [String: String]) {
         guard let menu = self.statusItem.menu else { return }
-        print("[updateMenuWithADBDevices] 正在使用设备列表更新菜单: \(devices)")
-        let adbTitleIndex = menu.indexOfItem(withTitle: "ADB 设备 (单选推送):")
+        print("[updateMenuWithADBDevices] 正在使用设备信息更新菜单: \(devices)")
+        // 修改标题匹配
+        let adbTitleIndex = menu.indexOfItem(withTitle: "ADB 设备") 
         guard adbTitleIndex != -1 else {
              print("[updateMenuWithADBDevices] 错误：未找到 ADB 标题菜单项")
              return
          }
 
-        // 比较当前显示的设备列表和新列表，如果相同则跳过大部分UI更新
+        // 比较当前显示的设备序列号列表和新列表的序列号
         let currentDeviceItems = menu.items.filter { $0.action == #selector(selectADBDevice(_:)) }
-        let currentDeviceIDs = currentDeviceItems.compactMap { $0.representedObject as? String }
-        if currentDeviceIDs == devices {
-            // 列表未变，只需确保选中状态正确
-            print("[updateMenuWithADBDevices] 设备列表未改变，仅检查选中状态。")
-            // 检查当前选中的设备是否仍然有效
-            if selectedADBDeviceID != nil && !devices.contains(selectedADBDeviceID!) {
-                print("[updateMenuWithADBDevices] 之前选中的设备 '\(selectedADBDeviceID!)' 不再存在，重新选择第一个。")
-                selectedADBDeviceID = devices.first
+        let currentDeviceIDs = currentDeviceItems.compactMap { $0.representedObject as? String }.sorted()
+        let newDeviceIDs = devices.keys.sorted()
+        
+        if currentDeviceIDs == newDeviceIDs {
+            // 序列号列表未变，只需确保选中状态和设备名称正确
+            print("[updateMenuWithADBDevices] 设备序列号列表未改变，更新名称和选中状态。")
+            if selectedADBDeviceID != nil && !devices.keys.contains(selectedADBDeviceID!) {
+                print("[updateMenuWithADBDevices] 之前选中的设备 \'\(selectedADBDeviceID!)\' 不再存在，重新选择第一个。")
+                selectedADBDeviceID = devices.keys.sorted().first
             } else if selectedADBDeviceID == nil && !devices.isEmpty {
                  print("[updateMenuWithADBDevices] 之前未选中，自动选择第一个设备。")
-                 selectedADBDeviceID = devices.first
+                 selectedADBDeviceID = devices.keys.sorted().first
             }
-            // 更新菜单项的选中状态
+            // 更新现有菜单项的标题和选中状态
              for item in currentDeviceItems {
-                 if let id = item.representedObject as? String {
-                     item.state = (id == selectedADBDeviceID) ? .on : .off
+                 if let serial = item.representedObject as? String,
+                    let deviceName = devices[serial] { // 获取对应名称
+                     let title = (deviceName == serial) ? serial : "\(deviceName) (\(serial))"
+                     item.title = title
+                     item.state = (serial == selectedADBDeviceID) ? .on : .off
                  }
              }
-             // self.adbDevices = devices // 列表未变，无需更新存储
-            return // 跳过后续的移除和添加
+            self.adbDevices = devices // 更新存储的设备信息
+            return
         }
         
         print("[updateMenuWithADBDevices] 设备列表已改变，重建菜单项。")
@@ -791,7 +834,7 @@ class StatusMenuController: NSObject, NSMenuDelegate {
         let currentIndex = adbTitleIndex + 1
         while let itemToRemove = menu.item(at: currentIndex),
               itemToRemove !== adbStatusMenuItem,
-              !itemToRemove.isSeparatorItem {
+              !itemToRemove.isSeparatorItem { 
             menu.removeItem(at: currentIndex)
         }
 
@@ -801,25 +844,29 @@ class StatusMenuController: NSObject, NSMenuDelegate {
             menu.insertItem(noDeviceItem, at: adbTitleIndex + 1)
             selectedADBDeviceID = nil
         } else {
-            if selectedADBDeviceID == nil || !devices.contains(selectedADBDeviceID!) {
-                selectedADBDeviceID = devices.first
-                print("[updateMenuWithADBDevices] (重建时)自动选中第一个设备: \(devices.first!)")
+            // 同样需要处理选中状态
+            let sortedSerials = devices.keys.sorted()
+            if selectedADBDeviceID == nil || !sortedSerials.contains(selectedADBDeviceID!) {
+                selectedADBDeviceID = sortedSerials.first
+                if let selectedID = selectedADBDeviceID {
+                     print("[updateMenuWithADBDevices] (重建时)自动选中第一个设备: \(selectedID)")
+                }
             }
             
-            for (index, deviceId) in devices.enumerated() {
-                let deviceItem = NSMenuItem(title: deviceId, action: #selector(selectADBDevice(_:)), keyEquivalent: "")
+            // 使用排序后的序列号创建菜单项，保证顺序稳定
+            for (index, serial) in sortedSerials.enumerated() {
+                let deviceName = devices[serial] ?? serial // 获取名称，失败则用序列号
+                let title = (deviceName == serial) ? serial : "\(deviceName) (\(serial))"
+                
+                let deviceItem = NSMenuItem(title: title, action: #selector(selectADBDevice(_:)), keyEquivalent: "")
                 deviceItem.target = self
-                deviceItem.representedObject = deviceId
+                deviceItem.representedObject = serial // 存储序列号
                 deviceItem.isEnabled = true
-                if deviceId == self.selectedADBDeviceID {
-                    deviceItem.state = .on
-                } else {
-                    deviceItem.state = .off
-                }
+                deviceItem.state = (serial == selectedADBDeviceID) ? .on : .off
                 menu.insertItem(deviceItem, at: adbTitleIndex + 1 + index)
             }
         }
-        self.adbDevices = devices
+        self.adbDevices = devices // 存储新的设备信息
     }
     
     @objc private func selectADBDevice(_ sender: NSMenuItem) {
@@ -827,7 +874,7 @@ class StatusMenuController: NSObject, NSMenuDelegate {
 
         // 不再允许取消选择，直接进入选择新设备的逻辑
         if let menu = statusItem.menu {
-            let adbTitleIndex = menu.indexOfItem(withTitle: "ADB 设备 (单选推送):")
+            let adbTitleIndex = menu.indexOfItem(withTitle: "ADB 设备")
             if adbTitleIndex != -1 {
                 var loopIndex = adbTitleIndex + 1
                 while let item = menu.item(at: loopIndex), item !== adbStatusMenuItem, !item.isSeparatorItem {
@@ -835,7 +882,7 @@ class StatusMenuController: NSObject, NSMenuDelegate {
                     loopIndex += 1
                 }
             } else {
-                print("错误: 在 selectADBDevice 中未能找到 'ADB 设备 (单选推送):' 菜单项标题")
+                print("错误: 在 selectADBDevice 中未能找到 'ADB 设备' 菜单项标题")
             }
         }
         selectedADBDeviceID = newlySelectedID
@@ -919,7 +966,7 @@ class StatusMenuController: NSObject, NSMenuDelegate {
     private func updateADBStatus(_ message: String, isError: Bool) {
         guard let statusItem = adbStatusMenuItem, let menu = statusItem.menu else { return }
 
-        let adbTitleIndex = menu.indexOfItem(withTitle: "ADB 设备 (单选推送):")
+        let adbTitleIndex = menu.indexOfItem(withTitle: "ADB 设备")
         guard adbTitleIndex != -1 else { return }
         var insertIndex = adbTitleIndex + 1
         while let item = menu.item(at: insertIndex), item.action == #selector(selectADBDevice(_:)) || item.title == "无设备连接" || item.title == "检测中..." {
@@ -953,7 +1000,7 @@ class StatusMenuController: NSObject, NSMenuDelegate {
     
     private func updateMenuWithADBError(_ errorMessage: String) {
         guard let menu = self.statusItem.menu else { return }
-        let adbTitleIndex = menu.indexOfItem(withTitle: "ADB 设备 (单选推送):")
+        let adbTitleIndex = menu.indexOfItem(withTitle: "ADB 设备")
         guard adbTitleIndex != -1 else { return }
 
         let currentIndex = adbTitleIndex + 1
