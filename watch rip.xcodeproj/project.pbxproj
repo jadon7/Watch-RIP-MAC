@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		EA6E0EFA2D55F644009A4E0D /* Swifter in Frameworks */ = {isa = PBXBuildFile; productRef = EA6E0EF92D55F644009A4E0D /* Swifter */; };
 		EA6E0EFC2D55F644009A4E0D /* Example in Frameworks */ = {isa = PBXBuildFile; productRef = EA6E0EFB2D55F644009A4E0D /* Example */; };
+		EA9354562DAA22CA00584A78 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = EA9354552DAA22CA00584A78 /* Sparkle */; };
 		EAEE978E2D5EC36F001D65BA /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = EAEE978D2D5EC36F001D65BA /* ZIPFoundation */; };
 /* End PBXBuildFile section */
 
@@ -73,6 +74,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA6E0EFA2D55F644009A4E0D /* Swifter in Frameworks */,
+				EA9354562DAA22CA00584A78 /* Sparkle in Frameworks */,
 				EA6E0EFC2D55F644009A4E0D /* Example in Frameworks */,
 				EAEE978E2D5EC36F001D65BA /* ZIPFoundation in Frameworks */,
 			);
@@ -139,6 +141,7 @@
 				EA6E0EF92D55F644009A4E0D /* Swifter */,
 				EA6E0EFB2D55F644009A4E0D /* Example */,
 				EAEE978D2D5EC36F001D65BA /* ZIPFoundation */,
+				EA9354552DAA22CA00584A78 /* Sparkle */,
 			);
 			productName = "watch rip";
 			productReference = EA6E0EC62D55F4AE009A4E0D /* watch rip.app */;
@@ -225,6 +228,7 @@
 			packageReferences = (
 				EA6E0EF82D55F644009A4E0D /* XCRemoteSwiftPackageReference "swifter" */,
 				EAEE978C2D5EC36F001D65BA /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
+				EA9354542DAA22CA00584A78 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EA6E0EC72D55F4AE009A4E0D /* Products */;
@@ -594,6 +598,14 @@
 				minimumVersion = 1.5.0;
 			};
 		};
+		EA9354542DAA22CA00584A78 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.7.0;
+			};
+		};
 		EAEE978C2D5EC36F001D65BA /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/weichsel/ZIPFoundation.git";
@@ -614,6 +626,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EA6E0EF82D55F644009A4E0D /* XCRemoteSwiftPackageReference "swifter" */;
 			productName = Example;
+		};
+		EA9354552DAA22CA00584A78 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA9354542DAA22CA00584A78 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 		EAEE978D2D5EC36F001D65BA /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;

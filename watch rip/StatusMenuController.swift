@@ -2,6 +2,7 @@ import SwiftUI
 import AppKit
 import UniformTypeIdentifiers
 import AVFoundation
+import Sparkle
 
 class StatusMenuController: NSObject, NSMenuDelegate {
     private var statusItem: NSStatusItem!
@@ -13,8 +14,10 @@ class StatusMenuController: NSObject, NSMenuDelegate {
     private var adbExecutablePath: String? = nil
     private var adbStatusMenuItem: NSMenuItem?
     private var adbCheckTimer: Timer?
+    private let updater: SPUStandardUpdaterController
     
-    override init() {
+    init(updater: SPUStandardUpdaterController) {
+        self.updater = updater
         super.init()
         setupStatusItem()
         startIPCheck()
@@ -98,6 +101,15 @@ class StatusMenuController: NSObject, NSMenuDelegate {
         adbStatusMenuItem?.isHidden = true // 默认隐藏
         adbStatusMenuItem?.isEnabled = false
         menu.addItem(adbStatusMenuItem!)
+        
+        menu.addItem(NSMenuItem.separator())
+        
+        // --- 新增：检查更新选项 --- 
+        menu.addItem(NSMenuItem.separator()) // 添加分隔符
+        
+        let checkUpdatesItem = NSMenuItem(title: "检查更新...", action: #selector(checkForUpdatesMenuItemAction(_:)), keyEquivalent: "")
+        checkUpdatesItem.target = self
+        menu.addItem(checkUpdatesItem)
         
         menu.addItem(NSMenuItem.separator())
         
@@ -973,5 +985,9 @@ class StatusMenuController: NSObject, NSMenuDelegate {
 
         // 将 Timer 添加到 RunLoop 的 common 模式
         RunLoop.current.add(timer, forMode: .common)
+    }
+
+    @objc private func checkForUpdatesMenuItemAction(_ sender: NSMenuItem) {
+        updater.checkForUpdates(sender)
     }
 } 

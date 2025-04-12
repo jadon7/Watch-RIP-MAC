@@ -27,5 +27,8 @@
     <!-- 允许所有传入连接 -->
     <key>NSAllowsArbitraryLoads</key>
     <true/>
+    <!-- 新增：Sparkle 更新源 URL -->
+    <key>SUFeedURL</key>
+    <string>https://raw.githubusercontent.com/jadon7/Watch-RIP-MAC/main/appcast.xml</string>
 </dict>
 </plist> 

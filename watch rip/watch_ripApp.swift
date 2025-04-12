@@ -7,10 +7,12 @@
 
 import SwiftUI
 import AppKit
+import Sparkle
 
 @main
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusMenuController: StatusMenuController?
+    private let sparkleUpdater = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
     
     private static let setup: Void = {
         NSApplication.shared.setActivationPolicy(.accessory)
@@ -29,7 +31,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // 启动服务器
         UploadServer.shared.start()
         
-        // 初始化状态菜单
-        statusMenuController = StatusMenuController()
+        // 初始化状态菜单，并传入 Sparkle 控制器
+        statusMenuController = StatusMenuController(updater: sparkleUpdater)
     }
 }
