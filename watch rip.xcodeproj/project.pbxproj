@@ -50,9 +50,22 @@
 		EA6E0EE12D55F4AF009A4E0D /* watch ripUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "watch ripUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		EA9354742DAA5E0800584A78 /* Exceptions for "watch rip" folder in "watch rip" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = EA6E0EC52D55F4AE009A4E0D /* watch rip */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		EA6E0EC82D55F4AE009A4E0D /* watch rip */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				EA9354742DAA5E0800584A78 /* Exceptions for "watch rip" folder in "watch rip" target */,
+			);
 			path = "watch rip";
 			sourceTree = "<group>";
 		};
@@ -217,11 +230,12 @@
 				};
 			};
 			buildConfigurationList = EA6E0EC12D55F4AE009A4E0D /* Build configuration list for PBXProject "watch rip" */;
-			developmentRegion = en;
+			developmentRegion = "zh-Hans";
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = EA6E0EBD2D55F4AE009A4E0D;
 			minimizedProjectReferenceProxies = 1;
@@ -439,13 +453,14 @@
 				DEVELOPMENT_ASSET_PATHS = "\"watch rip/Preview Content\"";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "watch rip/Info.plist";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 2.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wenkui.watch-rip";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -466,13 +481,14 @@
 				DEVELOPMENT_ASSET_PATHS = "\"watch rip/Preview Content\"";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "watch rip/Info.plist";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 2.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wenkui.watch-rip";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

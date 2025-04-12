@@ -2,41 +2,39 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <!-- 设置应用名称 -->
-    <key>CFBundleName</key>
-    <string>Watch RIP</string>
-    <key>CFBundleDisplayName</key>
-    <string>Watch RIP</string>
-    
-    <!-- 设置为代理应用，隐藏 Dock 图标 -->
-    <key>LSUIElement</key>
-    <true/>
-    
-    <!-- 允许传入网络连接 -->
-    <key>NSLocalNetworkUsageDescription</key>
-    <string>需要访问本地网络以便其他设备能够连接到此应用</string>
-    <!-- 允许在本地网络中发现和连接 -->
-    <key>NSBonjourServices</key>
-    <array>
-        <string>_http._tcp</string>
-        <string>_ws._tcp</string>
-    </array>
-    <!-- 允许本地网络使用 -->
-    <key>NSLocalNetworkUsageDescription</key>
-    <string>需要使用本地网络来传输文件</string>
-    <!-- 允许所有传入连接 -->
-    <key>NSAllowsArbitraryLoads</key>
-    <true/>
-    <!-- 新增：Sparkle 更新源 URL -->
-    <key>SUFeedURL</key>
-    <string>https://raw.githubusercontent.com/jadon7/Watch-RIP-MAC/refs/heads/main/appcast.xml</string>
-    <key>CFBundlePackageType</key>
-    <string>APPL</string>
-    <key>CFBundleShortVersionString</key>
-    <string>2.0.1</string>
-    <key>CFBundleVersion</key>
-    <string>2.0.1</string>
-    <key>LSMinimumSystemVersion</key>
-    <string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Watch RIP</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>zh_Hans</string>
+	</array>
+	<key>CFBundleName</key>
+	<string>Watch RIP</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>2.0.1</string>
+	<key>CFBundleVersion</key>
+	<string>2.0.1</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<key>LSUIElement</key>
+	<true/>
+	<key>NSAllowsArbitraryLoads</key>
+	<true/>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_http._tcp</string>
+		<string>_ws._tcp</string>
+	</array>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>需要使用本地网络来传输文件</string>
+	<key>SUFeedURL</key>
+	<string>https://raw.githubusercontent.com/jadon7/Watch-RIP-MAC/refs/heads/main/appcast.xml</string>
 </dict>
-</plist> 
+</plist>
