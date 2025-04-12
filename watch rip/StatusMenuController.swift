@@ -15,6 +15,7 @@ class StatusMenuController: NSObject, NSMenuDelegate {
     private var adbStatusMenuItem: NSMenuItem?
     private var adbCheckTimer: Timer?
     private let updater: SPUStandardUpdaterController
+    private var checkUpdatesMenuItem: NSMenuItem?
     
     init(updater: SPUStandardUpdaterController) {
         self.updater = updater
@@ -107,9 +108,10 @@ class StatusMenuController: NSObject, NSMenuDelegate {
         // --- 新增：检查更新选项 --- 
         menu.addItem(NSMenuItem.separator()) // 添加分隔符
         
-        let checkUpdatesItem = NSMenuItem(title: "检查更新...", action: #selector(checkForUpdatesMenuItemAction(_:)), keyEquivalent: "")
-        checkUpdatesItem.target = self
-        menu.addItem(checkUpdatesItem)
+        let item = NSMenuItem(title: "检查更新...", action: #selector(checkForUpdatesMenuItemAction(_:)), keyEquivalent: "")
+        item.target = self
+        menu.addItem(item)
+        self.checkUpdatesMenuItem = item // 新增：存储引用
         
         menu.addItem(NSMenuItem.separator())
         
@@ -989,5 +991,19 @@ class StatusMenuController: NSObject, NSMenuDelegate {
 
     @objc private func checkForUpdatesMenuItemAction(_ sender: NSMenuItem) {
         updater.checkForUpdates(sender)
+    }
+
+    func updateCheckUpdatesMenuItemTitle(hasUpdate: Bool) {
+        DispatchQueue.main.async { // 确保在主线程更新 UI
+            if hasUpdate {
+                self.checkUpdatesMenuItem?.title = "发现新版本！"
+                // (可选) 添加视觉提示，比如加粗或改变颜色
+                // self.checkUpdatesMenuItem?.attributedTitle = NSAttributedString(...) 
+            } else {
+                self.checkUpdatesMenuItem?.title = "检查更新..."
+                // (可选) 恢复默认样式
+                // self.checkUpdatesMenuItem?.attributedTitle = nil 
+            }
+        }
     }
 } 
