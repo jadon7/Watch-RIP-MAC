@@ -1,6 +1,15 @@
 {
-  "originHash" : "64e544250d17cb8c18d6d883c7fde5719d16f55c1c858c8263eb3cdb20cb545f",
+  "originHash" : "e5025eb5b48f855f1defa18a0278933cc360e5f41620f029a874f5dd5a6082dd",
   "pins" : [
+    {
+      "identity" : "sparkle",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sparkle-project/Sparkle",
+      "state" : {
+        "revision" : "0ca3004e98712ea2b39dd881d28448630cce1c99",
+        "version" : "2.7.0"
+      }
+    },
     {
       "identity" : "swifter",
       "kind" : "remoteSourceControl",
@@ -8,6 +17,15 @@
       "state" : {
         "revision" : "9483a5d459b45c3ffd059f7b55f9638e268632fd",
         "version" : "1.5.0"
+      }
+    },
+    {
+      "identity" : "zipfoundation",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/weichsel/ZIPFoundation.git",
+      "state" : {
+        "revision" : "02b6abe5f6eef7e3cbd5f247c5cc24e246efcfe0",
+        "version" : "0.9.19"
       }
     }
   ],
