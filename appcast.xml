@@ -7,9 +7,9 @@
     <language>zh-CN</language>
     <!-- 新版本 v2.0.1 -->
     <item>
-      <title>版本 2.0.1</title>
+      <title>版本 2.1.0</title>
       <sparkle:releaseNotesLink>
-        https://raw.githubusercontent.com/jadon7/Watch-RIP-MAC/main/release_notes_2.0.1.html
+        https://raw.githubusercontent.com/jadon7/Watch-RIP-MAC/main/releaseNote/release_notes_2.1.0.html
       </sparkle:releaseNotesLink>
       <pubDate>Fri, 12 Apr 2024 10:00:00 +0800</pubDate>
       <enclosure url="https://github.com/jadon7/Watch-RIP-MAC/releases/download/v2.0/watch.rip.2.0.1.zip"
