@@ -33,6 +33,10 @@ class UploadServer {
                     guard let data = try? Data(contentsOf: file) else {
                         return HttpResponse.internalServerError
                     }
+                    
+                    // 获取文件大小
+                    let fileSize = data.count
+                    
                     let mimeType: String = {
                         if ["mp4", "mov", "m4v"].contains(ext) {
                             return "video/mp4"
@@ -42,7 +46,8 @@ class UploadServer {
                     }()
                     let headers = [
                         "Content-Type": mimeType,
-                        "Content-Disposition": "attachment; filename=\"\(file.lastPathComponent)\""
+                        "Content-Disposition": "attachment; filename=\"\(file.lastPathComponent)\"",
+                        "Content-Length": "\(fileSize)" // 添加Content-Length头
                     ]
                     return HttpResponse.raw(200, "OK", headers, { writer in
                         try writer.write(data)
@@ -61,20 +66,39 @@ class UploadServer {
             process.standardError = pipe
             do {
                 try process.run()
-                process.waitUntilExit()
+                process.waitUntilExit() // 等待压缩完成
+                
+                // 检查进程退出状态
+                if process.terminationStatus != 0 {
+                    print("Zip process failed with status: \(process.terminationStatus)")
+                    return HttpResponse.internalServerError
+                }
+                
+                // 获取压缩文件属性
+                let zipAttributes = try fm.attributesOfItem(atPath: tempZip.path)
+                let fileSize = zipAttributes[.size] as? Int64 ?? 0
+                
+                // 读取压缩文件数据
+                guard let zipData = try? Data(contentsOf: tempZip) else {
+                    print("Failed to read zip file data")
+                    return HttpResponse.internalServerError
+                }
+                
+                let headers = [
+                    "Content-Type": "application/zip",
+                    "Content-Disposition": "attachment; filename=\"upload.zip\"",
+                    "Content-Length": "\(fileSize)" // 添加Content-Length头
+                ]
+                
+                // 直接返回数据，不使用流式传输
+                return HttpResponse.raw(200, "OK", headers, { writer in
+                    try writer.write(zipData)
+                })
+                
             } catch {
                 print("Zip process error: \(error)")
-            }
-            guard let zipData = try? Data(contentsOf: tempZip) else {
                 return HttpResponse.internalServerError
             }
-            let headers = [
-                "Content-Type": "application/zip",
-                "Content-Disposition": "attachment; filename=\"upload.zip\""
-            ]
-            return HttpResponse.raw(200, "OK", headers, { writer in
-                try writer.write(zipData)
-            })
         }
 
         // 新增 WebSocket 路由 "/ws"，客户端可以通过该地址长连接实时接收更新通知
@@ -105,32 +129,52 @@ class UploadServer {
 
     // 辅助函数：获取 WiFi 接口的 IP 地址（即 en0 接口）
     func getLocalIPAddress() -> String? {
-        var address: String?
+        var addresses: [String] = []
         var ifaddr: UnsafeMutablePointer<ifaddrs>?
-        if getifaddrs(&ifaddr) == 0 {
-            var ptr = ifaddr
-            while ptr != nil {
-                guard let interface = ptr?.pointee else { break }
-                let addrFamily = interface.ifa_addr.pointee.sa_family
-                if addrFamily == UInt8(AF_INET) {
-                    let name = String(cString: interface.ifa_name)
-                    if name == "en0" { // WiFi 接口一般为 en0
-                        var addr = interface.ifa_addr.pointee
-                        let sockAddrIn = withUnsafePointer(to: &addr) {
-                            $0.withMemoryRebound(to: sockaddr_in.self, capacity: 1) {
-                                $0.pointee
-                            }
-                        }
-                        let ip = String(cString: inet_ntoa(sockAddrIn.sin_addr))
-                        address = ip
-                        break
+        
+        guard getifaddrs(&ifaddr) == 0 else {
+            print("获取网络接口失败")
+            return addresses.first
+        }
+        defer { freeifaddrs(ifaddr) }
+        
+        var ptr = ifaddr
+        while ptr != nil {
+            defer { ptr = ptr?.pointee.ifa_next }
+            
+            guard let interface = ptr?.pointee,
+                  let ifaName = interface.ifa_name,
+                  let ifaAddr = interface.ifa_addr else {
+                continue
+            }
+            let addrFamily = ifaAddr.pointee.sa_family
+            
+            if addrFamily == UInt8(AF_INET) {
+                let name = String(cString: ifaName)
+                
+                if name.hasPrefix("en") || name.hasPrefix("bridge") || name.hasPrefix("wlan") {
+                    var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                    getnameinfo(ifaAddr,
+                              socklen_t(ifaAddr.pointee.sa_len),
+                              &hostname,
+                              socklen_t(hostname.count),
+                              nil,
+                              0,
+                              NI_NUMERICHOST)
+                    let address = String(cString: hostname)
+                    if !address.hasPrefix("127.") && !address.hasPrefix("169.254.") {
+                        addresses.append(address)
                     }
                 }
-                ptr = interface.ifa_next
             }
-            freeifaddrs(ifaddr)
         }
-        return address
+        
+        if let firstAddress = addresses.first {
+            return "\(firstAddress):8080"
+        }
+        
+        print("未找到有效的网络地址")
+        return nil
     }
 
     /// 广播通知所有 WebSocket 连接，当文件更新时通知客户端

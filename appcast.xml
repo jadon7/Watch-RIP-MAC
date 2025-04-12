@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Watch RIP 更新日志</title>
+    <link>https://raw.githubusercontent.com/jadon7/Watch-RIP-MAC/main/appcast.xml</link>
+    <description>Watch RIP 最新版本更新。</description>
+    <language>zh-CN</language>
+    <!-- 新版本 v2.0.1 -->
+    <item>
+      <title>版本 2.0.1</title>
+      <sparkle:releaseNotesLink>
+        https://github.com/jadon7/Watch-RIP-MAC/releases/tag/v2.0
+      </sparkle:releaseNotesLink>
+      <pubDate>Fri, 12 Apr 2024 10:00:00 +0800</pubDate>
+      <enclosure url="https://github.com/jadon7/Watch-RIP-MAC/releases/download/v2.0/watch.rip.2.0.1.zip"
+                 sparkle:version="2.0.1"
+                 sparkle:shortVersionString="2.0.1"
+                 type="application/octet-stream"
+                 length="7844" />
+      <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+    </item>
+    <!-- 你可以在这里添加更多版本条目，最新的在最上面 -->
+    <item>
+      <!-- 替换为你的实际版本号 -->
+      <title>版本 1.0.1</title>
+      <!-- 指向 GitHub Release 页面的链接 -->
+      <sparkle:releaseNotesLink>
+        https://github.com/jadon7/Watch-RIP-MAC/releases/tag/v1.0.1
+      </sparkle:releaseNotesLink>
+      <!-- 发布日期 (RFC 822 格式) -->
+      <pubDate>Sun, 17 Mar 2024 10:00:00 +0800</pubDate>
+      <!-- 应用包的下载链接 (指向 GitHub Release 中的 .zip 文件) -->
+      <!-- IMPORTANT: 替换为实际的下载链接、版本号、文件大小 -->
+      <!-- 如果你对 .zip 文件签名了，可以添加 sparkle:edSignature="YOUR_EDDSA_SIGNATURE" 属性 -->
+      <enclosure url="https://github.com/jadon7/Watch-RIP-MAC/releases/download/v1.0.1/Watch-RIP-1.0.1.zip"
+                 sparkle:version="1.0.1" 
+                 sparkle:shortVersionString="1.0.1"
+                 type="application/octet-stream"
+                 length="1234567" /> 
+      <!-- 最低操作系统要求 (可选) -->
+      <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+    </item>
+  </channel>
+</rss>

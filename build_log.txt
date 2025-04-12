@@ -1,0 +1,964 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project "watch rip.xcodeproj" -scheme "watch rip" -configuration Debug clean build
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  Swifter: https://github.com/httpswift/swifter @ 1.5.0
+  ZIPFoundation: https://github.com/weichsel/ZIPFoundation.git @ 0.9.19
+
+ComputePackagePrebuildTargetDependencyGraph
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+** CLEAN SUCCEEDED **
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (7 targets)
+    Target 'watch rip' in project 'watch rip'
+        ➜ Explicit dependency on target 'Example' in project 'Swifter'
+        ➜ Explicit dependency on target 'Swifter' in project 'Swifter'
+        ➜ Explicit dependency on target 'ZIPFoundation' in project 'ZIPFoundation'
+    Target 'ZIPFoundation' in project 'ZIPFoundation'
+        ➜ Explicit dependency on target 'ZIPFoundation' in project 'ZIPFoundation'
+        ➜ Explicit dependency on target 'ZIPFoundation_ZIPFoundation' in project 'ZIPFoundation'
+    Target 'ZIPFoundation' in project 'ZIPFoundation'
+        ➜ Explicit dependency on target 'ZIPFoundation_ZIPFoundation' in project 'ZIPFoundation'
+    Target 'ZIPFoundation_ZIPFoundation' in project 'ZIPFoundation' (no dependencies)
+    Target 'Swifter' in project 'Swifter'
+        ➜ Explicit dependency on target 'Swifter' in project 'Swifter'
+    Target 'Example' in project 'Swifter'
+        ➜ Explicit dependency on target 'Swifter' in project 'Swifter'
+    Target 'Swifter' in project 'Swifter' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: f5939eebc12339628a1694c4c7be3068
+Build description path: /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/XCBuildData/f5939eebc12339628a1694c4c7be3068.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk /Users/jadon7/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -o /Users/jadon7/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache
+
+CreateBuildDirectory /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    builtin-create-build-directory /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products
+
+CreateBuildDirectory /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    builtin-create-build-directory /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex
+
+CreateBuildDirectory /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    builtin-create-build-directory /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug
+
+CreateBuildDirectory /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/EagerLinkingTBDs/Debug
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    builtin-create-build-directory /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/EagerLinkingTBDs/Debug
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip-1c89a6078027522ee5b532783af68d3f-VFS/all-product-headers.yaml
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip-1c89a6078027522ee5b532783af68d3f-VFS/all-product-headers.yaml
+
+CreateBuildDirectory /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    builtin-create-build-directory /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip.DependencyMetadataFileList (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-all-non-framework-target-headers.hmap (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip.DependencyStaticMetadataFileList (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-DebugDylibPath-normal-arm64.txt (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-DebugDylibPath-normal-arm64.txt
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-project-headers.hmap (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-project-headers.hmap
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-DebugDylibInstallName-normal-arm64.txt (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-DebugDylibInstallName-normal-arm64.txt
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip.hmap (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip.hmap
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/empty-watch\ rip.plist (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/empty-watch\ rip.plist
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-all-target-headers.hmap (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-own-target-headers.hmap (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-generated-files.hmap (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-generated-files.hmap
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip.SwiftConstValuesFileList (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip.SwiftFileList (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip.SwiftFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip_const_extract_protocols.json (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip.LinkFileList (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip.LinkFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip-OutputFileMap.json (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/ZIPFoundation.DependencyMetadataFileList (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/ZIPFoundation.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources/Entitlements.plist (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources/Entitlements.plist
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/ZIPFoundation.modulemap (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/ZIPFoundation.modulemap
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/ZIPFoundation.DependencyStaticMetadataFileList (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/ZIPFoundation.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation_ZIPFoundation.build/ZIPFoundation_ZIPFoundation.DependencyMetadataFileList (in target 'ZIPFoundation_ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation_ZIPFoundation.build/ZIPFoundation_ZIPFoundation.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation_ZIPFoundation.build/ZIPFoundation_ZIPFoundation.DependencyStaticMetadataFileList (in target 'ZIPFoundation_ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation_ZIPFoundation.build/ZIPFoundation_ZIPFoundation.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation_ZIPFoundation.build/empty-ZIPFoundation_ZIPFoundation.plist (in target 'ZIPFoundation_ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation_ZIPFoundation.build/empty-ZIPFoundation_ZIPFoundation.plist
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation_const_extract_protocols.json (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/DerivedSources/resource_bundle_accessor.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/DerivedSources/resource_bundle_accessor.swift
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.LinkFileList (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.LinkFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.SwiftFileList (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.SwiftFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation-OutputFileMap.json (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.SwiftConstValuesFileList (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Swifter.modulemap (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Swifter.modulemap
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/empty-Swifter.plist (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/empty-Swifter.plist
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Swifter.DependencyStaticMetadataFileList (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Swifter.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Swifter.DependencyMetadataFileList (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Swifter.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.SwiftFileList (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.SwiftFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter_const_extract_protocols.json (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.SwiftConstValuesFileList (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.LinkFileList (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.LinkFileList
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/GeneratedModuleMaps/ZIPFoundation.modulemap /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/ZIPFoundation.modulemap (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/ZIPFoundation.modulemap /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/GeneratedModuleMaps
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter-OutputFileMap.json (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example_const_extract_protocols.json (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.SwiftFileList (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.SwiftFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.LinkFileList (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.LinkFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example-OutputFileMap.json (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Example.DependencyStaticMetadataFileList (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Example.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Example.DependencyMetadataFileList (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    write-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Example.DependencyMetadataFileList
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/GeneratedModuleMaps/Swifter.modulemap /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Swifter.modulemap (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Swifter.modulemap /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/GeneratedModuleMaps
+
+MkDir /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents/MacOS (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    /bin/mkdir -p /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents/MacOS
+
+MkDir /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents/Resources (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    /bin/mkdir -p /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents/Resources
+
+MkDir /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents/Frameworks (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    /bin/mkdir -p /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents/Frameworks
+
+MkDir /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    /bin/mkdir -p /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents
+
+MkDir /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    /bin/mkdir -p /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app
+
+MkDir /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle/Contents (in target 'ZIPFoundation_ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    /bin/mkdir -p /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle/Contents
+
+MkDir /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle/Contents/Resources (in target 'ZIPFoundation_ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    /bin/mkdir -p /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle/Contents/Resources
+
+MkDir /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle (in target 'ZIPFoundation_ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    /bin/mkdir -p /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle
+
+SymLink /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Swifter Versions/Current/Swifter (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    /bin/ln -sfh Versions/Current/Swifter /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Swifter
+
+SymLink /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Modules Versions/Current/Modules (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    /bin/ln -sfh Versions/Current/Modules /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Modules
+
+SymLink /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Resources Versions/Current/Resources (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    /bin/ln -sfh Versions/Current/Resources /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Resources
+
+SymLink /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/Current A (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    /bin/ln -sfh A /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/Current
+
+MkDir /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    /bin/mkdir -p /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A
+
+MkDir /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    /bin/mkdir -p /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions
+
+MkDir /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    /bin/mkdir -p /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework
+
+MkDir /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A/Resources (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    /bin/mkdir -p /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A/Resources
+
+ProcessInfoPlistFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle/Contents/Info.plist /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation_ZIPFoundation.build/empty-ZIPFoundation_ZIPFoundation.plist (in target 'ZIPFoundation_ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    builtin-infoPlistUtility /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation_ZIPFoundation.build/empty-ZIPFoundation_ZIPFoundation.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle/Contents/Info.plist
+
+CpResource /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle/Contents/Resources/PrivacyInfo.xcprivacy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Resources/PrivacyInfo.xcprivacy (in target 'ZIPFoundation_ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Resources/PrivacyInfo.xcprivacy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle/Contents/Resources
+
+ProcessInfoPlistFile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A/Resources/Info.plist /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/empty-Swifter.plist (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    builtin-infoPlistUtility /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/empty-Swifter.plist -producttype com.apple.product-type.framework -expandbuildsettings -platform macosx -o /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A/Resources/Info.plist
+
+RegisterExecutionPolicyException /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle (in target 'ZIPFoundation_ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    builtin-RegisterExecutionPolicyException /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle
+
+Touch /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle (in target 'ZIPFoundation_ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    /usr/bin/touch -c /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle
+
+SwiftDriver ZIPFoundation normal arm64 com.apple.xcode.tools.swift.compiler (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name ZIPFoundation -Onone -enforce-exclusivity\=checked @/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -target arm64-apple-macos10.13 -g -module-cache-path /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -suppress-warnings -index-store-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Index.noindex/DataStore -swift-version 5 -I /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j16 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache -output-file-map /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -package-name zipfoundation -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation_const_extract_protocols.json -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/include -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/DerivedSources-normal/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/DerivedSources/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation-Swift.h -working-directory /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+SwiftDriver Swifter normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Swifter -Onone -enforce-exclusivity\=checked @/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -target arm64-apple-macos10.13 -g -module-cache-path /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -suppress-warnings -index-store-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Index.noindex/DataStore -swift-version 5 -I /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j16 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache -output-file-map /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter_const_extract_protocols.json -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/include -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/DerivedSources-normal/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/DerivedSources/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter-Swift.h -working-directory /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+SwiftCompile normal arm64 Compiling\ MimeTypes.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/MimeTypes.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/MimeTypes.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ HttpRouter.swift,\ HttpServer.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/HttpRouter.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/HttpServer.swift (in target 'Swifter' from project 'Swifter')
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/HttpRouter.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/HttpServer.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ Socket+Server.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/Socket+Server.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/Socket+Server.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ String+File.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/String+File.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/String+File.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ String+BASE64.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/String+BASE64.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/String+BASE64.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ Process.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/Process.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/Process.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ HttpServerIO.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/HttpServerIO.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/HttpServerIO.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ DemoServer.swift,\ Errno.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/DemoServer.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/Errno.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/DemoServer.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/Errno.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ Socket+File.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/Socket+File.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/Socket+File.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ HttpRequest.swift,\ HttpResponse.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/HttpRequest.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/HttpResponse.swift (in target 'Swifter' from project 'Swifter')
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/HttpRequest.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/HttpResponse.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ String+SHA1.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/String+SHA1.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/String+SHA1.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ String+Misc.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/String+Misc.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/String+Misc.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ ZIPFoundation (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+EmitSwiftModule normal arm64 (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ Swifter (in target 'Swifter' from project 'Swifter')
+
+EmitSwiftModule normal arm64 (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ URL+ZIP.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/URL+ZIP.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/URL+ZIP.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ Entry.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Entry.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Entry.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ Data+Serialization.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Data+Serialization.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Data+Serialization.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ Date+ZIP.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Date+ZIP.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Date+ZIP.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling String+BASE64.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftDriverJobDiscovery normal arm64 Compiling Socket+File.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 Compiling\ Archive+ZIP64.swift,\ Archive.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+ZIP64.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+ZIP64.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling Process.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 Compiling\ Archive+Writing.swift,\ Archive+WritingDeprecated.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+Writing.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+WritingDeprecated.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+Writing.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+WritingDeprecated.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling URL+ZIP.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftCompile normal arm64 Compiling\ Entry+ZIP64.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Entry+ZIP64.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Entry+ZIP64.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling String+Misc.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 Compiling\ Data+CompressionDeprecated.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Data+CompressionDeprecated.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Data+CompressionDeprecated.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling MimeTypes.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 Compiling\ Archive+Deprecated.swift,\ Archive+Helpers.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+Deprecated.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+Helpers.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+Deprecated.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+Helpers.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling Socket+Server.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 Compiling\ FileManager+ZIPDeprecated.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/FileManager+ZIPDeprecated.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/FileManager+ZIPDeprecated.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for Swifter (in target 'Swifter' from project 'Swifter')
+
+SwiftDriver\ Compilation\ Requirements Swifter normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Swifter -Onone -enforce-exclusivity\=checked @/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -target arm64-apple-macos10.13 -g -module-cache-path /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -suppress-warnings -index-store-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Index.noindex/DataStore -swift-version 5 -I /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j16 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache -output-file-map /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter_const_extract_protocols.json -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/include -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/DerivedSources-normal/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/DerivedSources/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter-Swift.h -working-directory /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Compiling String+File.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 Compiling\ Entry+Serialization.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Entry+Serialization.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Entry+Serialization.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ Archive+MemoryFile.swift,\ Archive+Progress.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+MemoryFile.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+Progress.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+MemoryFile.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+Progress.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling DemoServer.swift, Errno.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftMergeGeneratedHeaders /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/GeneratedModuleMaps/Swifter-Swift.h /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter-Swift.h (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    builtin-swiftHeaderTool -arch arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter-Swift.h -o /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/GeneratedModuleMaps/Swifter-Swift.h
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for ZIPFoundation (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A/Modules/Swifter.swiftmodule/arm64-apple-macos.swiftmodule /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.swiftmodule (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.swiftmodule /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A/Modules/Swifter.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A/Modules/Swifter.swiftmodule/arm64-apple-macos.swiftdoc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.swiftdoc (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.swiftdoc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A/Modules/Swifter.swiftmodule/arm64-apple-macos.swiftdoc
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A/Modules/Swifter.swiftmodule/arm64-apple-macos.abi.json /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.abi.json (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.abi.json /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A/Modules/Swifter.swiftmodule/arm64-apple-macos.abi.json
+
+SwiftDriverJobDiscovery normal arm64 Compiling HttpServerIO.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftDriver\ Compilation\ Requirements ZIPFoundation normal arm64 com.apple.xcode.tools.swift.compiler (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name ZIPFoundation -Onone -enforce-exclusivity\=checked @/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -target arm64-apple-macos10.13 -g -module-cache-path /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -suppress-warnings -index-store-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Index.noindex/DataStore -swift-version 5 -I /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j16 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache -output-file-map /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -package-name zipfoundation -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation_const_extract_protocols.json -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/include -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/DerivedSources-normal/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/DerivedSources/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation-Swift.h -working-directory /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A/Modules/Swifter.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.swiftsourceinfo (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.swiftsourceinfo /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A/Modules/Swifter.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+SwiftCompile normal arm64 Compiling\ FileManager+ZIP.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/FileManager+ZIP.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/FileManager+ZIP.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ Data+Compression.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Data+Compression.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Data+Compression.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling String+SHA1.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 Compiling\ Archive+Reading.swift,\ Archive+ReadingDeprecated.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+Reading.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+ReadingDeprecated.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+Reading.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+ReadingDeprecated.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftMergeGeneratedHeaders /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/GeneratedModuleMaps/ZIPFoundation-Swift.h /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation-Swift.h (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    builtin-swiftHeaderTool -arch arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation-Swift.h -o /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/GeneratedModuleMaps/ZIPFoundation-Swift.h
+
+SwiftDriverJobDiscovery normal arm64 Compiling HttpRouter.swift, HttpServer.swift (in target 'Swifter' from project 'Swifter')
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation.swiftmodule/arm64-apple-macos.swiftmodule /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.swiftmodule (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.swiftmodule /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation.swiftmodule/arm64-apple-macos.swiftdoc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.swiftdoc (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.swiftdoc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation.swiftmodule/arm64-apple-macos.swiftdoc
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation.swiftmodule/arm64-apple-macos.abi.json /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.abi.json (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.abi.json /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation.swiftmodule/arm64-apple-macos.abi.json
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.swiftsourceinfo (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.swiftsourceinfo /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+SwiftCompile normal arm64 Compiling\ resource_bundle_accessor.swift,\ Archive+BackingConfiguration.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/DerivedSources/resource_bundle_accessor.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+BackingConfiguration.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/DerivedSources/resource_bundle_accessor.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+BackingConfiguration.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ WebSockets.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/WebSockets.swift (in target 'Swifter' from project 'Swifter')
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/WebSockets.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling Data+CompressionDeprecated.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftCompile normal arm64 Compiling\ Socket.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/Socket.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/Socket.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ Files.swift,\ HttpParser.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/Files.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/HttpParser.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/Files.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/HttpParser.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling Entry.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftDriverJobDiscovery normal arm64 Compiling HttpRequest.swift, HttpResponse.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftCompile normal arm64 Compiling\ Scopes.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/Scopes.swift (in target 'Swifter' from project 'Swifter')
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/XCode/Sources/Scopes.swift (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling FileManager+ZIPDeprecated.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftDriverJobDiscovery normal arm64 Compiling Data+Serialization.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftDriver Example normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Example -Onone -enforce-exclusivity\=checked @/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -target arm64-apple-macos10.13 -g -module-cache-path /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -suppress-warnings -index-store-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Index.noindex/DataStore -swift-version 5 -I /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j16 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache -output-file-map /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example_const_extract_protocols.json -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/include -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/DerivedSources-normal/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/DerivedSources/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ Example (in target 'Example' from project 'Swifter')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/Example/main.swift (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftCompile normal arm64 Compiling\ main.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/Example/main.swift (in target 'Example' from project 'Swifter')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter/Example/main.swift (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling Date+ZIP.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftDriverJobDiscovery normal arm64 Compiling Entry+ZIP64.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftDriverJobDiscovery normal arm64 Compiling Entry+Serialization.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftDriverJobDiscovery normal arm64 Compiling Archive+MemoryFile.swift, Archive+Progress.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftDriverJobDiscovery normal arm64 Compiling Archive+Reading.swift, Archive+ReadingDeprecated.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftDriverJobDiscovery normal arm64 Compiling resource_bundle_accessor.swift, Archive+BackingConfiguration.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftDriverJobDiscovery normal arm64 Compiling Archive+Deprecated.swift, Archive+Helpers.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftDriverJobDiscovery normal arm64 Compiling Data+Compression.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for Example (in target 'Example' from project 'Swifter')
+
+SwiftDriver\ Compilation\ Requirements Example normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Example -Onone -enforce-exclusivity\=checked @/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -target arm64-apple-macos10.13 -g -module-cache-path /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -suppress-warnings -index-store-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Index.noindex/DataStore -swift-version 5 -I /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j16 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache -output-file-map /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example_const_extract_protocols.json -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/include -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/DerivedSources-normal/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/DerivedSources/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/Example.swiftmodule/arm64-apple-macos.abi.json /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.abi.json (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.abi.json /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/Example.swiftmodule/arm64-apple-macos.abi.json
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/Example.swiftmodule/arm64-apple-macos.swiftdoc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.swiftdoc (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.swiftdoc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/Example.swiftmodule/arm64-apple-macos.swiftdoc
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/Example.swiftmodule/arm64-apple-macos.swiftmodule /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.swiftmodule (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.swiftmodule /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/Example.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/Example.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.swiftsourceinfo (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.swiftsourceinfo /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/Example.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+ProcessProductPackaging /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/watch_rip.entitlements /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip.app.xcent (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    
+    Entitlements:
+    
+    {
+    "com.apple.security.get-task-allow" = 1;
+}
+    
+    builtin-productPackagingUtility /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/watch_rip.entitlements -entitlements -format xml -o /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip.app.xcent
+
+ProcessProductPackagingDER /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip.app.xcent /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip.app.xcent.der (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    /usr/bin/derq query -f xml -i /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip.app.xcent -o /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip.app.xcent.der --raw
+
+MkDir /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/assetcatalog_output/thinned (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    /bin/mkdir -p /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/assetcatalog_output/thinned
+
+MkDir /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/assetcatalog_output/unthinned (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    /bin/mkdir -p /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/assetcatalog_output/unthinned
+
+GenerateAssetSymbols /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/Assets.xcassets /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/Preview\ Content/Preview\ Assets.xcassets (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/Assets.xcassets /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/Preview\ Content/Preview\ Assets.xcassets --compile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents/Resources --output-format human-readable-text --notices --warnings --export-dependency-info /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/assetcatalog_dependencies --output-partial-info-plist /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/assetcatalog_generated_info.plist --app-icon AppIcon --accent-color AccentColor --enable-on-demand-resources NO --development-region en --target-device mac --minimum-deployment-target 11.0 --platform macosx --bundle-identifier com.wenkui.watch-rip --generate-swift-asset-symbols /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources/GeneratedAssetSymbols.swift --generate-objc-asset-symbols /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources/GeneratedAssetSymbols.h --generate-asset-symbol-index /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/* com.apple.actool.compilation-results */
+/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch rip.build/Debug/watch rip.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch rip.build/Debug/watch rip.build/DerivedSources/GeneratedAssetSymbols.h
+/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch rip.build/Debug/watch rip.build/DerivedSources/GeneratedAssetSymbols.swift
+
+
+CompileAssetCatalogVariant thinned /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents/Resources /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/Assets.xcassets /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/Preview\ Content/Preview\ Assets.xcassets (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/Assets.xcassets /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/Preview\ Content/Preview\ Assets.xcassets --compile /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/assetcatalog_output/thinned --output-format human-readable-text --notices --warnings --export-dependency-info /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/assetcatalog_dependencies_thinned --output-partial-info-plist /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/assetcatalog_generated_info.plist_thinned --app-icon AppIcon --accent-color AccentColor --enable-on-demand-resources NO --development-region en --target-device mac --minimum-deployment-target 11.0 --platform macosx
+
+SwiftDriverJobDiscovery normal arm64 Compiling Archive+Writing.swift, Archive+WritingDeprecated.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftDriver watch\ rip normal arm64 com.apple.xcode.tools.swift.compiler (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name watch_rip -Onone -enforce-exclusivity\=checked @/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -target arm64-apple-macos11.0 -g -module-cache-path /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Index.noindex/DataStore -swift-version 5 -I /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -emit-localized-strings -emit-localized-strings-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64 -c -j16 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache -output-file-map /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch_rip.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip_const_extract_protocols.json -Xcc -iquote -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-generated-files.hmap -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-own-target-headers.hmap -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip-1c89a6078027522ee5b532783af68d3f-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-project-headers.hmap -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/include -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources-normal/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch_rip-Swift.h -working-directory /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Compiling main.swift (in target 'Example' from project 'Swifter')
+
+SwiftDriver\ Compilation Example normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Example -Onone -enforce-exclusivity\=checked @/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -target arm64-apple-macos10.13 -g -module-cache-path /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -suppress-warnings -index-store-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Index.noindex/DataStore -swift-version 5 -I /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j16 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache -output-file-map /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example_const_extract_protocols.json -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/include -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/DerivedSources-normal/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/DerivedSources/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ watch_rip (in target 'watch rip' from project 'watch rip')
+
+EmitSwiftModule normal arm64 (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    
+
+SwiftCompile normal arm64 Compiling\ UploadServer.swift /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/UploadServer.swift (in target 'watch rip' from project 'watch rip')
+
+SwiftCompile normal arm64 /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/UploadServer.swift (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    
+
+SwiftCompile normal arm64 Compiling\ imageCropperView.swift /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/imageCropperView.swift (in target 'watch rip' from project 'watch rip')
+
+SwiftCompile normal arm64 /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/imageCropperView.swift (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    
+
+SwiftCompile normal arm64 Compiling\ ContentView.swift /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/ContentView.swift (in target 'watch rip' from project 'watch rip')
+SwiftCompile normal arm64 /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/ContentView.swift (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    
+
+SwiftCompile normal arm64 Compiling\ StatusMenuController.swift /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/StatusMenuController.swift (in target 'watch rip' from project 'watch rip')
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/UploadServer.swift /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/imageCropperView.swift -primary-file /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/StatusMenuController.swift /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/VideoCropperView.swift /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/watch_ripApp.swift /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/ContentView.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources/GeneratedAssetSymbols.swift -emit-dependencies-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/StatusMenuController.d -emit-const-values-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/StatusMenuController.swiftconstvalues -emit-reference-dependencies-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/StatusMenuController.swiftdeps -serialize-diagnostics-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/StatusMenuController.dia -emit-localized-strings -emit-localized-strings-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64 -target arm64-apple-macos11.0 -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -I /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -no-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=4 -module-cache-path /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -profile-generate -profile-coverage-mapping -swift-version 5 -enforce-exclusivity\=checked -Onone -D DEBUG -serialize-debugging-options -const-gather-protocols-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip_const_extract_protocols.json -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac -resource-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift -enable-anonymous-context-mangled-names -file-compilation-dir /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac -Xcc -ivfsstatcache -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/swift-overrides.hmap -Xcc -iquote -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-generated-files.hmap -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-own-target-headers.hmap -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip-1c89a6078027522ee5b532783af68d3f-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-project-headers.hmap -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/include -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources-normal/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources -Xcc -DDEBUG\=1 -module-name watch_rip -frontend-parseable-output -disable-clang-spi -target-sdk-version 15.4 -target-sdk-name macosx15.4 -external-plugin-path /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -external-plugin-path /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/local/lib/swift/host/plugins\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/local/lib/swift/host/plugins -o /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/StatusMenuController.o -index-unit-output-path /watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/StatusMenuController.o -index-store-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Index.noindex/DataStore -index-system-modules
+
+SwiftCompile normal arm64 /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/StatusMenuController.swift (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    
+/Users/jadon7/Documents/SynologyDrive/code/watch rip mac/watch rip/StatusMenuController.swift:956:38: error: value of type 'NSMenu' has no member 'isVisible'
+            if self.statusItem.menu?.isVisible == false {
+               ~~~~~~~~~~~~~~~~~~~~~ ^~~~~~~~~
+
+SwiftCompile normal arm64 Compiling\ watch_ripApp.swift /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/watch_ripApp.swift (in target 'watch rip' from project 'watch rip')
+
+SwiftCompile normal arm64 /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/watch_ripApp.swift (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    
+
+SwiftCompile normal arm64 Compiling\ VideoCropperView.swift /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/VideoCropperView.swift (in target 'watch rip' from project 'watch rip')
+
+SwiftCompile normal arm64 /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/VideoCropperView.swift (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    
+
+SwiftCompile normal arm64 Compiling\ GeneratedAssetSymbols.swift /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'watch rip' from project 'watch rip')
+
+SwiftCompile normal arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling Socket.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftDriverJobDiscovery normal arm64 Compiling FileManager+ZIP.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftDriverJobDiscovery normal arm64 Compiling Files.swift, HttpParser.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftDriverJobDiscovery normal arm64 Compiling Archive+ZIP64.swift, Archive.swift (in target 'ZIPFoundation' from project 'ZIPFoundation')
+
+SwiftDriver\ Compilation ZIPFoundation normal arm64 com.apple.xcode.tools.swift.compiler (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name ZIPFoundation -Onone -enforce-exclusivity\=checked @/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -target arm64-apple-macos10.13 -g -module-cache-path /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -suppress-warnings -index-store-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Index.noindex/DataStore -swift-version 5 -I /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j16 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache -output-file-map /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -package-name zipfoundation -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation_const_extract_protocols.json -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/include -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/DerivedSources-normal/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/DerivedSources/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation-Swift.h -working-directory /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+Ld /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation.o normal (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos10.13 -r -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -O0 -w -L/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -L/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.LinkFileList -nostdlib -Xlinker -object_path_lto -Xlinker /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.swiftmodule -o /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation.o
+
+ExtractAppIntentsMetadata (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name ZIPFoundation --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk --xcode-version 16E140 --platform-family macOS --deployment-target 10.13 --bundle-identifier zipfoundation.ZIPFoundation --output /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation.appintents --target-triple arm64-apple-macos10.13 --binary-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation.o --dependency-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation_dependency_info.dat --stringsdata-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.SwiftFileList --metadata-file-list /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/ZIPFoundation.DependencyMetadataFileList --static-metadata-file-list /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/ZIPFoundation.DependencyStaticMetadataFileList --swift-const-vals-list /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation.build/Objects-normal/arm64/ZIPFoundation.SwiftConstValuesFileList --force --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2025-04-09 09:06:43.581 appintentsmetadataprocessor[57512:3392577] Starting appintentsmetadataprocessor export
+2025-04-09 09:06:43.611 appintentsmetadataprocessor[57512:3392577] Extracted no relevant App Intents symbols, skipping writing output
+
+RegisterExecutionPolicyException /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation.o (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/ZIPFoundation
+    builtin-RegisterExecutionPolicyException /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation.o
+
+SwiftDriverJobDiscovery normal arm64 Compiling WebSockets.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftDriverJobDiscovery normal arm64 Compiling Scopes.swift (in target 'Swifter' from project 'Swifter')
+
+SwiftDriver\ Compilation Swifter normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Swifter -Onone -enforce-exclusivity\=checked @/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -target arm64-apple-macos10.13 -g -module-cache-path /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -suppress-warnings -index-store-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Index.noindex/DataStore -swift-version 5 -I /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j16 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache -output-file-map /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter_const_extract_protocols.json -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/include -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/DerivedSources-normal/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/DerivedSources/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter-Swift.h -working-directory /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+Ld /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A/Swifter normal (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos10.13 -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -O0 -w -L/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -L/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.LinkFileList -install_name @rpath/Swifter.framework/Versions/A/Swifter -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -object_path_lto -Xlinker /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter_dependency_info.dat -fobjc-link-runtime -fprofile-instr-generate -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.swiftmodule -o /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A/Swifter
+
+SwiftDriverJobDiscovery normal arm64 Compiling watch_ripApp.swift (in target 'watch rip' from project 'watch rip')
+
+ExtractAppIntentsMetadata (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name Swifter --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk --xcode-version 16E140 --platform-family macOS --deployment-target 10.13 --bundle-identifier swifter.Swifter --output /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A/Resources --target-triple arm64-apple-macos10.13 --binary-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework/Versions/A/Swifter --dependency-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter_dependency_info.dat --stringsdata-file /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.SwiftFileList --metadata-file-list /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Swifter.DependencyMetadataFileList --static-metadata-file-list /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Swifter.DependencyStaticMetadataFileList --swift-const-vals-list /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Swifter.build/Objects-normal/arm64/Swifter.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2025-04-09 09:06:43.888 appintentsmetadataprocessor[57518:3392636] Starting appintentsmetadataprocessor export
+2025-04-09 09:06:43.890 appintentsmetadataprocessor[57518:3392636] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+SwiftDriverJobDiscovery normal arm64 Compiling GeneratedAssetSymbols.swift (in target 'watch rip' from project 'watch rip')
+
+RegisterExecutionPolicyException /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    builtin-RegisterExecutionPolicyException /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework
+
+Touch /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework (in target 'Swifter' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    /usr/bin/touch -c /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework
+
+Ld /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/Example normal (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -O0 -w -L/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -L/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks -F/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.LinkFileList -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks -Xlinker -object_path_lto -Xlinker /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example_dependency_info.dat -fobjc-link-runtime -fprofile-instr-generate -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/Swifter.build/Debug/Example.build/Objects-normal/arm64/Example.swiftmodule -Wl,-no_warn_duplicate_libraries -framework Swifter -o /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/Example
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for watch_rip (in target 'watch rip' from project 'watch rip')
+
+SwiftDriver\ Compilation\ Requirements watch\ rip normal arm64 com.apple.xcode.tools.swift.compiler (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name watch_rip -Onone -enforce-exclusivity\=checked @/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -target arm64-apple-macos11.0 -g -module-cache-path /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Index.noindex/DataStore -swift-version 5 -I /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks -F /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -emit-localized-strings -emit-localized-strings-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64 -c -j16 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache -output-file-map /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch_rip.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/jadon7/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip_const_extract_protocols.json -Xcc -iquote -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-generated-files.hmap -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-own-target-headers.hmap -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip-1c89a6078027522ee5b532783af68d3f-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/watch\ rip-project-headers.hmap -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/include -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources-normal/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources/arm64 -Xcc -I/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch_rip-Swift.h -working-directory /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac -experimental-emit-module-separately -disable-cmo
+
+SwiftMergeGeneratedHeaders /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources/watch_rip-Swift.h /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch_rip-Swift.h (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    builtin-swiftHeaderTool -arch arm64 /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch_rip-Swift.h -o /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/DerivedSources/watch_rip-Swift.h
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch_rip.swiftmodule/arm64-apple-macos.swiftmodule /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch_rip.swiftmodule (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch_rip.swiftmodule /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch_rip.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch_rip.swiftmodule/arm64-apple-macos.swiftdoc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch_rip.swiftdoc (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch_rip.swiftdoc /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch_rip.swiftmodule/arm64-apple-macos.swiftdoc
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch_rip.swiftmodule/arm64-apple-macos.abi.json /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch_rip.abi.json (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch_rip.abi.json /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch_rip.swiftmodule/arm64-apple-macos.abi.json
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch_rip.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch_rip.swiftsourceinfo (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch_rip.swiftsourceinfo /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch_rip.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+SwiftDriverJobDiscovery normal arm64 Compiling UploadServer.swift (in target 'watch rip' from project 'watch rip')
+
+SwiftDriverJobDiscovery normal arm64 Compiling imageCropperView.swift (in target 'watch rip' from project 'watch rip')
+
+RegisterExecutionPolicyException /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/Example (in target 'Example' from project 'Swifter')
+    cd /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/SourcePackages/checkouts/swifter
+    builtin-RegisterExecutionPolicyException /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/Example
+
+ValidateDevelopmentAssets /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    builtin-validate-development-assets --validate YES_ERROR /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac/watch\ rip/Preview\ Content
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents/Resources/ZIPFoundation_ZIPFoundation.bundle /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents/Resources
+
+Ld /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents/MacOS/__preview.dylib normal (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos11.0 -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -O0 -L/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -F/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks -F/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks -F/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug -install_name @rpath/watch\ rip.debug.dylib -dead_strip -rdynamic -Xlinker -no_deduplicate -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Intermediates.noindex/watch\ rip.build/Debug/watch\ rip.build/Objects-normal/arm64/watch\ rip_dependency_info.dat -Xlinker -no_adhoc_codesign -o /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents/MacOS/__preview.dylib
+
+Copy /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents/Frameworks/Swifter.framework /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -remove-static-executable /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/PackageFrameworks/Swifter.framework /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents/Frameworks
+
+CodeSign /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents/Frameworks/Swifter.framework/Versions/A (in target 'watch rip' from project 'watch rip')
+    cd /Users/jadon7/Documents/SynologyDrive/code/watch\ rip\ mac
+    
+    Signing Identity:     "Apple Development: siaoj7@gmail.com (MN4X43HN59)"
+    
+    /usr/bin/codesign --force --sign 67205BE47A9F6B850A8D77C1BB3F511263449152 -o runtime --timestamp\=none --preserve-metadata\=identifier,entitlements,flags --generate-entitlement-der /Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch\ rip.app/Contents/Frameworks/Swifter.framework/Versions/A
+/Users/jadon7/Library/Developer/Xcode/DerivedData/watch_rip-fhlcnjvvpxfnyxfnhnljzygrbuth/Build/Products/Debug/watch rip.app/Contents/Frameworks/Swifter.framework/Versions/A: replacing existing signature
+
+SwiftDriverJobDiscovery normal arm64 Compiling VideoCropperView.swift (in target 'watch rip' from project 'watch rip')
+
