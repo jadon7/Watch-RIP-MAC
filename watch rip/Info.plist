@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <!-- 设置应用名称 -->
+    <key>CFBundleName</key>
+    <string>Watch RIP</string>
+    <key>CFBundleDisplayName</key>
+    <string>Watch RIP</string>
+    
     <!-- 设置为代理应用，隐藏 Dock 图标 -->
     <key>LSUIElement</key>
     <true/>

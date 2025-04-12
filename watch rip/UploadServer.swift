@@ -33,6 +33,10 @@ class UploadServer {
                     guard let data = try? Data(contentsOf: file) else {
                         return HttpResponse.internalServerError
                     }
+                    
+                    // 获取文件大小
+                    let fileSize = data.count
+                    
                     let mimeType: String = {
                         if ["mp4", "mov", "m4v"].contains(ext) {
                             return "video/mp4"
@@ -42,7 +46,8 @@ class UploadServer {
                     }()
                     let headers = [
                         "Content-Type": mimeType,
-                        "Content-Disposition": "attachment; filename=\"\(file.lastPathComponent)\""
+                        "Content-Disposition": "attachment; filename=\"\(file.lastPathComponent)\"",
+                        "Content-Length": "\(fileSize)" // 添加Content-Length头
                     ]
                     return HttpResponse.raw(200, "OK", headers, { writer in
                         try writer.write(data)
@@ -61,20 +66,39 @@ class UploadServer {
             process.standardError = pipe
             do {
                 try process.run()
-                process.waitUntilExit()
+                process.waitUntilExit() // 等待压缩完成
+                
+                // 检查进程退出状态
+                if process.terminationStatus != 0 {
+                    print("Zip process failed with status: \(process.terminationStatus)")
+                    return HttpResponse.internalServerError
+                }
+                
+                // 获取压缩文件属性
+                let zipAttributes = try fm.attributesOfItem(atPath: tempZip.path)
+                let fileSize = zipAttributes[.size] as? Int64 ?? 0
+                
+                // 读取压缩文件数据
+                guard let zipData = try? Data(contentsOf: tempZip) else {
+                    print("Failed to read zip file data")
+                    return HttpResponse.internalServerError
+                }
+                
+                let headers = [
+                    "Content-Type": "application/zip",
+                    "Content-Disposition": "attachment; filename=\"upload.zip\"",
+                    "Content-Length": "\(fileSize)" // 添加Content-Length头
+                ]
+                
+                // 直接返回数据，不使用流式传输
+                return HttpResponse.raw(200, "OK", headers, { writer in
+                    try writer.write(zipData)
+                })
+                
             } catch {
                 print("Zip process error: \(error)")
-            }
-            guard let zipData = try? Data(contentsOf: tempZip) else {
                 return HttpResponse.internalServerError
             }
-            let headers = [
-                "Content-Type": "application/zip",
-                "Content-Disposition": "attachment; filename=\"upload.zip\""
-            ]
-            return HttpResponse.raw(200, "OK", headers, { writer in
-                try writer.write(zipData)
-            })
         }
 
         // 新增 WebSocket 路由 "/ws"，客户端可以通过该地址长连接实时接收更新通知
