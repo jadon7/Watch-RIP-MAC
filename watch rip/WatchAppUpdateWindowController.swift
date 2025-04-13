@@ -117,7 +117,19 @@ class WatchAppUpdateWindowController: NSWindowController {
             }
         )
         
-        updateWindow?.contentView = NSHostingView(rootView: contentView)
+        let hostingView = NSHostingView(rootView: contentView)
+        // 先设置 contentView，但不立即调整大小
+        updateWindow?.contentView = hostingView 
+        
+        // 使用 NSAnimationContext 来执行带动画的尺寸调整
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = 0.3 // 设置动画时长，例如 0.3 秒
+            context.allowsImplicitAnimation = true // 允许隐式动画
+            
+            // 在动画组内通过 animator 调整尺寸
+            self.updateWindow?.animator().setFrame(NSRect(origin: self.updateWindow?.frame.origin ?? .zero, size: hostingView.fittingSize), display: true)
+            
+        }, completionHandler: nil)
     }
     
     // 公开方法：更新窗口状态

@@ -117,24 +117,24 @@ struct WatchAppUpdateView: View {
     }
     
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 15) {
             // 图标
             ZStack {
                 Circle()
                     .foregroundColor(Color.blue.opacity(0.1))
-                    .frame(width: 90, height: 90)
+                    .frame(width: 80, height: 80)
                 
                 Image("WatcgICON")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 50, height: 50)
+                    .frame(width: 45, height: 45)
                     .foregroundColor(.blue)
             }
-            .padding(.top, 20)
+            .padding(.top, 15)
             
             // 状态文本
             Text(statusText)
-                .font(.headline)
+                .font(.title)
                 .multilineTextAlignment(.center)
             
             // 描述文本
@@ -147,30 +147,32 @@ struct WatchAppUpdateView: View {
             // 进度指示器(条件显示)
             Group {
                 if showProgressBar {
-                    VStack(spacing: 5) {
+                    VStack(spacing: 3) {
                         ProgressView(value: progress)
                             .progressViewStyle(LinearProgressViewStyle())
-                            .frame(maxWidth: 300)
+                            .frame(maxWidth: 280)
                         
                         Text(progressText)
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
+                    .padding(.vertical, 5)
                 } else if showSpinner {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
-                        .scaleEffect(1.5)
-                        .padding()
+                        .scaleEffect(1.2)
+                        .padding(.vertical, 10)
                 }
             }
             
             // 按钮区域
-            HStack(spacing: 15) {
+            HStack(spacing: 12) {
                 if showCancelButton {
                     Button("取消") {
                         onCancel()
                     }
                     .keyboardShortcut(.cancelAction)
+                    .padding(.horizontal, 4)
                 }
                 
                 if showInstallButton {
@@ -178,7 +180,6 @@ struct WatchAppUpdateView: View {
                         onInstall()
                     }
                     .keyboardShortcut(.defaultAction)
-                    // 使用兼容各版本macOS的样式
                     .background(Color.accentColor)
                     .foregroundColor(.white)
                     .cornerRadius(4)
@@ -190,18 +191,17 @@ struct WatchAppUpdateView: View {
                         onCancel()
                     }
                     .keyboardShortcut(.defaultAction)
-                    // 使用兼容各版本macOS的样式
                     .background(Color.accentColor)
                     .foregroundColor(.white)
                     .cornerRadius(4)
                     .padding(.horizontal, 4)
                 }
             }
-            .padding(.bottom, 20)
+            .padding(.bottom, 15)
             
             Spacer()
         }
-        .frame(minWidth: 450, minHeight: 300)
-        .padding()
+        .frame(minWidth: 420)
+        .padding(5)
     }
 } 
