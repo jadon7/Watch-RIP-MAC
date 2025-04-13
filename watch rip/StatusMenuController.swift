@@ -1164,4 +1164,12 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
             updateCurrentFile("Rive复制失败")
         }
     }
+    
+    // 更新菜单中的当前文件名
+    private func updateCurrentFile(_ filename: String) {
+        currentUploadedFile = filename
+        if let menu = statusItem.menu {
+            menu.item(at: 3)?.title = "当前文件：\(filename)"
+        }
+    }
 } 

@@ -1,6 +1,9 @@
 import Foundation
 import Swifter
 import Darwin  // 用于 getifaddrs 和 inet_ntoa 等
+import AVFoundation
+import CoreImage // 导入 CoreImage 框架
+import AppKit    // 导入 AppKit 以使用 NSBitmapImageRep
 
 class UploadServer {
     static let shared = UploadServer()
@@ -181,6 +184,111 @@ class UploadServer {
     func notifyClients() {
         for session in webSocketSessions {
             session.writeText("update")
+        }
+    }
+
+    // MARK: - 文件处理辅助方法
+    
+    // 压缩目录
+    func zipDirectory(at sourceURL: URL, to destinationURL: URL, completion: @escaping (Bool) -> Void) {
+        let process = Process()
+        process.currentDirectoryURL = sourceURL.deletingLastPathComponent()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/zip")
+        // 使用 -FS 选项来确保文件系统同步，避免某些情况下 zip 文件不完整
+        process.arguments = ["-FS", "-r", destinationURL.path, sourceURL.lastPathComponent]
+        
+        DispatchQueue.global(qos: .background).async {
+            let pipe = Pipe()
+            process.standardOutput = pipe
+            process.standardError = pipe
+            
+            do {
+                try process.run()
+                process.waitUntilExit() // 等待压缩完成
+                
+                let status = process.terminationStatus
+                
+                // 读取输出和错误
+                let outputData = pipe.fileHandleForReading.readDataToEndOfFile()
+                let output = String(data: outputData, encoding: .utf8) ?? ""
+                
+                print("Zip process for \(sourceURL.lastPathComponent) exited with status: \(status)\nOutput:\n\(output)")
+                
+                DispatchQueue.main.async {
+                    completion(status == 0)
+                }
+            } catch {
+                print("Zip process error: \(error)")
+                DispatchQueue.main.async {
+                    completion(false)
+                }
+            }
+        }
+    }
+
+    // 转换 HEIC 到 JPG
+    func convertHEICToJPG(sourceURL: URL, destinationURL: URL, completion: @escaping (Bool) -> Void) {
+        guard let sourceImage = CIImage(contentsOf: sourceURL) else {
+            print("无法加载 HEIC 图片: \(sourceURL.lastPathComponent)")
+            completion(false)
+            return
+        }
+        
+        let context = CIContext()
+        
+        // 1. 从 CIImage 创建 CGImage
+        guard let cgImage = context.createCGImage(sourceImage, from: sourceImage.extent) else {
+            print("无法从 CIImage 创建 CGImage")
+            completion(false)
+            return
+        }
+        
+        // 2. 从 CGImage 创建 NSBitmapImageRep
+        let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
+        
+        // 3. 获取 JPEG 数据并设置压缩质量
+        guard let jpegData = bitmapRep.representation(using: .jpeg, properties: [.compressionFactor: 0.8]) else {
+            print("无法生成 JPEG 数据")
+            completion(false)
+            return
+        }
+        
+        // 4. 将 JPEG 数据写入文件
+        do {
+            try jpegData.write(to: destinationURL)
+            completion(true)
+        } catch {
+            print("写入 JPG 文件失败: \(error)")
+            completion(false)
+        }
+    }
+
+    // 裁剪视频并转换为 MP4
+    func cropVideoToMP4(sourceURL: URL, destinationURL: URL, duration: TimeInterval, completion: @escaping (Bool) -> Void) {
+        let asset = AVAsset(url: sourceURL)
+        let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)
+        exportSession?.outputURL = destinationURL
+        exportSession?.outputFileType = .mp4
+        
+        let startTime = CMTime.zero
+        let endTime = CMTime(seconds: min(duration, asset.duration.seconds), preferredTimescale: 600)
+        exportSession?.timeRange = CMTimeRange(start: startTime, end: endTime)
+        
+        exportSession?.exportAsynchronously { 
+            DispatchQueue.main.async {
+                switch exportSession?.status {
+                case .completed:
+                    completion(true)
+                case .failed:
+                    print("视频导出失败: \(exportSession?.error?.localizedDescription ?? "未知错误")")
+                    completion(false)
+                case .cancelled:
+                    print("视频导出已取消")
+                    completion(false)
+                default:
+                    completion(false)
+                }
+            }
         }
     }
 } 
