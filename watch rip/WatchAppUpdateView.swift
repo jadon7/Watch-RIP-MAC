@@ -168,33 +168,44 @@ struct WatchAppUpdateView: View {
             // 按钮区域
             HStack(spacing: 12) {
                 if showCancelButton {
-                    Button("取消") {
+                    Button(action: {
                         onCancel()
+                    }) {
+                        Text("取消")
+                            .padding(.vertical, 6)
+                            .padding(.horizontal, 16)
                     }
                     .keyboardShortcut(.cancelAction)
-                    .padding(.horizontal, 4)
                 }
                 
                 if showInstallButton {
-                    Button("安装") {
+                    Button(action: {
                         onInstall()
+                    }) {
+                        Text("安装")
+                            .padding(.vertical, 6)
+                            .padding(.horizontal, 16)
+                            .frame(minWidth: 60)
                     }
                     .keyboardShortcut(.defaultAction)
                     .background(Color.accentColor)
                     .foregroundColor(.white)
-                    .cornerRadius(4)
-                    .padding(.horizontal, 4)
+                    .cornerRadius(6)
                 }
                 
                 if showDoneButton {
-                    Button("完成") {
+                    Button(action: {
                         onCancel()
+                    }) {
+                        Text("完成")
+                            .padding(.vertical, 6)
+                            .padding(.horizontal, 16)
+                            .frame(minWidth: 60)
                     }
                     .keyboardShortcut(.defaultAction)
                     .background(Color.accentColor)
                     .foregroundColor(.white)
-                    .cornerRadius(4)
-                    .padding(.horizontal, 4)
+                    .cornerRadius(6)
                 }
             }
             .padding(.bottom, 15)
