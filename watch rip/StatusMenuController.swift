@@ -4,7 +4,7 @@ import UniformTypeIdentifiers
 import AVFoundation
 import Sparkle
 
-class StatusMenuController: NSObject, NSMenuDelegate {
+class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate {
     private var statusItem: NSStatusItem!
     private var ipCheckTimer: Timer?
     private var cropperWindow: NSWindow?
@@ -17,9 +17,20 @@ class StatusMenuController: NSObject, NSMenuDelegate {
     private let updater: SPUStandardUpdaterController
     private var checkUpdatesMenuItem: NSMenuItem?
     
+    // 新增：管理 APK 下载
+    private var urlSession: URLSession!
+    private var currentDownloadTask: URLSessionDownloadTask?
+    private var apkDownloadInfo: (version: String, url: URL, length: Int64, destination: URL)? // 存储下载信息
+    
     init(updater: SPUStandardUpdaterController) {
         self.updater = updater
         super.init()
+        
+        // 初始化 URLSession
+        // 使用后台 session 可能过于复杂，先用默认 session 并指定 delegate queue
+        let configuration = URLSessionConfiguration.default
+        self.urlSession = URLSession(configuration: configuration, delegate: self, delegateQueue: OperationQueue.main) // 在主队列处理回调以方便更新 UI
+        
         setupStatusItem()
         startIPCheck()
         statusItem.menu?.delegate = self
@@ -641,7 +652,6 @@ class StatusMenuController: NSObject, NSMenuDelegate {
             return
         }
 
-        print("[checkADBDevices] 开始使用路径 '\(adbPath)' 检查设备序列号...")
         runADBCommand(adbPath: adbPath, arguments: ["devices"]) { [weak self] success, output in
             guard let self = self else { completion([:]); return }
             
@@ -654,16 +664,13 @@ class StatusMenuController: NSObject, NSMenuDelegate {
                         serials.append(components[0].trimmingCharacters(in: .whitespacesAndNewlines))
                     }
                 }
-                print("[checkADBDevices] 检查成功，发现序列号: \(serials)")
                 
-                // 如果没有找到设备，直接返回空字典
                 if serials.isEmpty {
-                    self.updateMenuWithADBDevices([:]) // 更新菜单
+                    self.updateMenuWithADBDevices([:])
                     completion([:])
                     return
                 }
                 
-                // --- 获取设备名称 --- 
                 var devicesInfo: [String: String] = [:]
                 let group = DispatchGroup()
                 let queue = DispatchQueue(label: "com.jadon7.watchrip.getdevicename", attributes: .concurrent)
@@ -671,27 +678,22 @@ class StatusMenuController: NSObject, NSMenuDelegate {
                 for serial in serials {
                     group.enter()
                     queue.async {
-                        print("[checkADBDevices] 正在获取设备 \(serial) 的名称...")
                         self.runADBCommand(adbPath: adbPath, arguments: ["-s", serial, "shell", "getprop", "ro.product.model"]) { nameSuccess, nameOutput in
                             if nameSuccess && !nameOutput.isEmpty {
-                                print("[checkADBDevices] 设备 \(serial) 名称获取成功: \(nameOutput)")
-                                devicesInfo[serial] = nameOutput // 使用获取到的名称
+                                devicesInfo[serial] = nameOutput
                             } else {
                                 print("[checkADBDevices] 设备 \(serial) 名称获取失败或为空，使用序列号。错误: \(nameOutput)")
-                                devicesInfo[serial] = serial // 获取失败则使用序列号作为名称
+                                devicesInfo[serial] = serial
                             }
                             group.leave()
                         }
                     }
                 }
                 
-                // 等待所有 getprop 命令完成
                 group.notify(queue: .main) {
-                    print("[checkADBDevices] 所有设备名称获取完成: \(devicesInfo)")
-                    self.updateMenuWithADBDevices(devicesInfo) // 使用包含名称的信息更新菜单
-                    completion(devicesInfo) // 返回包含名称的字典
+                    self.updateMenuWithADBDevices(devicesInfo)
+                    completion(devicesInfo)
                 }
-                // --- 结束 获取设备名称 ---
                 
             } else {
                 print("[checkADBDevices] ADB devices 命令失败: \(output)")
@@ -797,45 +799,36 @@ class StatusMenuController: NSObject, NSMenuDelegate {
     
     private func updateMenuWithADBDevices(_ devices: [String: String]) {
         guard let menu = self.statusItem.menu else { return }
-        print("[updateMenuWithADBDevices] 正在使用设备信息更新菜单: \(devices)")
-        // 修改标题匹配
-        let adbTitleIndex = menu.indexOfItem(withTitle: "ADB 设备") 
+        let adbTitleIndex = menu.indexOfItem(withTitle: "ADB 设备")
         guard adbTitleIndex != -1 else {
              print("[updateMenuWithADBDevices] 错误：未找到 ADB 标题菜单项")
              return
          }
 
-        // 比较当前显示的设备序列号列表和新列表的序列号
         let currentDeviceItems = menu.items.filter { $0.action == #selector(selectADBDevice(_:)) }
         let currentDeviceIDs = currentDeviceItems.compactMap { $0.representedObject as? String }.sorted()
         let newDeviceIDs = devices.keys.sorted()
         
         if currentDeviceIDs == newDeviceIDs {
-            // 序列号列表未变，只需确保选中状态和设备名称正确
-            print("[updateMenuWithADBDevices] 设备序列号列表未改变，更新名称和选中状态。")
             if selectedADBDeviceID != nil && !devices.keys.contains(selectedADBDeviceID!) {
-                print("[updateMenuWithADBDevices] 之前选中的设备 \'\(selectedADBDeviceID!)\' 不再存在，重新选择第一个。")
-                selectedADBDeviceID = devices.keys.sorted().first
+                 print("[updateMenuWithADBDevices] 之前选中的设备 \'\(selectedADBDeviceID!)\' 不再存在，重新选择第一个。")
+                 selectedADBDeviceID = devices.keys.sorted().first
             } else if selectedADBDeviceID == nil && !devices.isEmpty {
                  print("[updateMenuWithADBDevices] 之前未选中，自动选择第一个设备。")
                  selectedADBDeviceID = devices.keys.sorted().first
             }
-            // 更新现有菜单项的标题和选中状态
              for item in currentDeviceItems {
                  if let serial = item.representedObject as? String,
-                    let deviceName = devices[serial] { // 获取对应名称
+                    let deviceName = devices[serial] {
                      let title = (deviceName == serial) ? serial : "\(deviceName) (\(serial))"
                      item.title = title
                      item.state = (serial == selectedADBDeviceID) ? .on : .off
                  }
              }
-            self.adbDevices = devices // 更新存储的设备信息
+            self.adbDevices = devices
             return
         }
         
-        print("[updateMenuWithADBDevices] 设备列表已改变，重建菜单项。")
-        
-        // --- 以下是列表变化时的完整重建逻辑 --- 
         let currentIndex = adbTitleIndex + 1
         while let itemToRemove = menu.item(at: currentIndex),
               itemToRemove !== adbStatusMenuItem,
@@ -849,7 +842,6 @@ class StatusMenuController: NSObject, NSMenuDelegate {
             menu.insertItem(noDeviceItem, at: adbTitleIndex + 1)
             selectedADBDeviceID = nil
         } else {
-            // 同样需要处理选中状态
             let sortedSerials = devices.keys.sorted()
             if selectedADBDeviceID == nil || !sortedSerials.contains(selectedADBDeviceID!) {
                 selectedADBDeviceID = sortedSerials.first
@@ -858,26 +850,24 @@ class StatusMenuController: NSObject, NSMenuDelegate {
                 }
             }
             
-            // 使用排序后的序列号创建菜单项，保证顺序稳定
             for (index, serial) in sortedSerials.enumerated() {
-                let deviceName = devices[serial] ?? serial // 获取名称，失败则用序列号
+                let deviceName = devices[serial] ?? serial
                 let title = (deviceName == serial) ? serial : "\(deviceName) (\(serial))"
                 
                 let deviceItem = NSMenuItem(title: title, action: #selector(selectADBDevice(_:)), keyEquivalent: "")
                 deviceItem.target = self
-                deviceItem.representedObject = serial // 存储序列号
+                deviceItem.representedObject = serial
                 deviceItem.isEnabled = true
                 deviceItem.state = (serial == selectedADBDeviceID) ? .on : .off
                 menu.insertItem(deviceItem, at: adbTitleIndex + 1 + index)
             }
         }
-        self.adbDevices = devices // 存储新的设备信息
+        self.adbDevices = devices
     }
     
     @objc private func selectADBDevice(_ sender: NSMenuItem) {
         guard let newlySelectedID = sender.representedObject as? String else { return }
 
-        // 不再允许取消选择，直接进入选择新设备的逻辑
         if let menu = statusItem.menu {
             let adbTitleIndex = menu.indexOfItem(withTitle: "ADB 设备")
             if adbTitleIndex != -1 {
@@ -886,8 +876,6 @@ class StatusMenuController: NSObject, NSMenuDelegate {
                     item.state = .off
                     loopIndex += 1
                 }
-            } else {
-                print("错误: 在 selectADBDevice 中未能找到 'ADB 设备' 菜单项标题")
             }
         }
         selectedADBDeviceID = newlySelectedID
@@ -905,8 +893,6 @@ class StatusMenuController: NSObject, NSMenuDelegate {
         task.standardOutput = outputPipe
         task.standardError = errorPipe
 
-        print("Running ADB: \(adbPath) \(arguments.joined(separator: " "))")
-
         task.terminationHandler = { process in
             let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
             let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
@@ -915,11 +901,9 @@ class StatusMenuController: NSObject, NSMenuDelegate {
 
             DispatchQueue.main.async {
                 if process.terminationStatus == 0 {
-                    print("ADB Success: \(outputString)")
                     completion?(true, outputString)
                 } else {
                     let combinedError = "Exit Code: \(process.terminationStatus)\nOutput: \(outputString)\nError: \(errorString)"
-                    print("ADB Error: \(combinedError)")
                     completion?(false, combinedError)
                 }
             }
@@ -936,26 +920,20 @@ class StatusMenuController: NSObject, NSMenuDelegate {
     }
     
     private func pushFileToDevice(adbPath: String, deviceId: String, localFilePath: String, remoteFileName: String) {
-        // 直接使用应用的 files 目录，不再创建子目录
         let remoteDir = "/storage/emulated/0/Android/data/com.example.watchview/files"
         let remoteFilePath = "\(remoteDir)/\(remoteFileName)"
 
-        // 1. 更新状态为"推送中..."
         updateADBStatus("正在推送至 \(deviceId)...", isError: false)
 
-        // 2. 确保目录存在
         runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "shell", "mkdir", "-p", remoteDir]) { [weak self] successMkdir, _ in
             guard let self = self else { return }
             
             if successMkdir {
-                // 3. 清空目录中的所有文件，但保留目录本身
                 self.runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "shell", "rm", "-f", "\(remoteDir)/*"]) { [weak self] successClear, _ in
                     guard let self = self else { return }
                     
-                    // 4. 推送文件
                     self.runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "push", localFilePath, remoteFilePath]) { successPush, outputPush in
                         if successPush {
-                            // 5. 更新状态为"成功"
                             self.updateADBStatus("推送成功!", isError: false)
                         } else {
                             self.updateADBStatus("推送失败: \(outputPush)", isError: true)
@@ -1026,18 +1004,14 @@ class StatusMenuController: NSObject, NSMenuDelegate {
 
     private func startADBCheckTimer() {
         print("启动 ADB 定时检查 (间隔 5 秒)")
-        adbCheckTimer?.invalidate() // 先停止旧的，以防万一
+        adbCheckTimer?.invalidate()
 
-        // 创建 Timer 实例，但不立即调度
         let timer = Timer(timeInterval: 0.5, repeats: true) { [weak self] _ in
-            print("ADB 定时器触发，开始检查设备...")
             self?.checkADBDevices { devices in
-                // 日志已在 checkADBDevices 和 updateMenuWithADBDevices 中添加
+                // 日志已在 checkADBDevices 和 updateMenuWithADBDevices 中移除
             }
         }
         self.adbCheckTimer = timer
-
-        // 将 Timer 添加到 RunLoop 的 common 模式
         RunLoop.current.add(timer, forMode: .common)
     }
 
@@ -1059,7 +1033,6 @@ class StatusMenuController: NSObject, NSMenuDelegate {
         }
     }
 
-    // --- 新增：安装/更新手表 App 的 Action ---
     @objc private func installOrUpdateWatchApp(_ sender: NSMenuItem) {
         print("开始执行安装/更新手表 App 流程")
         
@@ -1074,9 +1047,7 @@ class StatusMenuController: NSObject, NSMenuDelegate {
 
         updateADBStatus("检查手表 App 版本...", isError: false)
         
-        // 2. 获取设备上的应用版本 (com.example.watchview)
         let packageName = "com.example.watchview"
-        // 命令可能因 Android 版本或设备厂商略有不同，这是比较通用的方式
         let command = "dumpsys package \(packageName) | grep versionName"
         
         runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "shell", command]) { [weak self] success, output in
@@ -1084,10 +1055,8 @@ class StatusMenuController: NSObject, NSMenuDelegate {
             
             var deviceVersion: String? = nil
             if success {
-                // 解析输出, 例如: versionName=1.0.0
                 if let range = output.range(of: "versionName=") {
                     let versionString = output[range.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
-                    // 做一些基本的验证
                     if !versionString.isEmpty && versionString.contains(".") { 
                         deviceVersion = versionString
                         print("设备 \(deviceId) 上找到 \(packageName) 版本: \(deviceVersion!)")
@@ -1097,29 +1066,249 @@ class StatusMenuController: NSObject, NSMenuDelegate {
                     }
                 }
             }
-            // 如果命令失败或未找到 versionName，deviceVersion 会是 nil
             if deviceVersion == nil {
                  print("未在设备 \(deviceId) 上找到 \(packageName) 或获取版本失败。错误/输出: \(output)")
                  self.updateADBStatus("设备未安装App / 线上检查中...", isError: false)
             }
 
-            // 接下来调用获取线上版本的函数
             self.fetchOnlineVersionAndProceed(deviceVersion: deviceVersion, deviceId: deviceId, adbPath: adbPath)
         }
     }
     
-    // --- 新增：获取线上版本并继续流程的辅助函数 ---
     private func fetchOnlineVersionAndProceed(deviceVersion: String?, deviceId: String, adbPath: String) {
-        // TODO: 3. 获取线上最新版本信息 (下载并解析 wear_os_appcast.xml)
-        // TODO: 4. 版本比较
-        // TODO: 5. 检查本地缓存 APK
-        // TODO: 6. 下载最新 APK (带进度)
-        // TODO: 7. 执行 ADB 安装
+        let appcastURLString = "https://raw.githubusercontent.com/jadon7/Watch-RIP-MAC/feature/wear-app-installer/wear_os_appcast.xml"
+        guard let url = URL(string: appcastURLString) else {
+            print("Wear OS Appcast URL 无效: \(appcastURLString)")
+            updateADBStatus("错误: Appcast URL 无效", isError: true)
+            return
+        }
+
+        updateADBStatus("线上检查中...", isError: false)
+
+        let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let self = self else { return }
+            
+            if let error = error {
+                print("下载 Wear OS Appcast 失败: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.updateADBStatus("错误: 无法检查更新", isError: true)
+                }
+                return
+            }
+            
+            guard let data = data else {
+                print("Wear OS Appcast 下载的数据为空")
+                DispatchQueue.main.async {
+                    self.updateADBStatus("错误: 更新信息为空", isError: true)
+                }
+                return
+            }
+
+            let parser = XMLParser(data: data)
+            let delegate = WearOSAppcastParserDelegate()
+            parser.delegate = delegate
+            
+            if parser.parse() {
+                guard let onlineVersion = delegate.latestVersionName, 
+                      let downloadURL = delegate.downloadURL, 
+                      let downloadLengthStr = delegate.downloadLength else {
+                    print("解析 Appcast 成功，但未能提取到完整的版本信息")
+                    DispatchQueue.main.async {
+                        self.updateADBStatus("错误: 更新信息不完整", isError: true)
+                    }
+                    return
+                }
+                
+                print("线上最新版本: \(onlineVersion), 下载地址: \(downloadURL), 大小: \(downloadLengthStr)")
+                
+                DispatchQueue.main.async {
+                    if let devVersion = deviceVersion {
+                        switch devVersion.compare(onlineVersion, options: .numeric) {
+                        case .orderedSame, .orderedDescending:
+                            print("设备版本 (\(devVersion)) >= 线上版本 (\(onlineVersion))，无需更新。")
+                            self.updateADBStatus("手表 App 已是最新版", isError: false)
+                            return
+                        case .orderedAscending:
+                            print("设备版本 (\(devVersion)) < 线上版本 (\(onlineVersion))，需要更新。")
+                            self.updateADBStatus("发现新版本: \(onlineVersion)", isError: false)
+                            self.checkCacheAndDownloadAPK(onlineVersion: onlineVersion, downloadURL: downloadURL, downloadLengthStr: downloadLengthStr, deviceId: deviceId, adbPath: adbPath)
+                        }
+                    } else {
+                        print("设备未安装或无法获取版本，准备安装线上版本 \(onlineVersion)。")
+                        self.updateADBStatus("准备安装版本: \(onlineVersion)", isError: false)
+                        self.checkCacheAndDownloadAPK(onlineVersion: onlineVersion, downloadURL: downloadURL, downloadLengthStr: downloadLengthStr, deviceId: deviceId, adbPath: adbPath)
+                    }
+                }
+
+            } else {
+                print("解析 Wear OS Appcast 失败")
+                DispatchQueue.main.async {
+                    self.updateADBStatus("错误: 解析更新信息失败", isError: true)
+                }
+            }
+        }
+        task.resume()
+    }
+
+    private func checkCacheAndDownloadAPK(onlineVersion: String, downloadURL: String, downloadLengthStr: String, deviceId: String, adbPath: String) {
         
-        // 临时占位
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-            self.updateADBStatus("线上检查功能开发中...", isError: false)
+        guard let appSupportDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+            updateADBStatus("错误: 无法访问缓存目录", isError: true)
+            return
+        }
+        let bundleId = Bundle.main.bundleIdentifier ?? "com.jadon7.watchrip"
+        let cacheDir = appSupportDir.appendingPathComponent(bundleId).appendingPathComponent("APKCache")
+        
+        do {
+            try FileManager.default.createDirectory(at: cacheDir, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            print("创建缓存目录失败: \(error)")
+            updateADBStatus("错误: 无法创建缓存", isError: true)
+            return
+        }
+        
+        let apkFileName = "watch_view_\(onlineVersion).apk"
+        let destinationURL = cacheDir.appendingPathComponent(apkFileName)
+        
+        if FileManager.default.fileExists(atPath: destinationURL.path) {
+            print("发现本地缓存的最新 APK: \(destinationURL.path)")
+            updateADBStatus("准备安装本地缓存的 App...", isError: false)
+            installAPKFromLocalPath(localAPKPath: destinationURL.path, deviceId: deviceId, adbPath: adbPath)
+        } else {
+            print("本地未找到版本 \(onlineVersion) 的 APK，开始下载...")
+            guard let url = URL(string: downloadURL), let length = Int64(downloadLengthStr) else {
+                updateADBStatus("错误: 下载信息无效", isError: true)
+                return
+            }
+            
+            if currentDownloadTask != nil {
+                updateADBStatus("已有下载任务进行中...", isError: false)
+                return
+            }
+            
+            self.apkDownloadInfo = (version: onlineVersion, url: url, length: length, destination: destinationURL)
+            
+            currentDownloadTask = urlSession.downloadTask(with: url)
+            currentDownloadTask?.resume()
+            updateADBStatus("开始下载手表 App (0%)...", isError: false)
         }
     }
-    // --- 结束 新增辅助函数 ---
+
+    private func installAPKFromLocalPath(localAPKPath: String, deviceId: String, adbPath: String) {
+        updateADBStatus("正在安装手表 App...", isError: false)
+        runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "install", "-r", localAPKPath]) { [weak self] success, output in
+            if success && output.lowercased().contains("success") {
+                self?.updateADBStatus("手表 App 安装成功!", isError: false)
+            } else {
+                self?.updateADBStatus("安装失败: \(output)", isError: true)
+            }
+        }
+    }
+
+    // MARK: - URLSessionDownloadDelegate Methods
+
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        guard downloadTask == currentDownloadTask, let info = apkDownloadInfo else { return }
+        
+        let expectedLength = (totalBytesExpectedToWrite != NSURLSessionTransferSizeUnknown) ? totalBytesExpectedToWrite : info.length
+        
+        if expectedLength > 0 {
+            let progress = Double(totalBytesWritten) / Double(expectedLength)
+            let percentage = Int(progress * 100)
+            updateADBStatus("下载中 (\(percentage)%)...", isError: false)
+        } else {
+            let downloadedMB = String(format: "%.1f MB", Double(totalBytesWritten) / (1024 * 1024))
+            updateADBStatus("下载中 (\(downloadedMB))...", isError: false)
+        }
+    }
+
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        print("APK 下载完成，临时文件位于: \(location.path)")
+        guard let info = apkDownloadInfo else {
+            print("错误: 下载完成但 apkDownloadInfo 为空")
+            updateADBStatus("下载错误 (内部信息丢失)", isError: true)
+            currentDownloadTask = nil
+            return
+        }
+        
+        let destinationURL = info.destination
+        let fm = FileManager.default
+        try? fm.removeItem(at: destinationURL)
+        do {
+            try fm.moveItem(at: location, to: destinationURL)
+            print("APK 已移动到缓存目录: \(destinationURL.path)")
+            
+            currentDownloadTask = nil
+            self.apkDownloadInfo = nil
+            
+            if let deviceId = selectedADBDeviceID, let adbPath = adbExecutablePath {
+                installAPKFromLocalPath(localAPKPath: destinationURL.path, deviceId: deviceId, adbPath: adbPath)
+            } else {
+                 updateADBStatus("错误: 无法开始安装 (设备未选或 ADB 路径丢失)", isError: true)
+            }
+            
+        } catch {
+            print("移动 APK 文件失败: \(error)")
+            updateADBStatus("下载错误 (无法保存文件)", isError: true)
+            currentDownloadTask = nil
+            self.apkDownloadInfo = nil
+        }
+    }
+
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        if let error = error {
+            print("URLSession 任务出错: \(error.localizedDescription)")
+            if task == currentDownloadTask {
+                 updateADBStatus("下载失败: \(error.localizedDescription)", isError: true)
+                 currentDownloadTask = nil
+                 apkDownloadInfo = nil
+            }
+        } else {
+            if task == currentDownloadTask && task.response != nil {
+                 print("下载任务完成，但可能未成功保存文件 (检查 didFinishDownloadingTo)。")
+            }
+        }
+    }
+
+    fileprivate class WearOSAppcastParserDelegate: NSObject, XMLParserDelegate {
+        var latestVersionName: String?
+        var downloadURL: String?
+        var downloadLength: String?
+        private var currentElement: String = ""
+        private var foundFirstItem = false
+
+        func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
+            currentElement = elementName
+            if elementName == "item" && !foundFirstItem { }
+            else if elementName == "enclosure" && !foundFirstItem {
+                downloadURL = attributeDict["url"]
+                downloadLength = attributeDict["length"]
+                foundFirstItem = true
+            }
+        }
+
+        func parser(_ parser: XMLParser, foundCharacters string: String) {
+            let value = string.trimmingCharacters(in: .whitespacesAndNewlines)
+            if value.isEmpty { return }
+            
+            if currentElement == "watchrip:versionName" && !foundFirstItem {
+                latestVersionName = value
+            }
+        }
+
+        func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+            currentElement = ""
+        }
+
+        func parserDidEndDocument(_ parser: XMLParser) {
+            print("[XML Parser] 解析完成。版本: \(latestVersionName ?? "无"), URL: \(downloadURL ?? "无"), 大小: \(downloadLength ?? "无")")
+        }
+
+        func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
+            print("[XML Parser] 解析错误: \(parseError.localizedDescription)")
+            latestVersionName = nil
+            downloadURL = nil
+            downloadLength = nil
+        }
+    }
 } 
