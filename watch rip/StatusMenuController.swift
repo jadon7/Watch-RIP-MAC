@@ -117,7 +117,8 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
     
     // 获取线上版本信息
     private func fetchOnlineVersionInfo(deviceVersion: String?, deviceId: String, adbPath: String) {
-        let appcastURLString = "https://raw.githubusercontent.com/jadon7/Watch-RIP-MAC/feature/wear-app-installer/wear_os_appcast.xml"
+        // 更新 Appcast URL 指向 Watch-RIP-WearOS 仓库
+        let appcastURLString = "https://raw.githubusercontent.com/jadon7/Watch-RIP-WearOS/refs/heads/main/appcast.xml"
         
         guard let url = URL(string: appcastURLString) else {
             let errorMsg = "无效的Appcast URL: \(appcastURLString)"
