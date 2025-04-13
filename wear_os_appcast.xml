@@ -8,10 +8,10 @@
     <language>zh-CN</language>
     <!-- 最新版本 -->
     <item>
-      <title>版本 2.0.1</title>
-      <watchrip:versionName>2.0.1</watchrip:versionName>
+      <title>版本 2.1.0</title>
+      <watchrip:versionName>2.1.0</watchrip:versionName>
       <!-- 你可以填入实际发布日期 -->
-      <pubDate>Fri, 12 Apr 2024 10:00:00 +0800</pubDate>
+      <pubDate>Sun, 13 Apr 2025 10:00:00 +0800</pubDate>
       <enclosure url="https://github.com/jadon7/Watch-RIP-WearOS/releases/download/v2.0/watch.RIP.apk"
                  type="application/vnd.android.package-archive"
                  length="62315960" />

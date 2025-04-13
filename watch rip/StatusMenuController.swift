@@ -22,602 +22,356 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
     private var currentDownloadTask: URLSessionDownloadTask?
     private var apkDownloadInfo: (version: String, url: URL, length: Int64, destination: URL)? // 存储下载信息
     
-    init(updater: SPUStandardUpdaterController) {
-        self.updater = updater
-        super.init()
-        
-        // 初始化 URLSession
-        // 使用后台 session 可能过于复杂，先用默认 session 并指定 delegate queue
-        let configuration = URLSessionConfiguration.default
-        self.urlSession = URLSession(configuration: configuration, delegate: self, delegateQueue: OperationQueue.main) // 在主队列处理回调以方便更新 UI
-        
-        setupStatusItem()
-        startIPCheck()
-        statusItem.menu?.delegate = self
-        findADBPath { [weak self] path in
-            self?.adbExecutablePath = path
-            self?.checkADBDevices { _ in }
-            self?.startADBCheckTimer()
-        }
-    }
-    
-    private func setupStatusItem() {
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        
-        if let button = statusItem.button {
-            // 从 Assets.xcassets 加载自定义图标
-            if let image = NSImage(named: "MenuBarIcon") {
-                image.isTemplate = true  // 设置为模板图片，这样系统会自动处理明暗模式
-                button.image = image
-            }
-        }
-        
-        let menu = NSMenu()
-        
-        // IP 地址显示项（分两行）
-        let titleItem = NSMenuItem(title: "WIFI模式下输入:", action: nil, keyEquivalent: "")
-        titleItem.isEnabled = false
-        menu.addItem(titleItem)
-        
-        let ipItem = NSMenuItem(title: "获取IP中...", action: #selector(copyIPAddress), keyEquivalent: "")
-        ipItem.target = self
-        ipItem.attributedTitle = NSAttributedString(
-            string: "获取IP中...",
-            attributes: [
-                .foregroundColor: NSColor.black,
-                .font: NSFont.systemFont(ofSize: 14, weight: .semibold)
-            ]
-        )
-        menu.addItem(ipItem)
-        
-        menu.addItem(NSMenuItem.separator())
-        
-        // 当前文件显示项
-        let fileItem = NSMenuItem(title: "当前文件：暂无文件", action: nil, keyEquivalent: "")
-        fileItem.isEnabled = false
-        menu.addItem(fileItem)
-        
-        menu.addItem(NSMenuItem.separator())
-        
-        // 图片/视频上传选项
-        let mediaItem = NSMenuItem(title: "上传图片/视频", action: #selector(openMediaPicker), keyEquivalent: "")
-        mediaItem.target = self
-        if let image = NSImage(systemSymbolName: "photo.on.rectangle", accessibilityDescription: nil) {
-            mediaItem.image = image
-        }
-        menu.addItem(mediaItem)
-        
-        // Rive 文件上传选项
-        let riveItem = NSMenuItem(title: "上传 Rive 文件", action: #selector(openRivePicker), keyEquivalent: "")
-        riveItem.target = self
-        if let image = NSImage(systemSymbolName: "doc.badge.arrow.up", accessibilityDescription: nil) {
-            riveItem.image = image
-        }
-        menu.addItem(riveItem)
-        
-        menu.addItem(NSMenuItem.separator())
-        
-        // 新增：ADB 设备显示区域
-        let adbTitleItem = NSMenuItem(title: "ADB 设备", action: nil, keyEquivalent: "")
-        adbTitleItem.isEnabled = false
-        menu.addItem(adbTitleItem)
-        
-        // 添加一个临时的"检测中..."项，稍后会被替换
-        let detectingItem = NSMenuItem(title: "检测中...", action: nil, keyEquivalent: "")
-        detectingItem.isEnabled = false
-        detectingItem.tag = 1001 // 标记，便于识别和移除
-        menu.addItem(detectingItem)
-        
-        // 新增：用于显示 ADB 状态的菜单项
-        adbStatusMenuItem = NSMenuItem(title: "", action: nil, keyEquivalent: "")
-        adbStatusMenuItem?.isHidden = true // 默认隐藏
-        adbStatusMenuItem?.isEnabled = false
-        menu.addItem(adbStatusMenuItem!)
-        
-        menu.addItem(NSMenuItem.separator())
-        
-        // --- 新增：检查更新选项 --- 
-        menu.addItem(NSMenuItem.separator()) // 添加分隔符
-        
-        let item = NSMenuItem(title: "检查更新...", action: #selector(checkForUpdatesMenuItemAction(_:)), keyEquivalent: "")
-        item.target = self
-        menu.addItem(item)
-        self.checkUpdatesMenuItem = item
-        
-        // --- 新增：安装手表 App 选项 --- 
-        let installItem = NSMenuItem(title: "安装/更新手表 App", action: #selector(installOrUpdateWatchApp(_:)), keyEquivalent: "")
-        installItem.target = self
-        menu.addItem(installItem)
-        
-        menu.addItem(NSMenuItem.separator())
-        
-        // 退出选项
-        let quitItem = NSMenuItem(title: "退出", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
-        menu.addItem(quitItem)
-        
-        statusItem.menu = menu
-    }
-    
-    private func startIPCheck() {
-        updateIPAddress()
-        ipCheckTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
-            self?.updateIPAddress()
-        }
-    }
-    
-    private func updateIPAddress() {
-        if let ip = UploadServer.shared.getLocalIPAddress() {
-            if let menu = statusItem.menu {
-                // 去掉端口号
-                let components = ip.split(separator: ":")
-                if let ipWithoutPort = components.first.map(String.init) {
-                    menu.item(at: 1)?.attributedTitle = NSAttributedString(
-                        string: ipWithoutPort,
-                        attributes: [
-                            .foregroundColor: NSColor.black,
-                            .font: NSFont.systemFont(ofSize: 14, weight: .semibold)
-                        ]
-                    )
-                }
-            }
-        }
-    }
-    
-    private func updateCurrentFile(_ filename: String) {
-        currentUploadedFile = filename
-        if let menu = statusItem.menu {
-            menu.item(at: 3)?.title = "当前文件：\(filename)"
-        }
-    }
-    
-    @objc private func openMediaPicker() {
-        let panel = NSOpenPanel()
-        panel.canChooseFiles = true
-        panel.canChooseDirectories = false
-        panel.allowsMultipleSelection = true
-        panel.allowedContentTypes = [UTType.image, UTType.movie]
-        
-        // 激活应用程序
-        NSApplication.shared.activate(ignoringOtherApps: true)
-        
-        panel.begin { [weak self] result in
-            if result == .OK {
-                self?.handleMediaFiles(panel.urls)
-            }
-        }
-    }
-    
-    @objc private func openRivePicker() {
-        let panel = NSOpenPanel()
-        panel.canChooseFiles = true
-        panel.canChooseDirectories = false
-        panel.allowsMultipleSelection = false
-        
-        var allowedTypes: [UTType] = []
-        if let t = UTType(filenameExtension: "riv") {
-            allowedTypes.append(t)
-        }
-        if let t = UTType(filenameExtension: "rive") {
-            allowedTypes.append(t)
-        }
-        panel.allowedContentTypes = allowedTypes.isEmpty ? [UTType.data] : allowedTypes
-        
-        // 激活应用程序
-        NSApplication.shared.activate(ignoringOtherApps: true)
-        
-        panel.begin { result in
-            if result == .OK {
-                self.handleRiveFile(panel.url)
-            }
-        }
-    }
-    
-    @objc private func copyIPAddress() {
-        if let ip = UploadServer.shared.getLocalIPAddress() {
-            let components = ip.split(separator: ":")
-            if let ipWithoutPort = components.first.map(String.init) {
-                let pasteboard = NSPasteboard.general
-                pasteboard.clearContents()
-                pasteboard.setString(ipWithoutPort, forType: .string)
-                
-                // 提供复制成功的视觉反馈
-                if let menu = statusItem.menu {
-                    let originalTitle = menu.item(at: 1)?.attributedTitle
-                    menu.item(at: 1)?.attributedTitle = NSAttributedString(
-                        string: "已复制",
-                        attributes: [
-                            .foregroundColor: NSColor.systemGreen,
-                            .font: NSFont.systemFont(ofSize: 14, weight: .semibold)
-                        ]
-                    )
-                    
-                    // 1秒后恢复原始显示
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        menu.item(at: 1)?.attributedTitle = originalTitle
-                    }
-                }
-            }
-        }
-    }
-    
-    private func handleMediaFiles(_ files: [URL]) {
-        let uploadDir = UploadServer.shared.uploadDirectory
-        let fm = FileManager.default
-        
-        // 清空上传目录中的所有文件
-        if let existingFiles = try? fm.contentsOfDirectory(at: uploadDir, includingPropertiesForKeys: nil) {
-            for file in existingFiles {
-                // 删除所有现有文件，包括 rive 文件
-                try? fm.removeItem(at: file)
-            }
-        }
-        
-        // 生成临时目录名和最终压缩包名称
-        let timestamp = Int(Date().timeIntervalSince1970)
-        let tempDir = uploadDir.appendingPathComponent("temp_\(timestamp)", isDirectory: true)
-        try? fm.createDirectory(at: tempDir, withIntermediateDirectories: true)
-        
-        processFiles(files, index: 0, tempDir: tempDir) {
-            // 根据文件数量决定压缩包的命名方式
-            let zipFileName: String
-            if files.count == 1 {
-                // 单个文件：使用源文件名
-                zipFileName = files[0].deletingPathExtension().lastPathComponent + ".zip"
-            } else {
-                // 多个文件：使用 月-日 时:分 格式，去掉方括号
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "MM-dd HH:mm"
-                zipFileName = "\(dateFormatter.string(from: Date())).zip"
-            }
-            
-            let zipURL = uploadDir.appendingPathComponent(zipFileName)
-            var success = false
-            do {
-                try fm.zipItem(at: tempDir, to: zipURL, shouldKeepParent: false)
-                try? fm.removeItem(at: tempDir)
-                self.updateCurrentFile(zipFileName)
-                UploadServer.shared.notifyClients()
-                success = true
-            } catch {
-                print("压缩媒体文件失败: \(error)")
-            }
+    // MARK: - 检查更新相关
 
-            if success, let deviceId = self.selectedADBDeviceID, let adbPath = self.adbExecutablePath {
-                self.pushFileToDevice(adbPath: adbPath, deviceId: deviceId, localFilePath: zipURL.path, remoteFileName: zipFileName)
-            } else if self.selectedADBDeviceID != nil && self.adbExecutablePath == nil {
-                self.updateADBStatus("错误: 未找到ADB路径", isError: true)
-            }
+    @objc private func checkForUpdatesMenuItemAction(_ sender: NSMenuItem) {
+        updater.checkForUpdates(nil)
+    }
+    
+    func updateCheckUpdatesMenuItemTitle(hasUpdate: Bool) {
+        DispatchQueue.main.async {
+            self.checkUpdatesMenuItem?.title = hasUpdate ? "新版本可用! 点击更新" : "检查更新..."
         }
     }
     
-    private func handleRiveFile(_ fileURL: URL?) {
-        guard let fileURL = fileURL else { return }
-        
-        let uploadDir = UploadServer.shared.uploadDirectory
-        let fm = FileManager.default
-        
-        // 清空上传目录中的所有文件
-        if let existingFiles = try? fm.contentsOfDirectory(at: uploadDir, includingPropertiesForKeys: nil) {
-            for file in existingFiles {
-                // 如果是临时目录或 zip 文件，删除它们
-                if file.lastPathComponent.hasPrefix("temp_") || file.pathExtension == "zip" {
-                    try? fm.removeItem(at: file)
-                }
-                // 如果是旧的 rive 文件，也删除它
-                if file.pathExtension == "riv" || file.pathExtension == "rive" {
-                    try? fm.removeItem(at: file)
-                }
-            }
-        }
-        
-        // 使用原始文件名
-        let destURL = uploadDir.appendingPathComponent(fileURL.lastPathComponent)
-        var success = false
-        do {
-            try fm.copyItem(at: fileURL, to: destURL)
-            self.updateCurrentFile(fileURL.lastPathComponent)
-            UploadServer.shared.notifyClients()
-            success = true
-        } catch {
-            print("本地复制Rive文件失败: \(error.localizedDescription)")
-        }
-
-        if success, let deviceId = self.selectedADBDeviceID, let adbPath = self.adbExecutablePath {
-            self.pushFileToDevice(adbPath: adbPath, deviceId: deviceId, localFilePath: destURL.path, remoteFileName: destURL.lastPathComponent)
-        } else if self.selectedADBDeviceID != nil && self.adbExecutablePath == nil {
-            self.updateADBStatus("错误: 未找到ADB路径", isError: true)
-        }
-    }
+    // MARK: - 手表App安装更新
     
-    private func processFiles(_ files: [URL], index: Int, tempDir: URL, completion: @escaping () -> Void) {
-        if index >= files.count {
-            completion()
+    // 保存当前的更新窗口控制器引用
+    private var watchAppUpdateWindowController: WatchAppUpdateWindowController?
+    
+    @objc private func installOrUpdateWatchApp(_ sender: NSMenuItem) {
+        print("开始执行安装/更新手表 App 流程")
+        
+        // 1. 检查是否已选择设备
+        guard let deviceId = selectedADBDeviceID, let adbPath = adbExecutablePath else {
+            // 如果没有选择设备，显示错误窗口而不是状态菜单项
+            let alert = NSAlert()
+            alert.messageText = "无法更新手表App"
+            alert.informativeText = "请先选择一个已连接的设备。"
+            alert.alertStyle = .warning
+            alert.addButton(withTitle: "确定")
+            alert.runModal()
             return
         }
         
-        let fileURL = files[index]
-        let ext = fileURL.pathExtension.lowercased()
-        let imageExtensions = ["jpg", "jpeg", "png", "heic", "tiff", "bmp"]
-        let videoExtensions = ["mp4", "mov", "m4v", "avi", "flv"]
-        let fm = FileManager.default
-        // 目标文件名统一使用 png (图片) 或 mp4 (视频)
-        let baseName = fileURL.deletingPathExtension().lastPathComponent
-        let destURL = tempDir.appendingPathComponent(baseName)
-
-        // 定义下一步操作
-        let nextStep = { [weak self] in
-            self?.processFiles(files, index: index + 1, tempDir: tempDir, completion: completion)
-        }
-
-        if imageExtensions.contains(ext) {
-            // --- 图片处理 --- 
-            let finalDestURL = destURL.appendingPathExtension("png") // 确保是 png
-            if let image = NSImage(contentsOf: fileURL) {
-                let width = image.size.width
-                let height = image.size.height
-                if abs(width - height) > 1 { // 需要裁剪
-                    presentImageCropper(for: image) { [weak self] cropped in
-                        guard let self = self else { nextStep(); return }
-                        let finalImage = cropped ?? image // 取裁剪结果或原始图
-                        // 缩放至512x512
-                        if let processed = self.processNonCroppedImage(finalImage),
-                           let tiffData = processed.tiffRepresentation,
-                           let rep = NSBitmapImageRep(data: tiffData),
-                           let data = rep.representation(using: .png, properties: [:]) {
-                            try? data.write(to: finalDestURL)
-                        } else {
-                            try? fm.copyItem(at: fileURL, to: destURL.appendingPathExtension(fileURL.pathExtension)) // 失败则拷贝原始扩展名
-                        }
-                        nextStep()
-                    }
-                    return // 等待裁剪回调
-                } else { // 已经是1:1
-                    // 直接缩放至512x512
-                    if let processed = processNonCroppedImage(image),
-                       let tiffData = processed.tiffRepresentation,
-                       let rep = NSBitmapImageRep(data: tiffData),
-                       let data = rep.representation(using: .png, properties: [:]) {
-                        try? data.write(to: finalDestURL)
-                    } else {
-                         try? fm.copyItem(at: fileURL, to: destURL.appendingPathExtension(fileURL.pathExtension))
-                    }
-                    nextStep()
-                }
-            } else {
-                try? fm.copyItem(at: fileURL, to: destURL.appendingPathExtension(fileURL.pathExtension))
-                nextStep()
+        // 2. 创建并显示更新窗口
+        let windowController = WatchAppUpdateWindowController(
+            deviceId: deviceId,
+            adbPath: adbPath,
+            completionHandler: { [weak self] success in
+                print("手表App更新流程\(success ? "完成" : "取消")")
+                // 释放引用
+                self?.watchAppUpdateWindowController = nil
+            },
+            onInstall: { [weak self] in
+                // 当用户点击"安装"按钮时调用
+                self?.startDownloadAndInstallProcess()
             }
-        } else if videoExtensions.contains(ext) {
-            // --- 视频处理 --- 
-            let finalDestURL = destURL.appendingPathExtension("mp4") // 确保是 mp4
-            let asset = AVAsset(url: fileURL)
-            guard let videoTrack = asset.tracks(withMediaType: .video).first else {
-                print("Skipping non-video file or video without track: \(fileURL.lastPathComponent)")
-                try? fm.copyItem(at: fileURL, to: destURL.appendingPathExtension(fileURL.pathExtension))
-                nextStep()
+        )
+        
+        // 保存引用
+        self.watchAppUpdateWindowController = windowController
+        
+        // 显示窗口
+        windowController.showWindow(nil)
+        
+        // 窗口状态设为检查中
+        windowController.updateStatus(to: .checking)
+        
+        // 开始版本检查流程
+        self.checkDeviceVersion(deviceId: deviceId, adbPath: adbPath)
+    }
+    
+    // 检查设备上的应用版本
+    private func checkDeviceVersion(deviceId: String, adbPath: String) {
+        let packageName = "com.example.watchview"
+        let command = "dumpsys package \(packageName) | grep versionName"
+        
+        // 运行ADB命令检查设备上的版本
+        runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "shell", command]) { [weak self] success, output in
+            guard let self = self else { return }
+            
+            var deviceVersion: String? = nil
+            if success {
+                if let range = output.range(of: "versionName=") {
+                    let versionString = output[range.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !versionString.isEmpty && versionString.contains(".") { 
+                        deviceVersion = versionString
+                        print("设备 \(deviceId) 上的 \(packageName) 版本: \(versionString)")
+                    }
+                }
+            }
+            
+            if deviceVersion == nil {
+                print("未在设备 \(deviceId) 上找到 \(packageName) 或获取版本失败。错误/输出: \(output)")
+            }
+            
+            // 获取线上版本信息
+            self.fetchOnlineVersionInfo(deviceVersion: deviceVersion, deviceId: deviceId, adbPath: adbPath)
+        }
+    }
+    
+    // 临时存储线上版本信息供后续使用
+    private var currentVersionInfo: (deviceVersion: String?, onlineVersion: String, downloadURL: String, deviceId: String, adbPath: String)?
+    
+    // 获取线上版本信息
+    private func fetchOnlineVersionInfo(deviceVersion: String?, deviceId: String, adbPath: String) {
+        let appcastURLString = "https://raw.githubusercontent.com/jadon7/Watch-RIP-MAC/feature/wear-app-installer/wear_os_appcast.xml"
+        
+        guard let url = URL(string: appcastURLString) else {
+            let errorMsg = "无效的Appcast URL: \(appcastURLString)"
+            print(errorMsg)
+            self.updateWindowStatus(.error(message: errorMsg))
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let self = self else { return }
+            
+            if let error = error {
+                print("下载 Wear OS Appcast 失败: \(error.localizedDescription)")
+                self.updateWindowStatus(.error(message: "下载更新信息失败"))
                 return
             }
-
-            let naturalSize = videoTrack.naturalSize
-            let needsCropping = abs(naturalSize.width - naturalSize.height) > 1
-
-            if needsCropping {
-                if #available(macOS 12.0, *) {
-                    presentVideoCropper(for: fileURL) { [weak self] processedURL in
-                        guard let self = self else { nextStep(); return }
-                        let inputURLForResize = processedURL ?? fileURL // 取裁剪结果或原始视频
-                        print("Resizing video (after crop attempt) \(inputURLForResize.lastPathComponent) to 512x512...")
-                        self.resizeVideo(inputURL: inputURLForResize, outputURL: finalDestURL) { success in
-                            if !success {
-                                print("Video resizing failed for \(inputURLForResize.lastPathComponent). Copying original.")
-                                try? fm.copyItem(at: fileURL, to: destURL.appendingPathExtension(fileURL.pathExtension))
-                            }
-                            // 清理临时的裁剪文件 (如果存在且不同于原始文件)
-                            if let cropped = processedURL, cropped != fileURL {
-                                 try? fm.removeItem(at: cropped)
-                             }
-                            nextStep()
-                        }
-                    }
-                    return // 等待裁剪和缩放回调
-                } else {
-                    print("Video cropping not available on this macOS version. Resizing original.")
-                    self.resizeVideo(inputURL: fileURL, outputURL: finalDestURL) { success in
-                        if !success {
-                            print("Video resizing failed for \(fileURL.lastPathComponent). Copying original.")
-                            try? fm.copyItem(at: fileURL, to: destURL.appendingPathExtension(fileURL.pathExtension))
-                        }
-                        nextStep()
-                    }
-                    return // 等待缩放回调
-                }
-            } else { // 已经是1:1
-                print("Resizing 1:1 video \(fileURL.lastPathComponent) to 512x512...")
-                self.resizeVideo(inputURL: fileURL, outputURL: finalDestURL) { success in
-                    if !success {
-                        print("Video resizing failed for \(fileURL.lastPathComponent). Copying original.")
-                        try? fm.copyItem(at: fileURL, to: destURL.appendingPathExtension(fileURL.pathExtension))
-                    }
-                    nextStep()
-                }
-                return // 等待缩放回调
-            }
-        } else {
-            // --- 其他文件类型 --- 
-            print("Copying non-image/video file: \(fileURL.lastPathComponent)")
-            try? fm.copyItem(at: fileURL, to: destURL.appendingPathExtension(fileURL.pathExtension))
-            nextStep()
-        }
-    }
-    
-    private func presentImageCropper(for image: NSImage, completion: @escaping (NSImage?) -> Void) {
-        let cropperView = ImageCropperView(originalImage: image, onComplete: { croppedImage in
-            self.cropperWindow?.close()
-            self.cropperWindow = nil
-            completion(croppedImage)
-        }, onCancel: {
-            self.cropperWindow?.close()
-            self.cropperWindow = nil
-            completion(nil)
-        })
-        
-        let hostingController = NSHostingController(rootView: cropperView)
-        let window = NSWindow(contentViewController: hostingController)
-        window.title = "请裁切图片以保证1:1显示"
-        window.setContentSize(NSSize(width: 420, height: 0))
-        window.styleMask = [.titled, .closable]
-        
-        if let screen = NSScreen.main {
-            let screenRect = screen.visibleFrame
-            let windowRect = window.frame
-            let x = screenRect.midX - windowRect.width / 2
-            let y = screenRect.midY - windowRect.height / 2
-            window.setFrameOrigin(NSPoint(x: x, y: y))
-        }
-        
-        window.makeKeyAndOrderFront(nil)
-        cropperWindow = window
-    }
-    
-    private func presentVideoCropper(for url: URL, completion: @escaping (URL?) -> Void) {
-        if #available(macOS 12.0, *) {
-            let cropperView = VideoCropperView(videoURL: url, onComplete: { processedURL in
-                self.cropperWindow?.close()
-                self.cropperWindow = nil
-                completion(processedURL)
-            }, onCancel: {
-                self.cropperWindow?.close()
-                self.cropperWindow = nil
-                completion(nil)
-            })
             
-            let hostingController = NSHostingController(rootView: cropperView)
-            let window = NSWindow(contentViewController: hostingController)
-            window.title = "请裁切视频以保证1:1显示"
-            window.setContentSize(NSSize(width: 420, height: 0))
-            window.styleMask = [.titled, .closable]
-            
-            if let screen = NSScreen.main {
-                let screenRect = screen.visibleFrame
-                let windowRect = window.frame
-                let x = screenRect.midX - windowRect.width / 2
-                let y = screenRect.midY - windowRect.height / 2
-                window.setFrameOrigin(NSPoint(x: x, y: y))
+            guard let data = data else {
+                print("Wear OS Appcast 下载的数据为空")
+                self.updateWindowStatus(.error(message: "更新信息为空"))
+                return
             }
             
-            window.makeKeyAndOrderFront(nil)
-            cropperWindow = window
-        } else {
-            completion(nil)
+            // 解析 XML
+            let parser = XMLParser(data: data)
+            let delegate = WearOSAppcastParserDelegate()
+            parser.delegate = delegate
+            
+            if parser.parse() {
+                guard let onlineVersion = delegate.latestVersionName, 
+                      let downloadURL = delegate.downloadURL, 
+                      let downloadLengthStr = delegate.length else {
+                    print("解析 Wear OS Appcast 成功但缺少必要信息")
+                    self.updateWindowStatus(.error(message: "解析更新信息失败"))
+                    return
+                }
+                
+                print("线上最新版本: \(onlineVersion), 下载地址: \(downloadURL), 大小: \(downloadLengthStr)")
+                
+                // 计算可读的大小描述
+                let sizeInMB = self.formatFileSize(sizeInBytes: Int64(downloadLengthStr) ?? 0)
+                
+                // 保存版本信息供后续使用
+                self.currentVersionInfo = (
+                    deviceVersion: deviceVersion,
+                    onlineVersion: onlineVersion,
+                    downloadURL: downloadURL,
+                    deviceId: deviceId,
+                    adbPath: adbPath
+                )
+                
+                DispatchQueue.main.async {
+                    if let devVersion = deviceVersion {
+                        // 比较版本号
+                        switch devVersion.compare(onlineVersion, options: .numeric) {
+                        case .orderedSame, .orderedDescending:
+                            print("设备版本 (\(devVersion)) >= 线上版本 (\(onlineVersion))，无需更新。")
+                            self.updateWindowStatus(.noUpdateNeeded)
+                        case .orderedAscending:
+                            print("设备版本 (\(devVersion)) < 线上版本 (\(onlineVersion))，需要更新。")
+                            self.updateWindowStatus(.available(version: onlineVersion, downloadSize: sizeInMB))
+                        }
+                    } else {
+                        print("设备未安装或无法获取版本，准备安装线上版本 \(onlineVersion)。")
+                        self.updateWindowStatus(.available(version: onlineVersion, downloadSize: sizeInMB))
+                    }
+                }
+            } else {
+                print("解析 Wear OS Appcast 失败")
+                self.updateWindowStatus(.error(message: "解析更新信息失败"))
+            }
+        }
+        task.resume()
+    }
+    
+    // 更新窗口状态
+    private func updateWindowStatus(_ status: WatchAppUpdateStatus) {
+        DispatchQueue.main.async {
+            // 更新弹窗状态
+            self.watchAppUpdateWindowController?.updateStatus(to: status)
         }
     }
     
-    private func processNonCroppedImage(_ image: NSImage) -> NSImage? {
-        let targetSize = CGSize(width: 512, height: 512)
-        let scaledImage = NSImage(size: targetSize)
-        scaledImage.lockFocus()
-        
-        NSColor.black.setFill()
-        NSBezierPath.fill(NSRect(origin: .zero, size: targetSize))
-        
-        // 对于1:1的图片，直接拉伸到512×512
-        let drawRect = NSRect(origin: .zero, size: targetSize)
-        
-        image.draw(in: drawRect,
-                  from: NSRect(origin: .zero, size: image.size),
-                  operation: .copy,
-                  fraction: 1.0)
-        
-        scaledImage.unlockFocus()
-        return scaledImage
-    }
-    
-    // --- 新增：视频缩放函数 ---
-    private func resizeVideo(inputURL: URL, outputURL: URL, targetSize: CGSize = CGSize(width: 512, height: 512), completion: @escaping (Bool) -> Void) {
-        let asset = AVAsset(url: inputURL)
-        
-        // 使用 .movielens 或类似的中等质量预设，如果不存在则用 HighestQuality
-        let preset = AVAssetExportSession.exportPresets(compatibleWith: asset).contains(AVAssetExportPreset1280x720) ? AVAssetExportPreset1280x720 : AVAssetExportPresetHighestQuality
-        
-        guard let exporter = AVAssetExportSession(asset: asset, presetName: preset) else {
-            print("Error creating export session for \(inputURL)")
-            completion(false)
+    // 用户在窗口点击"安装"后开始下载安装流程
+    private func startDownloadAndInstallProcess() {
+        guard let info = currentVersionInfo else {
+            self.updateWindowStatus(.error(message: "丢失版本信息"))
             return
         }
-
-        exporter.outputURL = outputURL
-        exporter.outputFileType = .mp4 // 强制输出 MP4
-        exporter.shouldOptimizeForNetworkUse = true
-
-        // 创建视频组合以进行缩放
-        guard let videoTrack = asset.tracks(withMediaType: .video).first else {
-            print("No video track found in \(inputURL)")
-            completion(false)
+        
+        guard let url = URL(string: info.downloadURL) else {
+            self.updateWindowStatus(.error(message: "无效的下载URL"))
             return
         }
-
-        let videoComposition = AVMutableVideoComposition()
-        videoComposition.renderSize = targetSize
-        // 修正帧率获取和设置
-        let frameRate = videoTrack.nominalFrameRate > 0 ? videoTrack.nominalFrameRate : 30
-        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: Int32(frameRate))
-
-        let instruction = AVMutableVideoCompositionInstruction()
-        instruction.timeRange = CMTimeRange(start: .zero, duration: asset.duration)
-
-        let layerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: videoTrack)
-
-        // 计算缩放变换，保持宽高比并居中
-        let naturalSize = videoTrack.naturalSize
-        let preferredTransform = videoTrack.preferredTransform
-        let transformedSize = naturalSize.applying(preferredTransform)
-        let videoWidth = abs(transformedSize.width)
-        let videoHeight = abs(transformedSize.height)
-
-        let scaleX = targetSize.width / videoWidth
-        let scaleY = targetSize.height / videoHeight
-        let scaleFactor = min(scaleX, scaleY)
-
-        let scaledWidth = videoWidth * scaleFactor
-        let scaledHeight = videoHeight * scaleFactor
-        let posX = (targetSize.width - scaledWidth) / 2.0
-        let posY = (targetSize.height - scaledHeight) / 2.0
-
-        var finalTransform = preferredTransform
-        finalTransform = finalTransform.concatenating(CGAffineTransform(scaleX: scaleFactor, y: scaleFactor))
-        finalTransform = finalTransform.concatenating(CGAffineTransform(translationX: posX, y: posY))
-
-        layerInstruction.setTransform(finalTransform, at: .zero)
-
-        instruction.layerInstructions = [layerInstruction]
-        videoComposition.instructions = [instruction]
-
-        exporter.videoComposition = videoComposition
-
-        // 确保输出目录存在并移除旧文件
-        let outputDir = outputURL.deletingLastPathComponent()
-        try? FileManager.default.createDirectory(at: outputDir, withIntermediateDirectories: true)
-        try? FileManager.default.removeItem(at: outputURL)
-
-        exporter.exportAsynchronously {
-            DispatchQueue.main.async {
-                switch exporter.status {
-                case .completed:
-                    print("Video resized successfully to \(outputURL.path)")
-                    completion(true)
-                case .failed:
-                    print("Video resizing failed: \(exporter.error?.localizedDescription ?? "Unknown error")")
-                    completion(false)
-                case .cancelled:
-                    print("Video resizing cancelled.")
-                    completion(false)
-                default:
-                    completion(false)
-                }
+        
+        // 检查缓存目录
+        guard let appSupportDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+            self.updateWindowStatus(.error(message: "无法访问缓存目录"))
+            return
+        }
+        
+        let bundleId = Bundle.main.bundleIdentifier ?? "com.jadon7.watchrip"
+        let cacheDir = appSupportDir.appendingPathComponent(bundleId).appendingPathComponent("APKCache")
+        
+        // 创建缓存目录（如果不存在）
+        do {
+            try FileManager.default.createDirectory(at: cacheDir, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            print("创建缓存目录失败: \(error.localizedDescription)")
+            self.updateWindowStatus(.error(message: "创建缓存目录失败"))
+            return
+        }
+        
+        // 构建目标 APK 文件名和路径
+        let apkFileName = "watch_view_\(info.onlineVersion).apk"
+        let destinationURL = cacheDir.appendingPathComponent(apkFileName)
+        
+        // 检查本地缓存 APK
+        if FileManager.default.fileExists(atPath: destinationURL.path) {
+            print("发现本地缓存的最新 APK: \(destinationURL.path)")
+            self.updateWindowStatus(.installing)
+            self.installAPKFromLocalPath(localAPKPath: destinationURL.path, deviceId: info.deviceId, adbPath: info.adbPath)
+        } else {
+            print("本地未找到版本 \(info.onlineVersion) 的 APK，开始下载...")
+            
+            // 开始下载流程
+            self.startDownloadAPK(url: url, destination: destinationURL, deviceId: info.deviceId, adbPath: info.adbPath)
+        }
+    }
+    
+    // 开始下载APK
+    private func startDownloadAPK(url: URL, destination: URL, deviceId: String, adbPath: String) {
+        // 更新窗口状态为开始下载
+        self.updateWindowStatus(.downloading(progress: 0.0))
+        
+        // 获取预期文件大小
+        var expectedLength: Int64 = 0
+        if let _ = currentVersionInfo, let length = Int64(WearOSAppcastParserDelegate().length ?? "0") {
+            expectedLength = length
+        }
+        
+        // 创建下载任务
+        let task = urlSession.downloadTask(with: url)
+        
+        // 存储当前下载信息
+        self.currentDownloadTask = task
+        self.apkDownloadInfo = (
+            version: destination.lastPathComponent.replacingOccurrences(of: "watch_view_", with: "").replacingOccurrences(of: ".apk", with: ""),
+            url: url,
+            length: expectedLength,
+            destination: destination
+        )
+        
+        // 存储设备ID和ADB路径供下载完成后使用
+        self.downloadCompletionInfo = (deviceId: deviceId, adbPath: adbPath)
+        
+        // 开始下载
+        task.resume()
+    }
+    
+    // 保存下载完成后需要的信息
+    private var downloadCompletionInfo: (deviceId: String, adbPath: String)?
+    
+    // 安装本地APK
+    private func installAPKFromLocalPath(localAPKPath: String, deviceId: String, adbPath: String) {
+        // 通知UI窗口进入安装状态
+        self.updateWindowStatus(.installing)
+        
+        runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "install", "-r", localAPKPath]) { [weak self] success, output in
+            if success && output.lowercased().contains("success") {
+                print("手表App安装成功!")
+                self?.updateWindowStatus(.installComplete)
+            } else {
+                print("手表App安装失败: \(output)")
+                self?.updateWindowStatus(.error(message: "安装失败: \(output)"))
             }
         }
     }
-    // --- 结束 新增：视频缩放函数 ---
+    
+    // 格式化文件大小
+    private func formatFileSize(sizeInBytes: Int64) -> String {
+        let byteCountFormatter = ByteCountFormatter()
+        byteCountFormatter.allowedUnits = [.useMB]
+        byteCountFormatter.countStyle = .file
+        return byteCountFormatter.string(fromByteCount: sizeInBytes)
+    }
+    
+    // MARK: - URLSessionDownloadDelegate 方法更新
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        // 确保是当前我们关心的下载任务
+        guard downloadTask == currentDownloadTask else { return }
+        
+        // 计算并更新进度
+        let expectedLength = totalBytesExpectedToWrite > 0 ? totalBytesExpectedToWrite : (apkDownloadInfo?.length ?? 0)
+        
+        if expectedLength > 0 {
+            let progress = Double(totalBytesWritten) / Double(expectedLength)
+            // 更新弹窗UI显示进度
+            self.updateWindowStatus(.downloading(progress: progress))
+        }
+    }
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        print("APK 下载完成，临时文件位于: \(location.path)")
+        
+        // 确保是我们关心的下载任务
+        guard downloadTask == currentDownloadTask, let info = apkDownloadInfo else {
+            print("下载完成但无法识别任务或缺少信息")
+            return
+        }
+        
+        // 将下载的临时文件移动到最终的缓存位置
+        let destinationURL = info.destination
+        let fm = FileManager.default
+        
+        // 先删除可能存在的旧文件
+        try? fm.removeItem(at: destinationURL)
+        
+        do {
+            try fm.moveItem(at: location, to: destinationURL)
+            print("APK 已移动到缓存目录: \(destinationURL.path)")
+            
+            // 清理状态
+            currentDownloadTask = nil
+            self.apkDownloadInfo = nil
+            
+            // 获取保存的设备ID和ADB路径
+            if let completionInfo = self.downloadCompletionInfo {
+                // 开始安装
+                installAPKFromLocalPath(
+                    localAPKPath: destinationURL.path,
+                    deviceId: completionInfo.deviceId,
+                    adbPath: completionInfo.adbPath
+                )
+            } else {
+                self.updateWindowStatus(.error(message: "下载完成但丢失了设备信息"))
+            }
+        } catch {
+            print("移动APK文件失败: \(error.localizedDescription)")
+            self.updateWindowStatus(.error(message: "保存下载文件失败"))
+        }
+    }
+    
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        if let error = error {
+            print("URLSession 任务出错: \(error.localizedDescription)")
+            
+            if task == currentDownloadTask {
+                self.updateWindowStatus(.error(message: "下载失败: \(error.localizedDescription)"))
+                currentDownloadTask = nil
+                apkDownloadInfo = nil
+            }
+        }
+    }
 
     deinit {
         ipCheckTimer?.invalidate()
@@ -947,36 +701,40 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
     }
     
     private func updateADBStatus(_ message: String, isError: Bool) {
-        guard let statusItem = adbStatusMenuItem, let menu = statusItem.menu else { return }
-
-        let adbTitleIndex = menu.indexOfItem(withTitle: "ADB 设备")
-        guard adbTitleIndex != -1 else { return }
-        var insertIndex = adbTitleIndex + 1
-        while let item = menu.item(at: insertIndex), item.action == #selector(selectADBDevice(_:)) || item.title == "无设备连接" || item.title == "检测中..." {
-            insertIndex += 1
-        }
-
-        if menu.index(of: statusItem) != insertIndex {
-             if menu.index(of: statusItem) != -1 { menu.removeItem(statusItem) }
-             menu.insertItem(statusItem, at: insertIndex)
-        }
-
-        statusItem.isHidden = false
-        statusItem.attributedTitle = NSAttributedString(
-            string: message,
-            attributes: [
-                .foregroundColor: isError ? NSColor.systemRed : NSColor.systemGreen,
-                .font: NSFont.systemFont(ofSize: 11)
-            ]
-        )
-
-        if !isError {
-             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak statusItem] in
-                  statusItem?.isHidden = true
-             }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) { [weak statusItem] in
-                 statusItem?.isHidden = true
+        guard let statusItem = adbStatusMenuItem else { return }
+        
+        DispatchQueue.main.async {
+            statusItem.title = message
+            if isError {
+                statusItem.attributedTitle = NSAttributedString(
+                    string: message,
+                    attributes: [.foregroundColor: NSColor.systemRed]
+                )
+            } else {
+                statusItem.attributedTitle = nil
+                statusItem.title = message
+            }
+            
+            // 显示状态项
+            statusItem.isHidden = false
+            
+            // 5秒后自动隐藏（除非是错误）
+            if !isError {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak statusItem] in
+                    guard let statusItem = statusItem, !statusItem.isHidden else { return }
+                    // 如果5秒后标题没变，才隐藏（避免新消息被错误隐藏）
+                    if statusItem.title == message {
+                        statusItem.isHidden = true
+                    }
+                }
+            } else {
+                // 错误状态保持显示稍长时间
+                DispatchQueue.main.asyncAfter(deadline: .now() + 10) { [weak statusItem] in
+                    guard let statusItem = statusItem, !statusItem.isHidden else { return }
+                    if statusItem.title == message {
+                        statusItem.isHidden = true
+                    }
+                }
             }
         }
     }
@@ -1015,265 +773,10 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
         RunLoop.current.add(timer, forMode: .common)
     }
 
-    @objc private func checkForUpdatesMenuItemAction(_ sender: NSMenuItem) {
-        updater.checkForUpdates(sender)
-    }
-
-    func updateCheckUpdatesMenuItemTitle(hasUpdate: Bool) {
-        DispatchQueue.main.async { // 确保在主线程更新 UI
-            if hasUpdate {
-                self.checkUpdatesMenuItem?.title = "发现新版本！"
-                // (可选) 添加视觉提示，比如加粗或改变颜色
-                // self.checkUpdatesMenuItem?.attributedTitle = NSAttributedString(...) 
-            } else {
-                self.checkUpdatesMenuItem?.title = "检查更新..."
-                // (可选) 恢复默认样式
-                // self.checkUpdatesMenuItem?.attributedTitle = nil 
-            }
-        }
-    }
-
-    @objc private func installOrUpdateWatchApp(_ sender: NSMenuItem) {
-        print("开始执行安装/更新手表 App 流程")
-        
-        guard let deviceId = selectedADBDeviceID else {
-            updateADBStatus("请先选择一个 ADB 设备", isError: true)
-            return
-        }
-        guard let adbPath = adbExecutablePath else {
-            updateADBStatus("错误: 未找到 ADB 路径", isError: true)
-            return
-        }
-
-        updateADBStatus("检查手表 App 版本...", isError: false)
-        
-        let packageName = "com.example.watchview"
-        let command = "dumpsys package \(packageName) | grep versionName"
-        
-        runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "shell", command]) { [weak self] success, output in
-            guard let self = self else { return }
-            
-            var deviceVersion: String? = nil
-            if success {
-                if let range = output.range(of: "versionName=") {
-                    let versionString = output[range.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
-                    if !versionString.isEmpty && versionString.contains(".") { 
-                        deviceVersion = versionString
-                        print("设备 \(deviceId) 上找到 \(packageName) 版本: \(deviceVersion!)")
-                        self.updateADBStatus("设备版本: \(deviceVersion!) / 线上检查中...", isError: false)
-                    } else {
-                         print("从 dumpsys 输出中解析版本号失败或格式无效: \(output)")
-                    }
-                }
-            }
-            if deviceVersion == nil {
-                 print("未在设备 \(deviceId) 上找到 \(packageName) 或获取版本失败。错误/输出: \(output)")
-                 self.updateADBStatus("设备未安装App / 线上检查中...", isError: false)
-            }
-
-            self.fetchOnlineVersionAndProceed(deviceVersion: deviceVersion, deviceId: deviceId, adbPath: adbPath)
-        }
-    }
-    
-    private func fetchOnlineVersionAndProceed(deviceVersion: String?, deviceId: String, adbPath: String) {
-        let appcastURLString = "https://raw.githubusercontent.com/jadon7/Watch-RIP-MAC/feature/wear-app-installer/wear_os_appcast.xml"
-        guard let url = URL(string: appcastURLString) else {
-            print("Wear OS Appcast URL 无效: \(appcastURLString)")
-            updateADBStatus("错误: Appcast URL 无效", isError: true)
-            return
-        }
-
-        updateADBStatus("线上检查中...", isError: false)
-
-        let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-            guard let self = self else { return }
-            
-            if let error = error {
-                print("下载 Wear OS Appcast 失败: \(error.localizedDescription)")
-                DispatchQueue.main.async {
-                    self.updateADBStatus("错误: 无法检查更新", isError: true)
-                }
-                return
-            }
-            
-            guard let data = data else {
-                print("Wear OS Appcast 下载的数据为空")
-                DispatchQueue.main.async {
-                    self.updateADBStatus("错误: 更新信息为空", isError: true)
-                }
-                return
-            }
-
-            let parser = XMLParser(data: data)
-            let delegate = WearOSAppcastParserDelegate()
-            parser.delegate = delegate
-            
-            if parser.parse() {
-                guard let onlineVersion = delegate.latestVersionName, 
-                      let downloadURL = delegate.downloadURL, 
-                      let downloadLengthStr = delegate.downloadLength else {
-                    print("解析 Appcast 成功，但未能提取到完整的版本信息")
-                    DispatchQueue.main.async {
-                        self.updateADBStatus("错误: 更新信息不完整", isError: true)
-                    }
-                    return
-                }
-                
-                print("线上最新版本: \(onlineVersion), 下载地址: \(downloadURL), 大小: \(downloadLengthStr)")
-                
-                DispatchQueue.main.async {
-                    if let devVersion = deviceVersion {
-                        switch devVersion.compare(onlineVersion, options: .numeric) {
-                        case .orderedSame, .orderedDescending:
-                            print("设备版本 (\(devVersion)) >= 线上版本 (\(onlineVersion))，无需更新。")
-                            self.updateADBStatus("手表 App 已是最新版", isError: false)
-                            return
-                        case .orderedAscending:
-                            print("设备版本 (\(devVersion)) < 线上版本 (\(onlineVersion))，需要更新。")
-                            self.updateADBStatus("发现新版本: \(onlineVersion)", isError: false)
-                            self.checkCacheAndDownloadAPK(onlineVersion: onlineVersion, downloadURL: downloadURL, downloadLengthStr: downloadLengthStr, deviceId: deviceId, adbPath: adbPath)
-                        }
-                    } else {
-                        print("设备未安装或无法获取版本，准备安装线上版本 \(onlineVersion)。")
-                        self.updateADBStatus("准备安装版本: \(onlineVersion)", isError: false)
-                        self.checkCacheAndDownloadAPK(onlineVersion: onlineVersion, downloadURL: downloadURL, downloadLengthStr: downloadLengthStr, deviceId: deviceId, adbPath: adbPath)
-                    }
-                }
-
-            } else {
-                print("解析 Wear OS Appcast 失败")
-                DispatchQueue.main.async {
-                    self.updateADBStatus("错误: 解析更新信息失败", isError: true)
-                }
-            }
-        }
-        task.resume()
-    }
-
-    private func checkCacheAndDownloadAPK(onlineVersion: String, downloadURL: String, downloadLengthStr: String, deviceId: String, adbPath: String) {
-        
-        guard let appSupportDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
-            updateADBStatus("错误: 无法访问缓存目录", isError: true)
-            return
-        }
-        let bundleId = Bundle.main.bundleIdentifier ?? "com.jadon7.watchrip"
-        let cacheDir = appSupportDir.appendingPathComponent(bundleId).appendingPathComponent("APKCache")
-        
-        do {
-            try FileManager.default.createDirectory(at: cacheDir, withIntermediateDirectories: true, attributes: nil)
-        } catch {
-            print("创建缓存目录失败: \(error)")
-            updateADBStatus("错误: 无法创建缓存", isError: true)
-            return
-        }
-        
-        let apkFileName = "watch_view_\(onlineVersion).apk"
-        let destinationURL = cacheDir.appendingPathComponent(apkFileName)
-        
-        if FileManager.default.fileExists(atPath: destinationURL.path) {
-            print("发现本地缓存的最新 APK: \(destinationURL.path)")
-            updateADBStatus("准备安装本地缓存的 App...", isError: false)
-            installAPKFromLocalPath(localAPKPath: destinationURL.path, deviceId: deviceId, adbPath: adbPath)
-        } else {
-            print("本地未找到版本 \(onlineVersion) 的 APK，开始下载...")
-            guard let url = URL(string: downloadURL), let length = Int64(downloadLengthStr) else {
-                updateADBStatus("错误: 下载信息无效", isError: true)
-                return
-            }
-            
-            if currentDownloadTask != nil {
-                updateADBStatus("已有下载任务进行中...", isError: false)
-                return
-            }
-            
-            self.apkDownloadInfo = (version: onlineVersion, url: url, length: length, destination: destinationURL)
-            
-            currentDownloadTask = urlSession.downloadTask(with: url)
-            currentDownloadTask?.resume()
-            updateADBStatus("开始下载手表 App (0%)...", isError: false)
-        }
-    }
-
-    private func installAPKFromLocalPath(localAPKPath: String, deviceId: String, adbPath: String) {
-        updateADBStatus("正在安装手表 App...", isError: false)
-        runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "install", "-r", localAPKPath]) { [weak self] success, output in
-            if success && output.lowercased().contains("success") {
-                self?.updateADBStatus("手表 App 安装成功!", isError: false)
-            } else {
-                self?.updateADBStatus("安装失败: \(output)", isError: true)
-            }
-        }
-    }
-
-    // MARK: - URLSessionDownloadDelegate Methods
-
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        guard downloadTask == currentDownloadTask, let info = apkDownloadInfo else { return }
-        
-        let expectedLength = (totalBytesExpectedToWrite != NSURLSessionTransferSizeUnknown) ? totalBytesExpectedToWrite : info.length
-        
-        if expectedLength > 0 {
-            let progress = Double(totalBytesWritten) / Double(expectedLength)
-            let percentage = Int(progress * 100)
-            updateADBStatus("下载中 (\(percentage)%)...", isError: false)
-        } else {
-            let downloadedMB = String(format: "%.1f MB", Double(totalBytesWritten) / (1024 * 1024))
-            updateADBStatus("下载中 (\(downloadedMB))...", isError: false)
-        }
-    }
-
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        print("APK 下载完成，临时文件位于: \(location.path)")
-        guard let info = apkDownloadInfo else {
-            print("错误: 下载完成但 apkDownloadInfo 为空")
-            updateADBStatus("下载错误 (内部信息丢失)", isError: true)
-            currentDownloadTask = nil
-            return
-        }
-        
-        let destinationURL = info.destination
-        let fm = FileManager.default
-        try? fm.removeItem(at: destinationURL)
-        do {
-            try fm.moveItem(at: location, to: destinationURL)
-            print("APK 已移动到缓存目录: \(destinationURL.path)")
-            
-            currentDownloadTask = nil
-            self.apkDownloadInfo = nil
-            
-            if let deviceId = selectedADBDeviceID, let adbPath = adbExecutablePath {
-                installAPKFromLocalPath(localAPKPath: destinationURL.path, deviceId: deviceId, adbPath: adbPath)
-            } else {
-                 updateADBStatus("错误: 无法开始安装 (设备未选或 ADB 路径丢失)", isError: true)
-            }
-            
-        } catch {
-            print("移动 APK 文件失败: \(error)")
-            updateADBStatus("下载错误 (无法保存文件)", isError: true)
-            currentDownloadTask = nil
-            self.apkDownloadInfo = nil
-        }
-    }
-
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        if let error = error {
-            print("URLSession 任务出错: \(error.localizedDescription)")
-            if task == currentDownloadTask {
-                 updateADBStatus("下载失败: \(error.localizedDescription)", isError: true)
-                 currentDownloadTask = nil
-                 apkDownloadInfo = nil
-            }
-        } else {
-            if task == currentDownloadTask && task.response != nil {
-                 print("下载任务完成，但可能未成功保存文件 (检查 didFinishDownloadingTo)。")
-            }
-        }
-    }
-
     fileprivate class WearOSAppcastParserDelegate: NSObject, XMLParserDelegate {
         var latestVersionName: String?
         var downloadURL: String?
-        var downloadLength: String?
+        var length: String?
         private var currentElement: String = ""
         private var foundFirstItem = false
 
@@ -1282,7 +785,7 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
             if elementName == "item" && !foundFirstItem { }
             else if elementName == "enclosure" && !foundFirstItem {
                 downloadURL = attributeDict["url"]
-                downloadLength = attributeDict["length"]
+                length = attributeDict["length"]
                 foundFirstItem = true
             }
         }
@@ -1301,14 +804,241 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
         }
 
         func parserDidEndDocument(_ parser: XMLParser) {
-            print("[XML Parser] 解析完成。版本: \(latestVersionName ?? "无"), URL: \(downloadURL ?? "无"), 大小: \(downloadLength ?? "无")")
+            print("[XML Parser] 解析完成。版本: \(latestVersionName ?? "无"), URL: \(downloadURL ?? "无"), 大小: \(length ?? "无")")
         }
 
         func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
             print("[XML Parser] 解析错误: \(parseError.localizedDescription)")
             latestVersionName = nil
             downloadURL = nil
-            downloadLength = nil
+            length = nil
         }
+    }
+
+    init(updater: SPUStandardUpdaterController) {
+        self.updater = updater
+        super.init()
+        
+        // 初始化 URLSession
+        // 使用后台 session 可能过于复杂，先用默认 session 并指定 delegate queue
+        let configuration = URLSessionConfiguration.default
+        self.urlSession = URLSession(configuration: configuration, delegate: self, delegateQueue: OperationQueue.main) // 在主队列处理回调以方便更新 UI
+        
+        setupStatusItem()
+        startIPCheck()
+        statusItem.menu?.delegate = self
+        findADBPath { [weak self] path in
+            self?.adbExecutablePath = path
+            self?.checkADBDevices { _ in }
+            self?.startADBCheckTimer()
+        }
+    }
+    
+    // 设置状态栏菜单项
+    private func setupStatusItem() {
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        
+        if let button = statusItem.button {
+            // 从 Assets.xcassets 加载自定义图标
+            if let image = NSImage(named: "MenuBarIcon") {
+                image.isTemplate = true  // 设置为模板图片，这样系统会自动处理明暗模式
+                button.image = image
+            }
+        }
+        
+        let menu = NSMenu()
+        
+        // IP 地址显示项（分两行）
+        let titleItem = NSMenuItem(title: "WIFI模式下输入:", action: nil, keyEquivalent: "")
+        titleItem.isEnabled = false
+        menu.addItem(titleItem)
+        
+        let ipItem = NSMenuItem(title: "获取IP中...", action: #selector(copyIPAddress), keyEquivalent: "")
+        ipItem.target = self
+        ipItem.attributedTitle = NSAttributedString(
+            string: "获取IP中...",
+            attributes: [
+                .foregroundColor: NSColor.black,
+                .font: NSFont.systemFont(ofSize: 14, weight: .semibold)
+            ]
+        )
+        menu.addItem(ipItem)
+        
+        menu.addItem(NSMenuItem.separator())
+        
+        // 当前文件显示项
+        let fileItem = NSMenuItem(title: "当前文件：暂无文件", action: nil, keyEquivalent: "")
+        fileItem.isEnabled = false
+        menu.addItem(fileItem)
+        
+        menu.addItem(NSMenuItem.separator())
+        
+        // 图片/视频上传选项
+        let mediaItem = NSMenuItem(title: "上传图片/视频", action: #selector(openMediaPicker), keyEquivalent: "")
+        mediaItem.target = self
+        if let image = NSImage(systemSymbolName: "photo.on.rectangle", accessibilityDescription: nil) {
+            mediaItem.image = image
+        }
+        menu.addItem(mediaItem)
+        
+        // Rive 文件上传选项
+        let riveItem = NSMenuItem(title: "上传 Rive 文件", action: #selector(openRivePicker), keyEquivalent: "")
+        riveItem.target = self
+        if let image = NSImage(systemSymbolName: "doc.badge.arrow.up", accessibilityDescription: nil) {
+            riveItem.image = image
+        }
+        menu.addItem(riveItem)
+        
+        menu.addItem(NSMenuItem.separator())
+        
+        // 新增：ADB 设备显示区域
+        let adbTitleItem = NSMenuItem(title: "ADB 设备", action: nil, keyEquivalent: "")
+        adbTitleItem.isEnabled = false
+        menu.addItem(adbTitleItem)
+        
+        // 添加一个临时的"检测中..."项，稍后会被替换
+        let detectingItem = NSMenuItem(title: "检测中...", action: nil, keyEquivalent: "")
+        detectingItem.isEnabled = false
+        detectingItem.tag = 1001 // 标记，便于识别和移除
+        menu.addItem(detectingItem)
+        
+        // 新增：用于显示 ADB 状态的菜单项
+        adbStatusMenuItem = NSMenuItem(title: "", action: nil, keyEquivalent: "")
+        adbStatusMenuItem?.isHidden = true // 默认隐藏
+        adbStatusMenuItem?.isEnabled = false
+        menu.addItem(adbStatusMenuItem!)
+        
+        menu.addItem(NSMenuItem.separator())
+        
+        // --- 新增：检查更新选项 --- 
+        menu.addItem(NSMenuItem.separator()) // 添加分隔符
+        
+        let item = NSMenuItem(title: "检查更新...", action: #selector(checkForUpdatesMenuItemAction(_:)), keyEquivalent: "")
+        item.target = self
+        menu.addItem(item)
+        self.checkUpdatesMenuItem = item
+        
+        // --- 新增：安装手表 App 选项 --- 
+        let installItem = NSMenuItem(title: "安装/更新手表 App", action: #selector(installOrUpdateWatchApp(_:)), keyEquivalent: "")
+        installItem.target = self
+        menu.addItem(installItem)
+        
+        menu.addItem(NSMenuItem.separator())
+        
+        // 退出选项
+        let quitItem = NSMenuItem(title: "退出", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        menu.addItem(quitItem)
+        
+        statusItem.menu = menu
+    }
+    
+    // 开始IP地址检查
+    private func startIPCheck() {
+        updateIPAddress()
+        ipCheckTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
+            self?.updateIPAddress()
+        }
+    }
+    
+    // 更新IP地址显示
+    private func updateIPAddress() {
+        if let ip = UploadServer.shared.getLocalIPAddress() {
+            if let menu = statusItem.menu {
+                // 去掉端口号
+                let components = ip.split(separator: ":")
+                if let ipWithoutPort = components.first.map(String.init) {
+                    menu.item(at: 1)?.attributedTitle = NSAttributedString(
+                        string: ipWithoutPort,
+                        attributes: [
+                            .foregroundColor: NSColor.black,
+                            .font: NSFont.systemFont(ofSize: 14, weight: .semibold)
+                        ]
+                    )
+                }
+            }
+        }
+    }
+    
+    // 复制IP地址
+    @objc private func copyIPAddress() {
+        if let ip = UploadServer.shared.getLocalIPAddress() {
+            let components = ip.split(separator: ":")
+            if let ipWithoutPort = components.first.map(String.init) {
+                let pasteboard = NSPasteboard.general
+                pasteboard.clearContents()
+                pasteboard.setString(ipWithoutPort, forType: .string)
+                
+                // 提供复制成功的视觉反馈
+                if let menu = statusItem.menu {
+                    let originalTitle = menu.item(at: 1)?.attributedTitle
+                    menu.item(at: 1)?.attributedTitle = NSAttributedString(
+                        string: "已复制",
+                        attributes: [
+                            .foregroundColor: NSColor.systemGreen,
+                            .font: NSFont.systemFont(ofSize: 14, weight: .semibold)
+                        ]
+                    )
+                    
+                    // 1秒后恢复原始显示
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        menu.item(at: 1)?.attributedTitle = originalTitle
+                    }
+                }
+            }
+        }
+    }
+    
+    // 打开媒体选择器
+    @objc private func openMediaPicker() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = true
+        panel.allowedContentTypes = [UTType.image, UTType.movie]
+        
+        // 激活应用程序
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        
+        panel.begin { [weak self] result in
+            if result == .OK {
+                self?.handleMediaFiles(panel.urls)
+            }
+        }
+    }
+    
+    // 处理媒体文件
+    private func handleMediaFiles(_ files: [URL]) {
+        // 实现处理媒体文件的逻辑
+    }
+    
+    // 打开Rive文件选择器
+    @objc private func openRivePicker() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = false
+        
+        var allowedTypes: [UTType] = []
+        if let t = UTType(filenameExtension: "riv") {
+            allowedTypes.append(t)
+        }
+        if let t = UTType(filenameExtension: "rive") {
+            allowedTypes.append(t)
+        }
+        panel.allowedContentTypes = allowedTypes.isEmpty ? [UTType.data] : allowedTypes
+        
+        // 激活应用程序
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        
+        panel.begin { [weak self] result in
+            if result == .OK {
+                self?.handleRiveFile(panel.url)
+            }
+        }
+    }
+    
+    // 处理Rive文件
+    private func handleRiveFile(_ file: URL?) {
+        // 实现处理Rive文件的逻辑
     }
 } 
