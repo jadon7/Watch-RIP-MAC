@@ -5,6 +5,19 @@
     <link>https://raw.githubusercontent.com/jadon7/Watch-RIP-MAC/main/appcast.xml</link>
     <description>Watch RIP 最新版本更新。</description>
     <language>zh-CN</language>
+    <!-- 最新版本 -->
+    <item>
+      <title>版本 2.1.1</title>
+      <!-- 注意：pubDate 格式需要符合 RFC 822 标准 -->
+      <pubDate>Sun, 13 Apr 2025 18:11:00 +0800</pubDate> 
+      <enclosure url="https://github.com/jadon7/Watch-RIP-MAC/releases/download/v2.1.1/watch.rip.2.1.1.zip"
+                 sparkle:version="2.1.1" 
+                 sparkle:shortVersionString="2.1.1"
+                 type="application/octet-stream"
+                 length="9043658" /> 
+      <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+    </item>
+    <!-- 历史版本 -->
     <item>
       <title>版本 2.1.0</title>
       <pubDate>Fri, 12 Apr 2025 10:00:00 +0800</pubDate>
