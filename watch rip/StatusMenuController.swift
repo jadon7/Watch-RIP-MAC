@@ -1008,10 +1008,105 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
     
     // 处理媒体文件
     private func handleMediaFiles(_ files: [URL]) {
-        // 实现处理媒体文件的逻辑
+        let uploadDir = UploadServer.shared.uploadDirectory
+        let fm = FileManager.default
+        
+        // 清空上传目录中的所有文件
+        if let existingFiles = try? fm.contentsOfDirectory(at: uploadDir, includingPropertiesForKeys: nil) {
+            for file in existingFiles {
+                // 删除所有现有文件，包括 rive 文件
+                try? fm.removeItem(at: file)
+            }
+        }
+        
+        // 生成临时目录名和最终压缩包名称
+        let timestamp = Int(Date().timeIntervalSince1970)
+        let tempDir = uploadDir.appendingPathComponent("temp_\(timestamp)", isDirectory: true)
+        try? fm.createDirectory(at: tempDir, withIntermediateDirectories: true)
+        
+        processFiles(files, index: 0, tempDir: tempDir) {
+            // 根据文件数量决定压缩包的命名方式
+            let zipFileName: String
+            if files.count == 1 {
+                // 单个文件：使用源文件名
+                zipFileName = files[0].deletingPathExtension().lastPathComponent + ".zip"
+            } else {
+                // 多个文件：使用时间戳
+                zipFileName = "media_\(timestamp).zip"
+            }
+            let zipFilePath = uploadDir.appendingPathComponent(zipFileName)
+            
+            // 清理旧的同名 zip 文件（以防万一）
+            try? fm.removeItem(at: zipFilePath)
+            
+            // 压缩临时目录
+            UploadServer.shared.zipDirectory(at: tempDir, to: zipFilePath) { success in
+                // 删除临时目录
+                try? fm.removeItem(at: tempDir)
+                
+                if success {
+                    print("文件处理和压缩完成: \(zipFileName)")
+                    self.updateCurrentFile(zipFileName)
+                    
+                    // 检查是否有设备被选中，如果有则尝试推送
+                    if let deviceId = self.selectedADBDeviceID, let adbPath = self.adbExecutablePath {
+                        self.pushFileToDevice(adbPath: adbPath, deviceId: deviceId, localFilePath: zipFilePath.path, remoteFileName: zipFileName)
+                    } else {
+                         self.updateADBStatus("无设备选择，无法推送文件", isError: true)
+                    }
+                } else {
+                    print("压缩文件失败")
+                    self.updateCurrentFile("压缩失败")
+                }
+            }
+        }
+    }
+
+    // 递归处理文件（转换、裁剪、复制）
+    private func processFiles(_ files: [URL], index: Int, tempDir: URL, completion: @escaping () -> Void) {
+        guard index < files.count else {
+            completion()
+            return
+        }
+
+        let fileURL = files[index]
+        let fm = FileManager.default
+        let destURL = tempDir.appendingPathComponent(fileURL.lastPathComponent)
+        
+        if fileURL.pathExtension.lowercased() == "heic" {
+            // 处理 HEIC 文件：转换为 JPG
+            UploadServer.shared.convertHEICToJPG(sourceURL: fileURL, destinationURL: destURL.deletingPathExtension().appendingPathExtension("jpg")) { success in
+                if success {
+                    print("HEIC 转换为 JPG 成功: \(destURL.deletingPathExtension().appendingPathExtension("jpg"))")
+                } else {
+                    print("HEIC 转换失败: \(fileURL.lastPathComponent)")
+                }
+                self.processFiles(files, index: index + 1, tempDir: tempDir, completion: completion)
+            }
+        } else if fileURL.pathExtension.lowercased() == "mov" {
+            // 处理 MOV 文件：裁剪前 10 秒并转换为 MP4
+            let croppedURL = destURL.deletingPathExtension().appendingPathExtension("mp4")
+            UploadServer.shared.cropVideoToMP4(sourceURL: fileURL, destinationURL: croppedURL, duration: 10.0) { success in
+                if success {
+                    print("MOV 裁剪并转换为 MP4 成功: \(croppedURL.lastPathComponent)")
+                } else {
+                    print("MOV 处理失败: \(fileURL.lastPathComponent)")
+                }
+                self.processFiles(files, index: index + 1, tempDir: tempDir, completion: completion)
+            }
+        } else {
+            // 其他文件：直接复制
+            do {
+                try fm.copyItem(at: fileURL, to: destURL)
+                print("文件复制成功: \(destURL.lastPathComponent)")
+            } catch {
+                print("文件复制失败: \(fileURL.lastPathComponent), 错误: \(error)")
+            }
+            self.processFiles(files, index: index + 1, tempDir: tempDir, completion: completion)
+        }
     }
     
-    // 打开Rive文件选择器
+    // 处理Rive文件
     @objc private func openRivePicker() {
         let panel = NSOpenPanel()
         panel.canChooseFiles = true
@@ -1039,6 +1134,34 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
     
     // 处理Rive文件
     private func handleRiveFile(_ file: URL?) {
-        // 实现处理Rive文件的逻辑
+        guard let fileURL = file else { return }
+        let fm = FileManager.default
+        let uploadDir = UploadServer.shared.uploadDirectory
+        let destURL = uploadDir.appendingPathComponent(fileURL.lastPathComponent)
+        
+        // 清空上传目录中的所有文件
+        if let existingFiles = try? fm.contentsOfDirectory(at: uploadDir, includingPropertiesForKeys: nil) {
+            for file in existingFiles {
+                // 删除所有现有文件，包括 rive 文件
+                try? fm.removeItem(at: file)
+            }
+        }
+        
+        // 复制新的 Rive 文件
+        do {
+            try fm.copyItem(at: fileURL, to: destURL)
+            print("Rive 文件复制成功: \(destURL.lastPathComponent)")
+            updateCurrentFile(destURL.lastPathComponent)
+            
+            // 检查是否有设备被选中，如果有则尝试推送
+            if let deviceId = selectedADBDeviceID, let adbPath = adbExecutablePath {
+                pushFileToDevice(adbPath: adbPath, deviceId: deviceId, localFilePath: destURL.path, remoteFileName: destURL.lastPathComponent)
+            } else {
+                 updateADBStatus("无设备选择，无法推送文件", isError: true)
+            }
+        } catch {
+            print("Rive 文件复制失败: \(fileURL.lastPathComponent), 错误: \(error)")
+            updateCurrentFile("Rive复制失败")
+        }
     }
 } 
