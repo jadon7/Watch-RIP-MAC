@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:watchrip="http://jadon7.com/watchrip/appcast/1.0"> <!-- 使用你的域名或自定义标识 -->
+  <channel>
+    <title>Watch View (Wear OS) 更新</title>
+    <!-- 确保这个 URL 指向该文件在 feature/wear-app-installer 分支上的 Raw URL -->
+    <link>https://raw.githubusercontent.com/jadon7/Watch-RIP-MAC/feature/wear-app-installer/wear_os_appcast.xml</link>
+    <description>配套手表 App 最新版本信息。</description>
+    <language>zh-CN</language>
+    <!-- 最新版本 -->
+    <item>
+      <title>版本 2.0.1</title>
+      <watchrip:versionName>2.0.1</watchrip:versionName>
+      <!-- 你可以填入实际发布日期 -->
+      <pubDate>Fri, 12 Apr 2024 10:00:00 +0800</pubDate>
+      <enclosure url="https://github.com/jadon7/Watch-RIP-WearOS/releases/download/v2.0/watch.RIP.apk"
+                 type="application/vnd.android.package-archive"
+                 length="62315960" />
+    </item>
+  </channel>
+</rss> 

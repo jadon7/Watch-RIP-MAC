@@ -27,27 +27,8 @@
 		};
 /* End PBXBuildRule section */
 
-/* Begin PBXContainerItemProxy section */
-		EA6E0ED82D55F4AF009A4E0D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EA6E0EBE2D55F4AE009A4E0D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = EA6E0EC52D55F4AE009A4E0D;
-			remoteInfo = "watch rip";
-		};
-		EA6E0EE22D55F4AF009A4E0D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EA6E0EBE2D55F4AE009A4E0D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = EA6E0EC52D55F4AE009A4E0D;
-			remoteInfo = "watch rip";
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		EA6E0EC62D55F4AE009A4E0D /* watch rip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "watch rip.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		EA6E0ED72D55F4AF009A4E0D /* watch ripTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "watch ripTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		EA6E0EE12D55F4AF009A4E0D /* watch ripUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "watch ripUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -69,16 +50,6 @@
 			path = "watch rip";
 			sourceTree = "<group>";
 		};
-		EA6E0EDA2D55F4AF009A4E0D /* watch ripTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "watch ripTests";
-			sourceTree = "<group>";
-		};
-		EA6E0EE42D55F4AF009A4E0D /* watch ripUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "watch ripUITests";
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,20 +64,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EA6E0ED42D55F4AF009A4E0D /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EA6E0EDE2D55F4AF009A4E0D /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -114,8 +71,6 @@
 			isa = PBXGroup;
 			children = (
 				EA6E0EC82D55F4AE009A4E0D /* watch rip */,
-				EA6E0EDA2D55F4AF009A4E0D /* watch ripTests */,
-				EA6E0EE42D55F4AF009A4E0D /* watch ripUITests */,
 				EA6E0EC72D55F4AE009A4E0D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -124,8 +79,6 @@
 			isa = PBXGroup;
 			children = (
 				EA6E0EC62D55F4AE009A4E0D /* watch rip.app */,
-				EA6E0ED72D55F4AF009A4E0D /* watch ripTests.xctest */,
-				EA6E0EE12D55F4AF009A4E0D /* watch ripUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -160,52 +113,6 @@
 			productReference = EA6E0EC62D55F4AE009A4E0D /* watch rip.app */;
 			productType = "com.apple.product-type.application";
 		};
-		EA6E0ED62D55F4AF009A4E0D /* watch ripTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = EA6E0EEE2D55F4AF009A4E0D /* Build configuration list for PBXNativeTarget "watch ripTests" */;
-			buildPhases = (
-				EA6E0ED32D55F4AF009A4E0D /* Sources */,
-				EA6E0ED42D55F4AF009A4E0D /* Frameworks */,
-				EA6E0ED52D55F4AF009A4E0D /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				EA6E0ED92D55F4AF009A4E0D /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				EA6E0EDA2D55F4AF009A4E0D /* watch ripTests */,
-			);
-			name = "watch ripTests";
-			packageProductDependencies = (
-			);
-			productName = "watch ripTests";
-			productReference = EA6E0ED72D55F4AF009A4E0D /* watch ripTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		EA6E0EE02D55F4AF009A4E0D /* watch ripUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = EA6E0EF12D55F4AF009A4E0D /* Build configuration list for PBXNativeTarget "watch ripUITests" */;
-			buildPhases = (
-				EA6E0EDD2D55F4AF009A4E0D /* Sources */,
-				EA6E0EDE2D55F4AF009A4E0D /* Frameworks */,
-				EA6E0EDF2D55F4AF009A4E0D /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				EA6E0EE32D55F4AF009A4E0D /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				EA6E0EE42D55F4AF009A4E0D /* watch ripUITests */,
-			);
-			name = "watch ripUITests";
-			packageProductDependencies = (
-			);
-			productName = "watch ripUITests";
-			productReference = EA6E0EE12D55F4AF009A4E0D /* watch ripUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -218,14 +125,6 @@
 				TargetAttributes = {
 					EA6E0EC52D55F4AE009A4E0D = {
 						CreatedOnToolsVersion = 16.2;
-					};
-					EA6E0ED62D55F4AF009A4E0D = {
-						CreatedOnToolsVersion = 16.2;
-						TestTargetID = EA6E0EC52D55F4AE009A4E0D;
-					};
-					EA6E0EE02D55F4AF009A4E0D = {
-						CreatedOnToolsVersion = 16.2;
-						TestTargetID = EA6E0EC52D55F4AE009A4E0D;
 					};
 				};
 			};
@@ -250,28 +149,12 @@
 			projectRoot = "";
 			targets = (
 				EA6E0EC52D55F4AE009A4E0D /* watch rip */,
-				EA6E0ED62D55F4AF009A4E0D /* watch ripTests */,
-				EA6E0EE02D55F4AF009A4E0D /* watch ripUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		EA6E0EC42D55F4AE009A4E0D /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EA6E0ED52D55F4AF009A4E0D /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EA6E0EDF2D55F4AF009A4E0D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -288,34 +171,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EA6E0ED32D55F4AF009A4E0D /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EA6E0EDD2D55F4AF009A4E0D /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		EA6E0ED92D55F4AF009A4E0D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = EA6E0EC52D55F4AE009A4E0D /* watch rip */;
-			targetProxy = EA6E0ED82D55F4AF009A4E0D /* PBXContainerItemProxy */;
-		};
-		EA6E0EE32D55F4AF009A4E0D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = EA6E0EC52D55F4AE009A4E0D /* watch rip */;
-			targetProxy = EA6E0EE22D55F4AF009A4E0D /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		EA6E0EE92D55F4AF009A4E0D /* Debug */ = {
@@ -455,6 +311,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "watch rip/Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -483,6 +340,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "watch rip/Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -493,74 +351,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
-		EA6E0EEF2D55F4AF009A4E0D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.wenkui.watch-ripTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/watch rip.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/watch rip";
-			};
-			name = Debug;
-		};
-		EA6E0EF02D55F4AF009A4E0D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.wenkui.watch-ripTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/watch rip.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/watch rip";
-			};
-			name = Release;
-		};
-		EA6E0EF22D55F4AF009A4E0D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.wenkui.watch-ripUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = "watch rip";
-			};
-			name = Debug;
-		};
-		EA6E0EF32D55F4AF009A4E0D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.wenkui.watch-ripUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = "watch rip";
 			};
 			name = Release;
 		};
@@ -581,24 +371,6 @@
 			buildConfigurations = (
 				EA6E0EEC2D55F4AF009A4E0D /* Debug */,
 				EA6E0EED2D55F4AF009A4E0D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		EA6E0EEE2D55F4AF009A4E0D /* Build configuration list for PBXNativeTarget "watch ripTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				EA6E0EEF2D55F4AF009A4E0D /* Debug */,
-				EA6E0EF02D55F4AF009A4E0D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		EA6E0EF12D55F4AF009A4E0D /* Build configuration list for PBXNativeTarget "watch ripUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				EA6E0EF22D55F4AF009A4E0D /* Debug */,
-				EA6E0EF32D55F4AF009A4E0D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -111,7 +111,12 @@ class StatusMenuController: NSObject, NSMenuDelegate {
         let item = NSMenuItem(title: "检查更新...", action: #selector(checkForUpdatesMenuItemAction(_:)), keyEquivalent: "")
         item.target = self
         menu.addItem(item)
-        self.checkUpdatesMenuItem = item // 新增：存储引用
+        self.checkUpdatesMenuItem = item
+        
+        // --- 新增：安装手表 App 选项 --- 
+        let installItem = NSMenuItem(title: "安装/更新手表 App", action: #selector(installOrUpdateWatchApp(_:)), keyEquivalent: "")
+        installItem.target = self
+        menu.addItem(installItem)
         
         menu.addItem(NSMenuItem.separator())
         
@@ -1053,4 +1058,68 @@ class StatusMenuController: NSObject, NSMenuDelegate {
             }
         }
     }
+
+    // --- 新增：安装/更新手表 App 的 Action ---
+    @objc private func installOrUpdateWatchApp(_ sender: NSMenuItem) {
+        print("开始执行安装/更新手表 App 流程")
+        
+        guard let deviceId = selectedADBDeviceID else {
+            updateADBStatus("请先选择一个 ADB 设备", isError: true)
+            return
+        }
+        guard let adbPath = adbExecutablePath else {
+            updateADBStatus("错误: 未找到 ADB 路径", isError: true)
+            return
+        }
+
+        updateADBStatus("检查手表 App 版本...", isError: false)
+        
+        // 2. 获取设备上的应用版本 (com.example.watchview)
+        let packageName = "com.example.watchview"
+        // 命令可能因 Android 版本或设备厂商略有不同，这是比较通用的方式
+        let command = "dumpsys package \(packageName) | grep versionName"
+        
+        runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "shell", command]) { [weak self] success, output in
+            guard let self = self else { return }
+            
+            var deviceVersion: String? = nil
+            if success {
+                // 解析输出, 例如: versionName=1.0.0
+                if let range = output.range(of: "versionName=") {
+                    let versionString = output[range.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
+                    // 做一些基本的验证
+                    if !versionString.isEmpty && versionString.contains(".") { 
+                        deviceVersion = versionString
+                        print("设备 \(deviceId) 上找到 \(packageName) 版本: \(deviceVersion!)")
+                        self.updateADBStatus("设备版本: \(deviceVersion!) / 线上检查中...", isError: false)
+                    } else {
+                         print("从 dumpsys 输出中解析版本号失败或格式无效: \(output)")
+                    }
+                }
+            }
+            // 如果命令失败或未找到 versionName，deviceVersion 会是 nil
+            if deviceVersion == nil {
+                 print("未在设备 \(deviceId) 上找到 \(packageName) 或获取版本失败。错误/输出: \(output)")
+                 self.updateADBStatus("设备未安装App / 线上检查中...", isError: false)
+            }
+
+            // 接下来调用获取线上版本的函数
+            self.fetchOnlineVersionAndProceed(deviceVersion: deviceVersion, deviceId: deviceId, adbPath: adbPath)
+        }
+    }
+    
+    // --- 新增：获取线上版本并继续流程的辅助函数 ---
+    private func fetchOnlineVersionAndProceed(deviceVersion: String?, deviceId: String, adbPath: String) {
+        // TODO: 3. 获取线上最新版本信息 (下载并解析 wear_os_appcast.xml)
+        // TODO: 4. 版本比较
+        // TODO: 5. 检查本地缓存 APK
+        // TODO: 6. 下载最新 APK (带进度)
+        // TODO: 7. 执行 ADB 安装
+        
+        // 临时占位
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            self.updateADBStatus("线上检查功能开发中...", isError: false)
+        }
+    }
+    // --- 结束 新增辅助函数 ---
 } 
