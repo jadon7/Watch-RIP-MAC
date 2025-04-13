@@ -226,69 +226,9 @@ class UploadServer {
         }
     }
 
-    // 转换 HEIC 到 JPG
-    func convertHEICToJPG(sourceURL: URL, destinationURL: URL, completion: @escaping (Bool) -> Void) {
-        guard let sourceImage = CIImage(contentsOf: sourceURL) else {
-            print("无法加载 HEIC 图片: \(sourceURL.lastPathComponent)")
-            completion(false)
-            return
-        }
-        
-        let context = CIContext()
-        
-        // 1. 从 CIImage 创建 CGImage
-        guard let cgImage = context.createCGImage(sourceImage, from: sourceImage.extent) else {
-            print("无法从 CIImage 创建 CGImage")
-            completion(false)
-            return
-        }
-        
-        // 2. 从 CGImage 创建 NSBitmapImageRep
-        let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
-        
-        // 3. 获取 JPEG 数据并设置压缩质量
-        guard let jpegData = bitmapRep.representation(using: .jpeg, properties: [.compressionFactor: 0.8]) else {
-            print("无法生成 JPEG 数据")
-            completion(false)
-            return
-        }
-        
-        // 4. 将 JPEG 数据写入文件
-        do {
-            try jpegData.write(to: destinationURL)
-            completion(true)
-        } catch {
-            print("写入 JPG 文件失败: \(error)")
-            completion(false)
-        }
-    }
+    // 移除旧的 HEIC 转换方法
+    // func convertHEICToJPG(...) { ... }
 
-    // 裁剪视频并转换为 MP4
-    func cropVideoToMP4(sourceURL: URL, destinationURL: URL, duration: TimeInterval, completion: @escaping (Bool) -> Void) {
-        let asset = AVAsset(url: sourceURL)
-        let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)
-        exportSession?.outputURL = destinationURL
-        exportSession?.outputFileType = .mp4
-        
-        let startTime = CMTime.zero
-        let endTime = CMTime(seconds: min(duration, asset.duration.seconds), preferredTimescale: 600)
-        exportSession?.timeRange = CMTimeRange(start: startTime, end: endTime)
-        
-        exportSession?.exportAsynchronously { 
-            DispatchQueue.main.async {
-                switch exportSession?.status {
-                case .completed:
-                    completion(true)
-                case .failed:
-                    print("视频导出失败: \(exportSession?.error?.localizedDescription ?? "未知错误")")
-                    completion(false)
-                case .cancelled:
-                    print("视频导出已取消")
-                    completion(false)
-                default:
-                    completion(false)
-                }
-            }
-        }
-    }
+    // 移除旧的 MOV 裁剪方法
+    // func cropVideoToMP4(...) { ... }
 } 

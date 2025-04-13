@@ -16,6 +16,7 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
     private var adbCheckTimer: Timer?
     private let updater: SPUStandardUpdaterController
     private var checkUpdatesMenuItem: NSMenuItem?
+    private var installWatchAppMenuItem: NSMenuItem?
     
     // 新增：管理 APK 下载
     private var urlSession: URLSession!
@@ -563,9 +564,13 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
         let currentDeviceIDs = currentDeviceItems.compactMap { $0.representedObject as? String }.sorted()
         let newDeviceIDs = devices.keys.sorted()
         
+        // 首先根据设备是否存在更新安装菜单项的可见性
+        self.installWatchAppMenuItem?.isHidden = devices.isEmpty
+        
         if currentDeviceIDs == newDeviceIDs {
+            // 如果设备列表未改变，只需更新名称和选中状态
             if selectedADBDeviceID != nil && !devices.keys.contains(selectedADBDeviceID!) {
-                 print("[updateMenuWithADBDevices] 之前选中的设备 \'\(selectedADBDeviceID!)\' 不再存在，重新选择第一个。")
+                 print("[updateMenuWithADBDevices] 之前选中的设备 '\(selectedADBDeviceID!)' 不再存在，重新选择第一个。")
                  selectedADBDeviceID = devices.keys.sorted().first
             } else if selectedADBDeviceID == nil && !devices.isEmpty {
                  print("[updateMenuWithADBDevices] 之前未选中，自动选择第一个设备。")
@@ -580,9 +585,11 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
                  }
              }
             self.adbDevices = devices
+            // self.installWatchAppMenuItem?.isHidden = devices.isEmpty // 已在开头处理
             return
         }
         
+        // 设备列表已改变，重建菜单项
         let currentIndex = adbTitleIndex + 1
         while let itemToRemove = menu.item(at: currentIndex),
               itemToRemove !== adbStatusMenuItem,
@@ -595,6 +602,7 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
             noDeviceItem.isEnabled = false
             menu.insertItem(noDeviceItem, at: adbTitleIndex + 1)
             selectedADBDeviceID = nil
+            // self.installWatchAppMenuItem?.isHidden = true // 已在开头处理
         } else {
             let sortedSerials = devices.keys.sorted()
             if selectedADBDeviceID == nil || !sortedSerials.contains(selectedADBDeviceID!) {
@@ -615,6 +623,7 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
                 deviceItem.state = (serial == selectedADBDeviceID) ? .on : .off
                 menu.insertItem(deviceItem, at: adbTitleIndex + 1 + index)
             }
+            // self.installWatchAppMenuItem?.isHidden = false // 已在开头处理
         }
         self.adbDevices = devices
     }
@@ -921,7 +930,9 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
         // --- 新增：安装手表 App 选项 --- 
         let installItem = NSMenuItem(title: "安装/更新手表 App", action: #selector(installOrUpdateWatchApp(_:)), keyEquivalent: "")
         installItem.target = self
+        installItem.isHidden = true // 默认隐藏，直到检测到设备
         menu.addItem(installItem)
+        self.installWatchAppMenuItem = installItem // 保存引用
         
         menu.addItem(NSMenuItem.separator())
         
@@ -1006,7 +1017,7 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
         }
     }
     
-    // 处理媒体文件
+    // 修改 handleMediaFiles 以使用 ContentView 的逻辑
     private func handleMediaFiles(_ files: [URL]) {
         let uploadDir = UploadServer.shared.uploadDirectory
         let fm = FileManager.default
@@ -1014,99 +1025,156 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
         // 清空上传目录中的所有文件
         if let existingFiles = try? fm.contentsOfDirectory(at: uploadDir, includingPropertiesForKeys: nil) {
             for file in existingFiles {
-                // 删除所有现有文件，包括 rive 文件
                 try? fm.removeItem(at: file)
             }
         }
         
-        // 生成临时目录名和最终压缩包名称
+        // 生成临时目录名
         let timestamp = Int(Date().timeIntervalSince1970)
         let tempDir = uploadDir.appendingPathComponent("temp_\(timestamp)", isDirectory: true)
         try? fm.createDirectory(at: tempDir, withIntermediateDirectories: true)
         
-        processFiles(files, index: 0, tempDir: tempDir) {
-            // 根据文件数量决定压缩包的命名方式
-            let zipFileName: String
-            if files.count == 1 {
-                // 单个文件：使用源文件名
-                zipFileName = files[0].deletingPathExtension().lastPathComponent + ".zip"
-            } else {
-                // 多个文件：使用时间戳
-                zipFileName = "media_\(timestamp).zip"
-            }
-            let zipFilePath = uploadDir.appendingPathComponent(zipFileName)
-            
-            // 清理旧的同名 zip 文件（以防万一）
-            try? fm.removeItem(at: zipFilePath)
-            
-            // 压缩临时目录
-            UploadServer.shared.zipDirectory(at: tempDir, to: zipFilePath) { success in
-                // 删除临时目录
-                try? fm.removeItem(at: tempDir)
-                
-                if success {
-                    print("文件处理和压缩完成: \(zipFileName)")
-                    self.updateCurrentFile(zipFileName)
-                    
-                    // 检查是否有设备被选中，如果有则尝试推送
-                    if let deviceId = self.selectedADBDeviceID, let adbPath = self.adbExecutablePath {
-                        self.pushFileToDevice(adbPath: adbPath, deviceId: deviceId, localFilePath: zipFilePath.path, remoteFileName: zipFileName)
-                    } else {
-                         self.updateADBStatus("无设备选择，无法推送文件", isError: true)
-                    }
+        // 重新实现 processFiles 逻辑 (内联或调用新的辅助方法)
+        func processFilesAsync(_ files: [URL], index: Int, tempDir: URL, completion: @escaping () -> Void) {
+            guard index < files.count else {
+                // 所有文件处理完毕，执行压缩和后续操作
+                let zipFileName: String
+                if files.count == 1 {
+                    zipFileName = files[0].deletingPathExtension().lastPathComponent + ".zip"
                 } else {
-                    print("压缩文件失败")
-                    self.updateCurrentFile("压缩失败")
+                    // 多个文件：使用 月-日 时:分 格式命名
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "MM-dd HH:mm"
+                    let dateString = dateFormatter.string(from: Date())
+                    zipFileName = "\(dateString).zip"
                 }
-            }
-        }
-    }
-
-    // 递归处理文件（转换、裁剪、复制）
-    private func processFiles(_ files: [URL], index: Int, tempDir: URL, completion: @escaping () -> Void) {
-        guard index < files.count else {
-            completion()
+                let zipFilePath = uploadDir.appendingPathComponent(zipFileName)
+                try? fm.removeItem(at: zipFilePath) // 清理旧 zip
+                
+                UploadServer.shared.zipDirectory(at: tempDir, to: zipFilePath) { [weak self] success in
+                    try? fm.removeItem(at: tempDir) // 删除临时目录
+                    guard let self = self else { return }
+                    
+                    if success {
+                        print("文件处理和压缩完成: \(zipFileName)")
+                        self.updateCurrentFile(zipFileName)
+                        if let deviceId = self.selectedADBDeviceID, let adbPath = self.adbExecutablePath {
+                            self.pushFileToDevice(adbPath: adbPath, deviceId: deviceId, localFilePath: zipFilePath.path, remoteFileName: zipFileName)
+                        } else {
+                            self.updateADBStatus("无设备选择，无法推送文件", isError: true)
+                        }
+                    } else {
+                        print("压缩文件失败")
+                        self.updateCurrentFile("压缩失败")
+                        self.updateADBStatus("压缩文件失败", isError: true)
+                    }
+                    completion() // 告知外部调用完成
+                }
             return
         }
-
-        let fileURL = files[index]
-        let fm = FileManager.default
-        let destURL = tempDir.appendingPathComponent(fileURL.lastPathComponent)
         
-        if fileURL.pathExtension.lowercased() == "heic" {
-            // 处理 HEIC 文件：转换为 JPG
-            UploadServer.shared.convertHEICToJPG(sourceURL: fileURL, destinationURL: destURL.deletingPathExtension().appendingPathExtension("jpg")) { success in
-                if success {
-                    print("HEIC 转换为 JPG 成功: \(destURL.deletingPathExtension().appendingPathExtension("jpg"))")
-                } else {
-                    print("HEIC 转换失败: \(fileURL.lastPathComponent)")
+            // 处理当前文件
+        let fileURL = files[index]
+        let ext = fileURL.pathExtension.lowercased()
+        let imageExtensions = ["jpg", "jpeg", "png", "heic", "tiff", "bmp"]
+            let videoExtensions = ["mp4", "mov", "m4v", "avi", "flv"]
+        
+        if imageExtensions.contains(ext) {
+                guard let image = NSImage(contentsOf: fileURL) else {
+                    print("无法加载图片: \(fileURL.lastPathComponent)")
+                    processFilesAsync(files, index: index + 1, tempDir: tempDir, completion: completion)
+                    return
                 }
-                self.processFiles(files, index: index + 1, tempDir: tempDir, completion: completion)
-            }
-        } else if fileURL.pathExtension.lowercased() == "mov" {
-            // 处理 MOV 文件：裁剪前 10 秒并转换为 MP4
-            let croppedURL = destURL.deletingPathExtension().appendingPathExtension("mp4")
-            UploadServer.shared.cropVideoToMP4(sourceURL: fileURL, destinationURL: croppedURL, duration: 10.0) { success in
-                if success {
-                    print("MOV 裁剪并转换为 MP4 成功: \(croppedURL.lastPathComponent)")
-                } else {
-                    print("MOV 处理失败: \(fileURL.lastPathComponent)")
+                let width = image.size.width
+                let height = image.size.height
+                
+                if abs(width - height) > 1 { // 非 1:1，显示裁切弹窗
+                    self.presentImageCropper(for: image) { croppedImage in
+                        let destURL = tempDir.appendingPathComponent(fileURL.deletingPathExtension().lastPathComponent + ".png") // 统一输出为 PNG
+                        if let cropped = croppedImage,
+                           let tiffData = cropped.tiffRepresentation,
+                           let rep = NSBitmapImageRep(data: tiffData),
+                           let data = rep.representation(using: .png, properties: [:]) {
+                            try? data.write(to: destURL)
+                            print("图片裁剪并保存为 PNG: \(destURL.lastPathComponent)")
+                        } else {
+                            print("图片裁剪取消或失败，尝试直接处理原图: \(fileURL.lastPathComponent)")
+                            // 裁剪取消/失败，尝试应用 1:1 处理逻辑到原图
+                            if let processed = self.processNonCroppedImage(image),
+                               let tiffData = processed.tiffRepresentation,
+                               let rep = NSBitmapImageRep(data: tiffData),
+                               let data = rep.representation(using: .png, properties: [:]) {
+                                try? data.write(to: destURL)
+                                print("原图处理并保存为 PNG: \(destURL.lastPathComponent)")
+                            }
+                        }
+                        processFilesAsync(files, index: index + 1, tempDir: tempDir, completion: completion)
+                    }
+                } else { // 对于已 1:1 的图片，应用自动缩放和填充黑色逻辑
+                    let destURL = tempDir.appendingPathComponent(fileURL.deletingPathExtension().lastPathComponent + ".png")
+                    if let processed = self.processNonCroppedImage(image),
+                       let tiffData = processed.tiffRepresentation,
+                       let rep = NSBitmapImageRep(data: tiffData),
+                       let data = rep.representation(using: .png, properties: [:]) {
+                        try? data.write(to: destURL)
+                        print("1:1 图片处理并保存为 PNG: \(destURL.lastPathComponent)")
+                    }
+                    processFilesAsync(files, index: index + 1, tempDir: tempDir, completion: completion)
                 }
-                self.processFiles(files, index: index + 1, tempDir: tempDir, completion: completion)
+            } else if videoExtensions.contains(ext) {
+            let asset = AVAsset(url: fileURL)
+            if let videoTrack = asset.tracks(withMediaType: .video).first,
+               videoTrack.naturalSize.width != videoTrack.naturalSize.height {
+                    // 非 1:1 视频，弹出裁切弹窗 (需确保 presentVideoCropper 可用)
+                    self.presentVideoCropper(for: fileURL) { processedURL in
+                        let destURL = tempDir.appendingPathComponent(fileURL.deletingPathExtension().lastPathComponent + ".mp4") // 统一输出 MP4
+                        if let processed = processedURL {
+                            // 移动处理后的文件
+                            try? fm.moveItem(at: processed, to: destURL)
+                            print("视频裁剪并保存为 MP4: \(destURL.lastPathComponent)")
+                    } else {
+                            // 裁剪取消或失败，尝试应用 1:1 处理到原视频
+                            print("视频裁剪取消或失败，尝试处理原视频: \(fileURL.lastPathComponent)")
+                             if let processed = self.processVideo(fileURL) {
+                                try? fm.moveItem(at: processed, to: destURL)
+                                print("原视频处理并保存为 MP4: \(destURL.lastPathComponent)")
+                             } else {
+                                 print("无法处理原视频，尝试直接复制")
+                                 try? fm.copyItem(at: fileURL, to: destURL) // 复制原文件
+                             }
+                        }
+                        processFilesAsync(files, index: index + 1, tempDir: tempDir, completion: completion)
+                    }
+            } else {
+                    // 1:1 视频，应用自动处理
+                    let destURL = tempDir.appendingPathComponent(fileURL.deletingPathExtension().lastPathComponent + ".mp4")
+                    if let processed = self.processVideo(fileURL) {
+                        try? fm.moveItem(at: processed, to: destURL)
+                        print("1:1 视频处理并保存为 MP4: \(destURL.lastPathComponent)")
+                    } else {
+                         print("无法处理 1:1 视频，尝试直接复制")
+                try? fm.copyItem(at: fileURL, to: destURL)
             }
-        } else {
-            // 其他文件：直接复制
-            do {
-                try fm.copyItem(at: fileURL, to: destURL)
-                print("文件复制成功: \(destURL.lastPathComponent)")
-            } catch {
-                print("文件复制失败: \(fileURL.lastPathComponent), 错误: \(error)")
+                    processFilesAsync(files, index: index + 1, tempDir: tempDir, completion: completion)
+                }
+            } else { // 其他文件类型直接复制
+                print("不支持的文件类型，直接复制: \(fileURL.lastPathComponent)")
+            let destURL = tempDir.appendingPathComponent(fileURL.lastPathComponent)
+            try? fm.copyItem(at: fileURL, to: destURL)
+                processFilesAsync(files, index: index + 1, tempDir: tempDir, completion: completion)
             }
-            self.processFiles(files, index: index + 1, tempDir: tempDir, completion: completion)
+        }
+        
+        // 启动处理流程
+        processFilesAsync(files, index: 0, tempDir: tempDir) {
+            print("所有文件处理流程完成。")
         }
     }
+
+    // 移除旧的 processFiles 方法
+    // private func processFiles(...) { ... }
     
-    // 处理Rive文件
+    // --- Rive 文件上传 --- 
     @objc private func openRivePicker() {
         let panel = NSOpenPanel()
         panel.canChooseFiles = true
@@ -1132,7 +1200,6 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
         }
     }
     
-    // 处理Rive文件
     private func handleRiveFile(_ file: URL?) {
         guard let fileURL = file else { return }
         let fm = FileManager.default
@@ -1164,12 +1231,221 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
             updateCurrentFile("Rive复制失败")
         }
     }
+
+    // --- 从 ContentView 移动过来的辅助方法 --- 
+    func presentImageCropper(for image: NSImage, completion: @escaping (NSImage?) -> Void) {
+        // 确保 ImageCropperView 在项目中存在或在此处定义
+        // 假设 ImageCropperView 可访问
+        let cropperView = ImageCropperView(originalImage: image, onComplete: { croppedImage in
+            self.cropperWindow?.close()
+            self.cropperWindow = nil
+            completion(croppedImage)
+        }, onCancel: {
+            self.cropperWindow?.close()
+            self.cropperWindow = nil
+            completion(nil)
+        })
+        let hostingController = NSHostingController(rootView: cropperView)
+        let window = NSWindow(contentViewController: hostingController)
+        window.title = "请裁切图片以保证1:1显示"
+        window.setContentSize(NSSize(width: 420, height: 0))  // 设置宽度，高度会自适应
+        window.styleMask = [NSWindow.StyleMask.titled, NSWindow.StyleMask.closable]
+        
+        if let screen = NSScreen.main {
+            let screenRect = screen.visibleFrame
+            let windowRect = window.frame
+            let x = screenRect.midX - windowRect.width / 2
+            let y = screenRect.midY - windowRect.height / 2
+            window.setFrameOrigin(NSPoint(x: x, y: y))
+        }
+        
+        window.makeKeyAndOrderFront(nil as Any?)
+        self.cropperWindow = window
+    }
+
+    func processNonCroppedImage(_ image: NSImage) -> NSImage? {
+        let targetSize = CGSize(width: 512, height: 512)
+        let scaledImage = NSImage(size: targetSize)
+        scaledImage.lockFocus()
+        NSColor.black.setFill()
+        NSBezierPath.fill(NSRect(origin: .zero, size: targetSize))
+        
+        let drawRect: NSRect
+        if image.size.width > 512 || image.size.height > 512 { // 修正：判断宽高是否都小于等于512
+             // 按比例缩放以适应512x512，保持宽高比
+            let aspectWidth = targetSize.width / image.size.width
+            let aspectHeight = targetSize.height / image.size.height
+            let aspectRatio = min(aspectWidth, aspectHeight)
+            
+            let scaledWidth = image.size.width * aspectRatio
+            let scaledHeight = image.size.height * aspectRatio
+            let x = (targetSize.width - scaledWidth) / 2.0
+            let y = (targetSize.height - scaledHeight) / 2.0
+            drawRect = NSRect(x: x, y: y, width: scaledWidth, height: scaledHeight)
+        } else {
+            let x = (targetSize.width - image.size.width) / 2.0
+            let y = (targetSize.height - image.size.height) / 2.0
+            drawRect = NSRect(origin: CGPoint(x: x, y: y), size: image.size)
+        }
+        image.draw(in: drawRect,
+                   from: NSRect(origin: .zero, size: image.size),
+                   operation: .sourceOver, // 使用 .sourceOver 避免黑色背景被覆盖
+                   fraction: 1.0)
+        scaledImage.unlockFocus()
+        return scaledImage
+    }
     
+    func presentVideoCropper(for url: URL, completion: @escaping (URL?) -> Void) {
+        // 确保 VideoCropperView 在项目中存在或在此处定义
+        // 假设 VideoCropperView 可访问
+        if #available(macOS 12.0, *) {
+            let cropperView = VideoCropperView(videoURL: url, onComplete: { processedURL in
+                self.cropperWindow?.close()
+                self.cropperWindow = nil
+                completion(processedURL)
+            }, onCancel: {
+                self.cropperWindow?.close()
+                self.cropperWindow = nil
+                completion(nil)
+            })
+            let hostingController = NSHostingController(rootView: cropperView)
+            let window = NSWindow(contentViewController: hostingController)
+            window.title = "请裁切视频以保证1:1显示"
+            window.setContentSize(NSSize(width: 420, height: 0))
+            window.styleMask = [NSWindow.StyleMask.titled, NSWindow.StyleMask.closable]
+            
+            if let screen = NSScreen.main {
+                let screenRect = screen.visibleFrame
+                let windowRect = window.frame
+                let x = screenRect.midX - windowRect.width / 2
+                let y = screenRect.midY - windowRect.height / 2
+                window.setFrameOrigin(NSPoint(x: x, y: y))
+            }
+            
+            window.makeKeyAndOrderFront(nil as Any?)
+            self.cropperWindow = window
+        } else {
+            print("视频裁剪功能需要 macOS 12.0 或更高版本。")
+            completion(nil) // 在不支持的系统上直接返回 nil
+        }
+    }
+    
+    func processVideo(_ fileURL: URL) -> URL? {
+        let asset = AVAsset(url: fileURL)
+        guard let videoTrack = asset.tracks(withMediaType: .video).first else { return nil }
+        let originalSize = videoTrack.naturalSize
+        let targetSize = CGSize(width: 512, height: 512)
+        
+        // 计算缩放因子，保证内容完整显示在 512x512 区域内
+        let scale = min(targetSize.width / originalSize.width, targetSize.height / originalSize.height)
+        let scaledWidth = originalSize.width * scale
+        let scaledHeight = originalSize.height * scale
+        
+        // 计算居中所需的平移量
+        let tx = (targetSize.width - scaledWidth) / 2.0
+        let ty = (targetSize.height - scaledHeight) / 2.0
+        
+        // 创建变换：先缩放，再平移
+        var transform = CGAffineTransform.identity
+        transform = transform.scaledBy(x: scale, y: scale)
+        transform = transform.translatedBy(x: tx / scale, y: ty / scale) // 注意平移量也要考虑缩放
+        
+        // 创建 AVMutableComposition 和 AVMutableVideoComposition
+        let mixComposition = AVMutableComposition()
+        guard let compositionVideoTrack = mixComposition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid) else { return nil }
+        
+        do {
+            try compositionVideoTrack.insertTimeRange(CMTimeRangeMake(start: .zero, duration: asset.duration), of: videoTrack, at: .zero)
+        } catch {
+            print("无法插入视频轨道: \(error)")
+            return nil
+        }
+        
+        // 处理音频轨道（可选，但建议保留）
+        if let audioTrack = asset.tracks(withMediaType: .audio).first,
+           let compositionAudioTrack = mixComposition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid) {
+            do {
+                try compositionAudioTrack.insertTimeRange(CMTimeRangeMake(start: .zero, duration: asset.duration), of: audioTrack, at: .zero)
+            } catch {
+                print("无法插入音频轨道: \(error)")
+            }
+        }
+        
+        // 创建 LayerInstruction 和 VideoCompositionInstruction
+        let layerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: compositionVideoTrack)
+        layerInstruction.setTransform(transform, at: .zero)
+        
+        let mainInstruction = AVMutableVideoCompositionInstruction()
+        mainInstruction.timeRange = CMTimeRangeMake(start: .zero, duration: asset.duration)
+        mainInstruction.layerInstructions = [layerInstruction]
+        
+        // 创建 VideoComposition
+        let mainComposition = AVMutableVideoComposition()
+        mainComposition.instructions = [mainInstruction]
+        mainComposition.frameDuration = CMTimeMake(value: 1, timescale: 30) // 30 fps
+        mainComposition.renderSize = targetSize
+        
+        // 设置背景颜色为黑色 (通过添加一个纯色背景层实现，更可靠)
+        let backgroundLayer = CALayer()
+        backgroundLayer.frame = CGRect(origin: .zero, size: targetSize)
+        backgroundLayer.backgroundColor = NSColor.black.cgColor
+        
+        let videoLayer = CALayer()
+        videoLayer.frame = CGRect(origin: .zero, size: targetSize)
+        
+        let parentLayer = CALayer()
+        parentLayer.frame = CGRect(origin: .zero, size: targetSize)
+        parentLayer.addSublayer(backgroundLayer)
+        parentLayer.addSublayer(videoLayer)
+        
+        mainComposition.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: videoLayer, in: parentLayer)
+        
+        // 导出配置
+        guard let exporter = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPresetHighestQuality) else { return nil }
+        exporter.outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(UUID().uuidString).mp4")
+        exporter.outputFileType = .mp4
+        exporter.videoComposition = mainComposition
+        exporter.shouldOptimizeForNetworkUse = true
+        
+        // 异步导出
+        let exportSemaphore = DispatchSemaphore(value: 0)
+        exporter.exportAsynchronously {
+            DispatchQueue.main.async {
+                 switch exporter.status {
+                 case .completed:
+                     print("视频处理成功: \(exporter.outputURL?.lastPathComponent ?? "")")
+                 case .failed:
+                     print("视频处理失败: \(exporter.error?.localizedDescription ?? "未知错误")")
+                 case .cancelled:
+                     print("视频处理取消")
+                 default:
+                     print("视频处理出现未知状态")
+                 }
+                exportSemaphore.signal()
+            }
+        }
+        
+        _ = exportSemaphore.wait(timeout: .now() + 60) // 等待最多60秒
+        
+        if exporter.status == .completed {
+            return exporter.outputURL
+        } else {
+            // 尝试清理失败的导出文件
+            if let outputURL = exporter.outputURL {
+                 try? FileManager.default.removeItem(at: outputURL)
+            }
+            return nil
+        }
+    }
+
     // 更新菜单中的当前文件名
     private func updateCurrentFile(_ filename: String) {
         currentUploadedFile = filename
         if let menu = statusItem.menu {
-            menu.item(at: 3)?.title = "当前文件：\(filename)"
+            // 确保在主线程更新 UI
+            DispatchQueue.main.async {
+                 menu.item(at: 3)?.title = "当前文件：\(filename)"
+            }
         }
     }
 } 
