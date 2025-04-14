@@ -18,10 +18,24 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
     private var checkUpdatesMenuItem: NSMenuItem?
     private var installWatchAppMenuItem: NSMenuItem?
     
+    // --- 新增：后台版本检查相关属性 ---
+    private let userDefaults = UserDefaults.standard
+    private let latestOnlineVersionKey = "latestKnownOnlineWearOSVersion"
+    private let lastOnlineCheckDateKey = "lastOnlineWearOSVersionCheckDate"
+    private var latestKnownOnlineVersion: String? // 内存中缓存一份
+    private var backgroundCheckTimer: Timer?
+    // -------------------------------
+    
     // 新增：管理 APK 下载
     private var urlSession: URLSession!
     private var currentDownloadTask: URLSessionDownloadTask?
-    private var apkDownloadInfo: (version: String, url: URL, length: Int64, destination: URL)? // 存储下载信息
+    private var apkDownloadInfo: (version: String, url: URL, length: Int64, destination: URL)?
+    private var downloadCompletionInfo: (deviceId: String, adbPath: String)?
+    private var lastProgressUpdate = Date(timeIntervalSince1970: 0)
+    private var lastReportedProgress: Double = -1
+
+    // 存储待安装的信息 (替代旧的 currentVersionInfo)
+    private var pendingInstallInfo: (onlineVersion: String, downloadURL: String, downloadLength: Int64, deviceId: String, adbPath: String)?
     
     // MARK: - 检查更新相关
 
@@ -41,154 +55,117 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
     private var watchAppUpdateWindowController: WatchAppUpdateWindowController?
     
     @objc private func installOrUpdateWatchApp(_ sender: NSMenuItem) {
-        print("开始执行安装/更新手表 App 流程")
+        print("用户点击安装/更新，直接启动更新流程窗口...")
         
-        // 1. 检查是否已选择设备
+        // 关闭旧窗口
+        if let existingController = self.watchAppUpdateWindowController {
+            print("发现已存在的更新窗口，正在关闭...")
+            existingController.closeWindow(success: false)
+        }
+        
+        // 获取当前选中的设备
         guard let deviceId = selectedADBDeviceID, let adbPath = adbExecutablePath else {
-            // 如果没有选择设备，显示错误窗口而不是状态菜单项
+            // 显示错误
             let alert = NSAlert()
-            alert.messageText = "无法更新手表App"
-            alert.informativeText = "请先选择一个已连接的设备。"
+            alert.messageText = "无法开始更新"
+            alert.informativeText = "请先连接并选择一个设备。"
             alert.alertStyle = .warning
             alert.addButton(withTitle: "确定")
             alert.runModal()
             return
         }
         
-        // 2. 创建并显示更新窗口
+        // 创建并显示更新窗口 (不再需要在此处检查版本)
         let windowController = WatchAppUpdateWindowController(
-            deviceId: deviceId,
+            deviceId: deviceId, 
             adbPath: adbPath,
             completionHandler: { [weak self] success in
-                print("手表App更新流程\(success ? "完成" : "取消")")
-                // 释放引用
+                print("手表App更新流程 \(success ? "完成" : "取消")")
                 self?.watchAppUpdateWindowController = nil
+                // 流程结束后，重新检查设备版本以更新菜单标题
+                self?.checkAllDeviceVersionsAndUpdateMenu()
             },
             onInstall: { [weak self] in
-                // 当用户点击"安装"按钮时调用
-                self?.startDownloadAndInstallProcess()
+                self?.startDownloadAndInstallProcess() // 仍然需要下载安装逻辑
+            },
+            onCancel: { [weak self] in
+                self?.cancelCurrentDownload()
             }
         )
         
-        // 保存引用
         self.watchAppUpdateWindowController = windowController
-        
-        // 显示窗口
         windowController.showWindow(nil)
         
-        // 窗口状态设为检查中
-        windowController.updateStatus(to: .checking)
-        
-        // 开始版本检查流程
-        self.checkDeviceVersion(deviceId: deviceId, adbPath: adbPath)
+        // 直接让窗口控制器开始检查流程 (它内部会获取设备和线上版本)
+        // 注意：WatchAppUpdateWindowController 需要修改以适应这个流程
+        // windowController.startCheck() // 假设有这样一个方法
+        // 或者：先获取设备版本，再获取线上版本，更新窗口状态
+        self.checkDeviceVersionAndProceedForWindow(deviceId: deviceId, adbPath: adbPath)
     }
     
-    // 检查设备上的应用版本
-    private func checkDeviceVersion(deviceId: String, adbPath: String) {
-        let packageName = "com.example.watchview"
-        let command = "dumpsys package \(packageName) | grep versionName"
+    // 为弹窗流程检查设备版本并获取线上信息
+    private func checkDeviceVersionAndProceedForWindow(deviceId: String, adbPath: String) {
+        // 启动时显示检查中
+        self.updateWindowStatus(.checking)
         
-        // 运行ADB命令检查设备上的版本
-        runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "shell", command]) { [weak self] success, output in
+        getDeviceAppVersion(deviceId: deviceId, adbPath: adbPath) { [weak self] deviceVersion in
             guard let self = self else { return }
-            
-            var deviceVersion: String? = nil
-            if success {
-                if let range = output.range(of: "versionName=") {
-                    let versionString = output[range.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
-                    if !versionString.isEmpty && versionString.contains(".") { 
-                        deviceVersion = versionString
-                        print("设备 \(deviceId) 上的 \(packageName) 版本: \(versionString)")
-                    }
-                }
-            }
-            
-            if deviceVersion == nil {
-                print("未在设备 \(deviceId) 上找到 \(packageName) 或获取版本失败。错误/输出: \(output)")
-            }
-            
-            // 获取线上版本信息
-            self.fetchOnlineVersionInfo(deviceVersion: deviceVersion, deviceId: deviceId, adbPath: adbPath)
+            // 获取到设备版本后，获取线上版本信息 (不再需要后台方法)
+            self.fetchOnlineVersionForWindow(deviceVersion: deviceVersion, deviceId: deviceId, adbPath: adbPath)
         }
     }
-    
-    // 临时存储线上版本信息供后续使用
-    private var currentVersionInfo: (deviceVersion: String?, onlineVersion: String, downloadURL: String, deviceId: String, adbPath: String)?
-    
-    // 获取线上版本信息
-    private func fetchOnlineVersionInfo(deviceVersion: String?, deviceId: String, adbPath: String) {
-        // 更新 Appcast URL 指向 Watch-RIP-WearOS 仓库
+
+    // 为弹窗流程获取线上版本信息 (简化版)
+    private func fetchOnlineVersionForWindow(deviceVersion: String?, deviceId: String, adbPath: String) {
         let appcastURLString = "https://raw.githubusercontent.com/jadon7/Watch-RIP-WearOS/refs/heads/main/appcast.xml"
-        
         guard let url = URL(string: appcastURLString) else {
-            let errorMsg = "无效的Appcast URL: \(appcastURLString)"
-            print(errorMsg)
-            self.updateWindowStatus(.error(message: errorMsg))
+            self.updateWindowStatus(.error(message: "无效的Appcast URL"))
             return
         }
         
-        let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-            guard let self = self else { return }
+        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+            guard let self = self, error == nil, let data = data else {
+                 DispatchQueue.main.async {
+                     self?.updateWindowStatus(.error(message: "获取更新信息失败: \(error?.localizedDescription ?? "无数据")"))
+                 }
+                 return
+             }
             
-            if let error = error {
-                print("下载 Wear OS Appcast 失败: \(error.localizedDescription)")
-                self.updateWindowStatus(.error(message: "下载更新信息失败"))
-                return
-            }
-            
-            guard let data = data else {
-                print("Wear OS Appcast 下载的数据为空")
-                self.updateWindowStatus(.error(message: "更新信息为空"))
-                return
-            }
-            
-            // 解析 XML
             let parser = XMLParser(data: data)
             let delegate = WearOSAppcastParserDelegate()
             parser.delegate = delegate
             
-            if parser.parse() {
-                guard let onlineVersion = delegate.latestVersionName, 
-                      let downloadURL = delegate.downloadURL, 
-                      let downloadLengthStr = delegate.length else {
-                    print("解析 Wear OS Appcast 成功但缺少必要信息")
-                    self.updateWindowStatus(.error(message: "解析更新信息失败"))
-                    return
-                }
+            if parser.parse(), let onlineVersion = delegate.latestVersionName,
+               let downloadURL = delegate.downloadURL, let downloadLengthStr = delegate.length,
+               let downloadLength = Int64(downloadLengthStr) {
                 
-                print("线上最新版本: \(onlineVersion), 下载地址: \(downloadURL), 大小: \(downloadLengthStr)")
+                let sizeInMB = self.formatFileSize(sizeInBytes: downloadLength)
                 
-                // 计算可读的大小描述
-                let sizeInMB = self.formatFileSize(sizeInBytes: Int64(downloadLengthStr) ?? 0)
-                
-                // 保存版本信息供后续使用
-                self.currentVersionInfo = (
-                    deviceVersion: deviceVersion,
+                // 使用 pendingInstallInfo 存储信息供下载安装使用
+                self.pendingInstallInfo = (
                     onlineVersion: onlineVersion,
                     downloadURL: downloadURL,
+                    downloadLength: downloadLength,
                     deviceId: deviceId,
                     adbPath: adbPath
                 )
                 
+                // 更新窗口状态
                 DispatchQueue.main.async {
-                    if let devVersion = deviceVersion {
-                        // 比较版本号
-                        switch devVersion.compare(onlineVersion, options: .numeric) {
-                        case .orderedSame, .orderedDescending:
-                            print("设备版本 (\(devVersion)) >= 线上版本 (\(onlineVersion))，无需更新。")
-                            self.updateWindowStatus(.noUpdateNeeded)
-                        case .orderedAscending:
-                            print("设备版本 (\(devVersion)) < 线上版本 (\(onlineVersion))，需要更新。")
-                            self.updateWindowStatus(.available(version: onlineVersion, downloadSize: sizeInMB))
-                        }
-                    } else {
-                        print("设备未安装或无法获取版本，准备安装线上版本 \(onlineVersion)。")
-                        self.updateWindowStatus(.available(version: onlineVersion, downloadSize: sizeInMB))
-                    }
-                }
+                     if let devVersion = deviceVersion {
+                         switch devVersion.compare(onlineVersion, options: .numeric) {
+                         case .orderedSame, .orderedDescending:
+                             self.updateWindowStatus(.noUpdateNeeded)
+                         case .orderedAscending:
+                             self.updateWindowStatus(.available(version: onlineVersion, downloadSize: sizeInMB))
+                         }
+                     } else {
+                         // 未安装或无法获取版本，显示可安装
+                         self.updateWindowStatus(.available(version: onlineVersion, downloadSize: sizeInMB))
+                     }
+                 }
             } else {
-                print("解析 Wear OS Appcast 失败")
-                self.updateWindowStatus(.error(message: "解析更新信息失败"))
+                 self.updateWindowStatus(.error(message: "解析更新信息失败"))
             }
         }
         task.resume()
@@ -204,25 +181,26 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
     
     // 用户在窗口点击"安装"后开始下载安装流程
     private func startDownloadAndInstallProcess() {
-        guard let info = currentVersionInfo else {
+        // 从 pendingInstallInfo 读取信息
+        guard let info = pendingInstallInfo else {
             self.updateWindowStatus(.error(message: "丢失版本信息"))
             return
         }
-        
+
         guard let url = URL(string: info.downloadURL) else {
             self.updateWindowStatus(.error(message: "无效的下载URL"))
             return
         }
-        
-        // 检查缓存目录
+
+        // 获取缓存目录
         guard let appSupportDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
             self.updateWindowStatus(.error(message: "无法访问缓存目录"))
             return
         }
-        
+
         let bundleId = Bundle.main.bundleIdentifier ?? "com.jadon7.watchrip"
         let cacheDir = appSupportDir.appendingPathComponent(bundleId).appendingPathComponent("APKCache")
-        
+
         // 创建缓存目录（如果不存在）
         do {
             try FileManager.default.createDirectory(at: cacheDir, withIntermediateDirectories: true, attributes: nil)
@@ -231,63 +209,61 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
             self.updateWindowStatus(.error(message: "创建缓存目录失败"))
             return
         }
-        
-        // 构建目标 APK 文件名和路径
+
+        // --- 新增：删除缓存目录中的所有历史 APK 文件 ---
+        print("正在清空历史 APK 缓存目录: \(cacheDir.path)")
+        do {
+            let cachedFiles = try FileManager.default.contentsOfDirectory(at: cacheDir, includingPropertiesForKeys: nil, options: [])
+            for fileURL in cachedFiles {
+                // 确保只删除文件，而不是子目录（虽然这里不应该有）
+                var isDir: ObjCBool = false
+                if FileManager.default.fileExists(atPath: fileURL.path, isDirectory: &isDir) {
+                    if !isDir.boolValue {
+                        try FileManager.default.removeItem(at: fileURL)
+                        print("已删除历史 APK: \(fileURL.lastPathComponent)")
+                    }
+                }
+            }
+             print("APK 缓存目录已清空。")
+        } catch {
+            print("清空 APK 缓存目录失败: \(error.localizedDescription)")
+            // 注意：即使清空失败，我们仍然尝试继续下载
+            // self.updateWindowStatus(.error(message: "清空缓存失败"))
+            // return // 如果希望清空失败时阻止下载，取消此行注释
+        }
+        // --- 结束新增逻辑 ---
+
+        // 构建目标 APK 文件名和路径 (缓存已被清空，直接准备下载)
         let apkFileName = "watch_view_\(info.onlineVersion).apk"
         let destinationURL = cacheDir.appendingPathComponent(apkFileName)
-        
-        // 检查本地缓存 APK
-        if FileManager.default.fileExists(atPath: destinationURL.path) {
-            print("发现本地缓存的最新 APK: \(destinationURL.path)")
-            self.updateWindowStatus(.installing)
-            self.installAPKFromLocalPath(localAPKPath: destinationURL.path, deviceId: info.deviceId, adbPath: info.adbPath)
-        } else {
-            print("本地未找到版本 \(info.onlineVersion) 的 APK，开始下载...")
-            
-            // 开始下载流程
-            self.startDownloadAPK(url: url, destination: destinationURL, deviceId: info.deviceId, adbPath: info.adbPath)
-        }
+
+        // 开始下载 (不再需要检查本地缓存，因为已清空)
+        print("开始下载新的 APK 到: \(destinationURL.path)")
+        startDownloadAPK(url: url, destination: destinationURL, deviceId: info.deviceId, adbPath: info.adbPath)
     }
     
     // 开始下载APK
     private func startDownloadAPK(url: URL, destination: URL, deviceId: String, adbPath: String) {
-        // 更新窗口状态为开始下载
         self.updateWindowStatus(.downloading(progress: 0.0))
-        
-        // 获取预期文件大小
-        var expectedLength: Int64 = 0
-        if let _ = currentVersionInfo, let length = Int64(WearOSAppcastParserDelegate().length ?? "0") {
-            expectedLength = length
-        }
-        
-        // 创建下载任务
+        let expectedLength = pendingInstallInfo?.downloadLength ?? 0 // 使用 pendingInstallInfo
         let task = urlSession.downloadTask(with: url)
-        
-        // 存储当前下载信息
         self.currentDownloadTask = task
         self.apkDownloadInfo = (
-            version: destination.lastPathComponent.replacingOccurrences(of: "watch_view_", with: "").replacingOccurrences(of: ".apk", with: ""),
+            version: "unknown", // Version might not be needed here if using pendingInstallInfo
             url: url,
             length: expectedLength,
             destination: destination
         )
-        
-        // 存储设备ID和ADB路径供下载完成后使用
         self.downloadCompletionInfo = (deviceId: deviceId, adbPath: adbPath)
-        
-        // 开始下载
         task.resume()
     }
     
-    // 保存下载完成后需要的信息
-    private var downloadCompletionInfo: (deviceId: String, adbPath: String)?
-    
     // 安装本地APK
-    private func installAPKFromLocalPath(localAPKPath: String, deviceId: String, adbPath: String) {
+    private func installAPKFromLocalPath(apkPath: String, deviceId: String, adbPath: String) {
         // 通知UI窗口进入安装状态
         self.updateWindowStatus(.installing)
         
-        runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "install", "-r", localAPKPath]) { [weak self] success, output in
+        runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "install", "-r", apkPath]) { [weak self] success, output in
             if success && output.lowercased().contains("success") {
                 print("手表App安装成功!")
                 self?.updateWindowStatus(.installComplete)
@@ -296,6 +272,16 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
                 self?.updateWindowStatus(.error(message: "安装失败: \(output)"))
             }
         }
+    }
+    
+    // 新增：取消当前下载任务
+    private func cancelCurrentDownload() {
+        print("用户请求取消下载...")
+        currentDownloadTask?.cancel()
+        currentDownloadTask = nil
+        apkDownloadInfo = nil
+        downloadCompletionInfo = nil
+        // 可以选择在这里通过 updateWindowStatus 更新状态为取消，或者让 closeWindow 处理
     }
     
     // 格式化文件大小
@@ -312,14 +298,24 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
         // 确保是当前我们关心的下载任务
         guard downloadTask == currentDownloadTask else { return }
         
-        // 计算并更新进度
+        // 计算进度
         let expectedLength = totalBytesExpectedToWrite > 0 ? totalBytesExpectedToWrite : (apkDownloadInfo?.length ?? 0)
-        
+        var progress: Double = 0
         if expectedLength > 0 {
-            let progress = Double(totalBytesWritten) / Double(expectedLength)
+            progress = Double(totalBytesWritten) / Double(expectedLength)
+        }
+
+        // --- 节流逻辑 --- 
+        let now = Date()
+        let progressInt = Int(progress * 100)
+        // 每 0.2 秒最多更新一次，或者进度百分比变化时更新
+        if now.timeIntervalSince(lastProgressUpdate) > 0.2 || Int(lastReportedProgress * 100) != progressInt {
             // 更新弹窗UI显示进度
             self.updateWindowStatus(.downloading(progress: progress))
+            lastProgressUpdate = now
+            lastReportedProgress = progress
         }
+        // ---------------
     }
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
@@ -350,7 +346,7 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
             if let completionInfo = self.downloadCompletionInfo {
                 // 开始安装
                 installAPKFromLocalPath(
-                    localAPKPath: destinationURL.path,
+                    apkPath: destinationURL.path,
                     deviceId: completionInfo.deviceId,
                     adbPath: completionInfo.adbPath
                 )
@@ -604,6 +600,7 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
             menu.insertItem(noDeviceItem, at: adbTitleIndex + 1)
             selectedADBDeviceID = nil
             // self.installWatchAppMenuItem?.isHidden = true // 已在开头处理
+            updateInstallMenuItemTitle(hasUpdateAvailable: false) // 确保无设备时标题正确
         } else {
             let sortedSerials = devices.keys.sorted()
             if selectedADBDeviceID == nil || !sortedSerials.contains(selectedADBDeviceID!) {
@@ -625,6 +622,8 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
                 menu.insertItem(deviceItem, at: adbTitleIndex + 1 + index)
             }
             // self.installWatchAppMenuItem?.isHidden = false // 已在开头处理
+            // 在设备列表改变后，触发一次所有设备的版本检查以更新菜单标题
+            checkAllDeviceVersionsAndUpdateMenu()
         }
         self.adbDevices = devices
     }
@@ -829,19 +828,29 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
         self.updater = updater
         super.init()
         
-        // 初始化 URLSession
-        // 使用后台 session 可能过于复杂，先用默认 session 并指定 delegate queue
-        let configuration = URLSessionConfiguration.default
-        self.urlSession = URLSession(configuration: configuration, delegate: self, delegateQueue: OperationQueue.main) // 在主队列处理回调以方便更新 UI
+        // 加载存储的线上版本号
+        self.latestKnownOnlineVersion = userDefaults.string(forKey: latestOnlineVersionKey)
         
+        // 初始化 URLSession
+        let configuration = URLSessionConfiguration.default
+        self.urlSession = URLSession(configuration: configuration, delegate: self, delegateQueue: OperationQueue.main)
         setupStatusItem()
         startIPCheck()
         statusItem.menu?.delegate = self
+        
         findADBPath { [weak self] path in
             self?.adbExecutablePath = path
-            self?.checkADBDevices { _ in }
+            // 在 ADB 准备好后，也触发一次设备版本检查（如果已有设备）
+            self?.checkADBDevices { devices in
+                 if !devices.isEmpty {
+                     self?.checkAllDeviceVersionsAndUpdateMenu()
+                 }
+            }
             self?.startADBCheckTimer()
         }
+        
+        // 启动后台线上版本检查
+        startBackgroundOnlineVersionCheck()
     }
     
     // 设置状态栏菜单项
@@ -1449,4 +1458,151 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
             }
         }
     }
+
+    // --- 新增：后台检查、设备版本检查、菜单更新逻辑 --- 
+
+    // 启动后台检查线上版本的定时器
+    private func startBackgroundOnlineVersionCheck() {
+        // 立即执行一次检查（如果需要）
+        checkOnlineVersionIfNeeded(triggeredByTimer: false)
+        
+        // 设置定时器，例如每 6 小时检查一次
+        backgroundCheckTimer?.invalidate()
+        backgroundCheckTimer = Timer.scheduledTimer(withTimeInterval: 6 * 60 * 60, repeats: true) { [weak self] _ in
+            self?.checkOnlineVersionIfNeeded(triggeredByTimer: true)
+        }
+    }
+
+    // 检查是否需要获取线上版本 (启动时或定时器触发)
+    private func checkOnlineVersionIfNeeded(triggeredByTimer: Bool) {
+        let lastCheckDate = userDefaults.object(forKey: lastOnlineCheckDateKey) as? Date
+        let oneDayAgo = Date().addingTimeInterval(-24 * 60 * 60)
+        
+        // 如果从未检查过，或者上次检查是24小时前，则执行检查
+        if lastCheckDate == nil || lastCheckDate! < oneDayAgo {
+            print("需要执行后台线上版本检查...")
+            fetchLatestOnlineVersionInBackground()
+        } else if triggeredByTimer {
+             print("后台定时器触发，但上次检查在24小时内，跳过。")
+        }
+    }
+    
+    // 后台获取最新的线上版本号
+    private func fetchLatestOnlineVersionInBackground() {
+        let appcastURLString = "https://raw.githubusercontent.com/jadon7/Watch-RIP-WearOS/refs/heads/main/appcast.xml"
+        guard let url = URL(string: appcastURLString) else { return }
+        
+        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+            guard let self = self, error == nil, let data = data else {
+                print("后台获取线上版本失败: \(error?.localizedDescription ?? "无数据")")
+                return
+            }
+            
+            let parser = XMLParser(data: data)
+            let delegate = WearOSAppcastParserDelegate()
+            parser.delegate = delegate
+            
+            if parser.parse(), let onlineVersion = delegate.latestVersionName {
+                print("后台获取到线上版本: \(onlineVersion)")
+                // 检查版本是否真的更新了
+                let needsUpdate = (self.latestKnownOnlineVersion != onlineVersion)
+                
+                // 更新存储和内存缓存
+                self.userDefaults.set(onlineVersion, forKey: self.latestOnlineVersionKey)
+                self.userDefaults.set(Date(), forKey: self.lastOnlineCheckDateKey)
+                self.latestKnownOnlineVersion = onlineVersion
+                
+                // 如果版本更新了，或者之前不知道线上版本，触发设备版本检查以更新菜单
+                if needsUpdate || self.latestKnownOnlineVersion == nil {
+                    DispatchQueue.main.async {
+                         self.checkAllDeviceVersionsAndUpdateMenu()
+                    }
+                }
+            } else {
+                print("后台解析线上版本失败")
+            }
+        }
+        task.resume()
+    }
+    
+    // 检查所有已连接设备的版本并更新菜单标题 (使用 [Bool] 和串行队列修复线程问题)
+    private func checkAllDeviceVersionsAndUpdateMenu() {
+        guard let adbPath = self.adbExecutablePath, !adbDevices.isEmpty else {
+            updateInstallMenuItemTitle(hasUpdateAvailable: false)
+            return
+        }
+
+        guard let knownOnlineVersion = self.latestKnownOnlineVersion else {
+             print("尚未获取到线上版本信息，无法比较。")
+             updateInstallMenuItemTitle(hasUpdateAvailable: false)
+             return
+        }
+
+        var updateRequiredResults: [Bool] = [] // 使用简单的 Bool 数组
+        let group = DispatchGroup()
+        let resultQueue = DispatchQueue(label: "com.jadon7.watchrip.resultqueue") // 串行队列保证安全添加
+        let checkQueue = DispatchQueue(label: "com.jadon7.watchrip.checkqueue", attributes: .concurrent) // 并发执行检查
+
+        print("开始检查所有连接设备的版本与线上版本 [\(knownOnlineVersion)] 的对比...")
+
+        for deviceId in adbDevices.keys {
+            group.enter()
+            checkQueue.async { // 在并发队列上执行检查
+                // getDeviceAppVersion 的 completion 在主线程回调，但我们在这里处理结果
+                self.getDeviceAppVersion(deviceId: deviceId, adbPath: adbPath) { deviceVersion in
+                     var needsUpdate = false
+                     if let version = deviceVersion {
+                         if version.compare(knownOnlineVersion, options: .numeric) == .orderedAscending {
+                             print("设备 [\(deviceId)] 版本 [\(version)] 低于线上版本 [\(knownOnlineVersion)]")
+                             needsUpdate = true
+                         } else {
+                             print("设备 [\(deviceId)] 版本 [\(version)] 不低于线上版本 [\(knownOnlineVersion)]")
+                         }
+                     } else {
+                          print("设备 [\(deviceId)] 未安装 App 或无法获取版本，视为需要更新。")
+                          needsUpdate = true
+                     }
+                     // 在串行队列上安全地添加结果
+                     resultQueue.async {
+                        updateRequiredResults.append(needsUpdate)
+                        group.leave() // 在结果添加后离开组
+                     }
+                }
+            }
+        }
+
+        group.notify(queue: .main) { // 在主队列上处理最终结果
+            // 检查结果数组中是否包含 true
+            let updateAvailableForAnyDevice = updateRequiredResults.contains(true)
+            print("所有设备版本检查完成。是否有任何设备需要更新: \(updateAvailableForAnyDevice)")
+            self.updateInstallMenuItemTitle(hasUpdateAvailable: updateAvailableForAnyDevice)
+        }
+    }
+    
+    // 获取单个设备的 App 版本号
+    private func getDeviceAppVersion(deviceId: String, adbPath: String, completion: @escaping (String?) -> Void) {
+        let packageName = "com.example.watchview"
+        let command = "dumpsys package \(packageName) | grep versionName"
+        runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "shell", command]) { success, output in
+            var deviceVersion: String? = nil
+            if success {
+                if let range = output.range(of: "versionName=") {
+                    let versionString = output[range.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !versionString.isEmpty && versionString.contains(".") { 
+                        deviceVersion = versionString
+                    }
+                }
+            }
+            completion(deviceVersion)
+        }
+    }
+    
+    // 更新"安装/更新手表 App"菜单项的标题
+    private func updateInstallMenuItemTitle(hasUpdateAvailable: Bool) {
+        DispatchQueue.main.async {
+            self.installWatchAppMenuItem?.title = hasUpdateAvailable ? "有新版手表APP可用" : "安装/更新手表 App"
+        }
+    }
+    
+    // --- 结束 新增逻辑 ---
 } 
