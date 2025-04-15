@@ -374,7 +374,7 @@ struct ContentView: View {
         let asset = AVAsset(url: fileURL)
         guard let videoTrack = asset.tracks(withMediaType: .video).first else { return nil }
         let originalSize = videoTrack.naturalSize
-        // 计算缩放因子，使用 min(512/width, 512/height) 保证整段视频显示在画面内
+        // 计算缩放因子，使用 (512/width, 512/height) 保证整段视频显示在画面内
         let scale = min(512 / originalSize.width, 512 / originalSize.height)
         let scaledWidth = originalSize.width * scale
         let scaledHeight = originalSize.height * scale
