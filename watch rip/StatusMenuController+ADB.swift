@@ -526,7 +526,7 @@ extension StatusMenuController {
     func sendOpenFileBroadcast(adbPath: String, deviceId: String, fileName: String) {
         let broadcastAction = "\(wearAppPackageName).OPEN_FILE"
         let broadcastMessageKey = "message"
-        let broadcastMessageValue = fileName
+        let broadcastMessageValue = "openfile"
         print("Sending broadcast: Action = \(broadcastAction), Message Key = \(broadcastMessageKey), Message Value = \(broadcastMessageValue)")
         
         // Add the requested log message here
