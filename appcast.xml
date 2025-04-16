@@ -9,11 +9,11 @@
     <item>
         <title>版本 2.3.2</title>
         <pubDate>Wed, 16 Apr 2025 10:00:00 +0800</pubDate> 
-        <enclosure url="https://github.com/jadon7/Watch-RIP-MAC/releases/download/v2.3.1/watch.rip.zip"
+        <enclosure url="https://github.com/jadon7/Watch-RIP-MAC/releases/download/v2.3.2/watch.rip.zip"
                    sparkle:version="2.3.2" 
                    sparkle:shortVersionString="2.3.2"
                    type="application/octet-stream"
-                   length="9409312 " /> 
+                   length="9412247 " /> 
         <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
       </item>
      <item>
