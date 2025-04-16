@@ -1,6 +1,9 @@
 import Foundation
 import Swifter
 import Darwin  // 用于 getifaddrs 和 inet_ntoa 等
+import AVFoundation
+import CoreImage // 导入 CoreImage 框架
+import AppKit    // 导入 AppKit 以使用 NSBitmapImageRep
 
 class UploadServer {
     static let shared = UploadServer()
@@ -183,4 +186,49 @@ class UploadServer {
             session.writeText("update")
         }
     }
+
+    // MARK: - 文件处理辅助方法
+    
+    // 压缩目录
+    func zipDirectory(at sourceURL: URL, to destinationURL: URL, completion: @escaping (Bool) -> Void) {
+        let process = Process()
+        process.currentDirectoryURL = sourceURL.deletingLastPathComponent()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/zip")
+        // 使用 -FS 选项来确保文件系统同步，避免某些情况下 zip 文件不完整
+        process.arguments = ["-FS", "-r", destinationURL.path, sourceURL.lastPathComponent]
+        
+        DispatchQueue.global(qos: .background).async {
+            let pipe = Pipe()
+            process.standardOutput = pipe
+            process.standardError = pipe
+            
+            do {
+                try process.run()
+                process.waitUntilExit() // 等待压缩完成
+                
+                let status = process.terminationStatus
+                
+                // 读取输出和错误
+                let outputData = pipe.fileHandleForReading.readDataToEndOfFile()
+                let output = String(data: outputData, encoding: .utf8) ?? ""
+                
+                print("Zip process for \(sourceURL.lastPathComponent) exited with status: \(status)\nOutput:\n\(output)")
+                
+                DispatchQueue.main.async {
+                    completion(status == 0)
+                }
+            } catch {
+                print("Zip process error: \(error)")
+                DispatchQueue.main.async {
+                    completion(false)
+                }
+            }
+        }
+    }
+
+    // 移除旧的 HEIC 转换方法
+    // func convertHEICToJPG(...) { ... }
+
+    // 移除旧的 MOV 裁剪方法
+    // func cropVideoToMP4(...) { ... }
 } 
