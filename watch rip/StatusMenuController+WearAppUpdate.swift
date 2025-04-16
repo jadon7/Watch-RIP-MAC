@@ -135,14 +135,30 @@ extension StatusMenuController {
         }
         guard let cacheDir = getAPKCacheDirectory() else { return } // Use helper
 
-        // Clear cache directory before download
-        clearAPKCacheDirectory(cacheDir: cacheDir)
-
+        // Construct the expected destination path for the current version
         let apkFileName = "watch_view_\(info.onlineVersion).apk"
         let destinationURL = cacheDir.appendingPathComponent(apkFileName)
 
-        print("开始下载新的 APK 到: \(destinationURL.path)")
-        startDownloadAPK(url: url, destination: destinationURL, deviceId: info.deviceId, adbPath: info.adbPath)
+        // Check if the target version APK already exists in the cache
+        if FileManager.default.fileExists(atPath: destinationURL.path) {
+            print("找到最新版本的缓存 APK: \(destinationURL.path)")
+            updateWindowStatus(.installing) // Indicate installation start
+            // Directly install from cache
+            installAPKFromLocalPath(apkPath: destinationURL.path, deviceId: info.deviceId, adbPath: info.adbPath)
+            
+            // Optional: Clean up OLDER versions after successful install later?
+            // For now, we just install the cached version.
+            
+        } else {
+            print("未找到版本 \(info.onlineVersion) 的缓存 APK，需要下载。")
+            
+            // Clear cache directory NOW, before starting download
+            clearAPKCacheDirectory(cacheDir: cacheDir)
+            
+            print("开始下载新的 APK 到: \(destinationURL.path)")
+            // Start the download process
+            startDownloadAPK(url: url, destination: destinationURL, deviceId: info.deviceId, adbPath: info.adbPath)
+        }
     }
     
     // Helper to get cache directory URL
