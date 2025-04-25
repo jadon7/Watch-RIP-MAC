@@ -135,6 +135,14 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
         }
         menu.addItem(riveItem)
         
+        // 新增：上传文件至 P2 的选项
+        let p2UploadItem = NSMenuItem(title: "上传文件至 P2", action: #selector(uploadFilesToP2(_:)), keyEquivalent: "")
+        p2UploadItem.target = self
+        if let image = NSImage(systemSymbolName: "arrow.up.doc", accessibilityDescription: "Upload to P2") { // 使用系统图标
+            p2UploadItem.image = image
+        }
+        menu.addItem(p2UploadItem)
+        
         menu.addItem(NSMenuItem.separator())
         
         // 新增：ADB 设备显示区域

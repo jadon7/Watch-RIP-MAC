@@ -314,6 +314,55 @@ extension StatusMenuController {
         }
     }
     
+    // MARK: - ADB File Operations
+
+    // New method to push file to a specific directory without extra operations
+    func pushFileToDirectory(adbPath: String, deviceId: String, localFilePath: String, remoteDirectory: String, remoteFileName: String, completion: @escaping (Bool, String) -> Void) {
+        let remoteFilePath = "\(remoteDirectory)/\(remoteFileName)" // Construct full path
+
+        print("开始推送文件 '\(localFilePath)' 到设备 '\(deviceId)' 的 '\(remoteFilePath)'")
+        updateADBStatus("正在推送 \(remoteFileName)...", isError: false)
+
+        // Ensure target directory exists (use '-p' to create parent dirs if needed)
+        runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "shell", "mkdir", "-p", remoteDirectory]) { [weak self] successMkdir, outputMkdir in
+            guard let self = self else {
+                completion(false, "控制器实例丢失")
+                return
+            }
+            
+            if successMkdir {
+                print("目标目录 '\(remoteDirectory)' 确认存在或已创建。")
+                // Push the file
+                self.runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "push", localFilePath, remoteFilePath]) { successPush, outputPush in
+                    if successPush {
+                        print("文件 '\(remoteFileName)' 推送成功到 '\(remoteFilePath)'")
+                        // Run sync command after successful push
+                        self.runADBCommand(adbPath: adbPath, arguments: ["-s", deviceId, "shell", "sync"]) { successSync, outputSync in
+                            if successSync {
+                                print("同步命令在设备 '\(deviceId)' 上成功执行。")
+                                self.updateADBStatus("推送 \(remoteFileName) 成功", isError: false)
+                                completion(true, "推送成功")
+                            } else {
+                                print("错误：同步命令在设备 '\(deviceId)' 上失败: \(outputSync)")
+                                self.updateADBStatus("推送成功但同步失败", isError: true)
+                                completion(false, "同步失败: \(outputSync)")
+                            }
+                        }
+                    } else {
+                        print("错误：推送文件 '\(remoteFileName)' 失败: \(outputPush)")
+                        self.updateADBStatus("推送 \(remoteFileName) 失败", isError: true)
+                        completion(false, "推送失败: \(outputPush)")
+                    }
+                }
+            } else {
+                print("错误：无法创建目标目录 '\(remoteDirectory)': \(outputMkdir)")
+                self.updateADBStatus("创建目录失败", isError: true)
+                completion(false, "创建目录失败: \(outputMkdir)")
+            }
+        }
+    }
+
+    // Original method for pushing files to the app's data directory and triggering actions
     func pushFileToDevice(adbPath: String, deviceId: String, localFilePath: String, remoteFileName: String) {
         // Use the constant for package name to build the remote directory path
         let remoteDir = "/storage/emulated/0/Android/data/\(wearAppPackageName)/files"
