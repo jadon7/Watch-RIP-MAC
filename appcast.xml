@@ -8,7 +8,7 @@
     <!-- 最新版本 -->
     <item>
         <title>版本 2.4.0</title>
-        <pubDate>Fri, 25 Apr 2025 10:00:00 +0800</pubDate> 
+        <pubDate>Mon, 19 May 2025 10:00:00 +0800</pubDate> 
         <enclosure url="https://github.com/jadon7/Watch-RIP-MAC/releases/download/v2.4.0/watch.rip.zip"
                    sparkle:version="2.4.0" 
                    sparkle:shortVersionString="2.4.0"
