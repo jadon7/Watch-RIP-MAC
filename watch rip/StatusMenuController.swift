@@ -3,6 +3,7 @@ import AppKit
 import UniformTypeIdentifiers
 import AVFoundation
 import Sparkle
+import HotKey
 
 // Define the package name as a constant
 let wearAppPackageName = "com.example.watchview"
@@ -20,6 +21,13 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
     let updater: SPUStandardUpdaterController
     var checkUpdatesMenuItem: NSMenuItem?
     var installWatchAppMenuItem: NSMenuItem?
+    var ipDisplayMenuItem: NSMenuItem?
+    var currentFileDisplayMenuItem: NSMenuItem?
+    var devicesTitleMenuItem: NSMenuItem?
+    
+    // --- HotKey 实例 ---
+    var openMediaHotKey: HotKey?
+    var openRiveHotKey: HotKey?
     
     // --- 新增：后台版本检查相关属性 ---
     let userDefaults = UserDefaults.standard
@@ -78,6 +86,9 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
         
         // 启动后台线上版本检查
         // startBackgroundOnlineVersionCheck()
+
+        // --- 设置全局快捷键 ---
+        setupGlobalHotKeys()
     }
     
     // 设置状态栏菜单项
@@ -93,62 +104,92 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
         }
         
         let menu = NSMenu()
-        
-        // IP 地址显示项（分两行）
-        let titleItem = NSMenuItem(title: "WIFI模式下输入:", action: nil, keyEquivalent: "")
-        titleItem.isEnabled = false
-        menu.addItem(titleItem)
-        
-        let ipItem = NSMenuItem(title: "获取IP中...", action: #selector(copyIPAddress), keyEquivalent: "")
-        ipItem.target = self
-        ipItem.attributedTitle = NSAttributedString(
-            string: "获取IP中...",
+
+        // --- 新增 "发送文件" 小标题 ---
+        let sendFilesTitleItem = NSMenuItem(title: "发送文件", action: nil, keyEquivalent: "")
+        sendFilesTitleItem.isEnabled = false
+        sendFilesTitleItem.attributedTitle = NSAttributedString(
+            string: "发送文件",
             attributes: [
-                .foregroundColor: NSColor.black,
-                .font: NSFont.systemFont(ofSize: 14, weight: .semibold)
+                .foregroundColor: NSColor.tertiaryLabelColor,
+                .font: NSFont.systemFont(ofSize: 12, weight: .regular)
             ]
         )
-        menu.addItem(ipItem)
-        
-        menu.addItem(NSMenuItem.separator())
-        
-        // 当前文件显示项
-        let fileItem = NSMenuItem(title: "当前文件：暂无文件", action: nil, keyEquivalent: "")
-        fileItem.isEnabled = false
-        menu.addItem(fileItem)
-        
-        menu.addItem(NSMenuItem.separator())
-        
-        // 图片/视频上传选项
-        let mediaItem = NSMenuItem(title: "上传图片/视频", action: #selector(openMediaPicker), keyEquivalent: "")
+        menu.addItem(sendFilesTitleItem)
+
+        // --- 上传选项 --- 
+        let mediaItem = NSMenuItem(title: "图片/视频", action: #selector(openMediaPicker), keyEquivalent: "m")
+        mediaItem.keyEquivalentModifierMask = [.control, .option, .command]
         mediaItem.target = self
-        if let image = NSImage(systemSymbolName: "photo.on.rectangle", accessibilityDescription: nil) {
+        if let image = NSImage(named: "vdimg") {
             mediaItem.image = image
         }
         menu.addItem(mediaItem)
         
-        // Rive 文件上传选项
-        let riveItem = NSMenuItem(title: "上传 Rive 文件", action: #selector(openRivePicker), keyEquivalent: "")
+        let riveItem = NSMenuItem(title: "Rive", action: #selector(openRivePicker), keyEquivalent: "r")
+        riveItem.keyEquivalentModifierMask = [.control, .option, .command]
         riveItem.target = self
-        if let image = NSImage(systemSymbolName: "doc.badge.arrow.up", accessibilityDescription: nil) {
+        if let image = NSImage(named: "rive") {
             riveItem.image = image
         }
         menu.addItem(riveItem)
         
-        // 新增：上传文件至 P2 的选项
-        let p2UploadItem = NSMenuItem(title: "上传文件至 P2", action: #selector(uploadFilesToP2(_:)), keyEquivalent: "")
+        let p2UploadItem = NSMenuItem(title: "发送到P2", action: #selector(uploadFilesToP2(_:)), keyEquivalent: "")
         p2UploadItem.target = self
-        if let image = NSImage(systemSymbolName: "arrow.up.doc", accessibilityDescription: "Upload to P2") { // 使用系统图标
+        if let image = NSImage(named: "p2phone") {
             p2UploadItem.image = image
         }
         menu.addItem(p2UploadItem)
+
+        menu.addItem(NSMenuItem.separator())
+        
+        // --- WIFI 和当前文件信息 --- 
+        let ipItem = NSMenuItem(title: "获取IP中...", action: nil, keyEquivalent: "")
+        ipItem.target = nil
+        ipItem.isEnabled = false
+        if let image = NSImage(named: "wifi") { // 设置 wifi 图标
+            ipItem.image = image
+        }
+        ipItem.attributedTitle = NSAttributedString(
+            string: "获取IP中...", // 初始文本
+            attributes: [
+                .foregroundColor: NSColor.controlTextColor, // 改为 controlTextColor
+                .font: NSFont.systemFont(ofSize: 14, weight: .regular) // 字重改为 regular
+            ]
+        )
+        menu.addItem(ipItem)
+        self.ipDisplayMenuItem = ipItem
+        
+        // 当前文件显示项，紧跟 IP 地址之后
+        let fileItem = NSMenuItem(title: "", action: nil, keyEquivalent: "") // 初始文本通过 attributedTitle 设置
+        fileItem.isEnabled = false
+        if let image = NSImage(named: "file") { // 设置 file 图标
+            fileItem.image = image
+        }
+        fileItem.attributedTitle = NSAttributedString(
+            string: "当前文件：暂无文件",
+            attributes: [
+                .foregroundColor: NSColor.controlTextColor, // 改为 controlTextColor
+                .font: NSFont.systemFont(ofSize: 14, weight: .regular)
+            ]
+        )
+        menu.addItem(fileItem)
+        self.currentFileDisplayMenuItem = fileItem // 保存引用
         
         menu.addItem(NSMenuItem.separator())
         
-        // 新增：ADB 设备显示区域
-        let adbTitleItem = NSMenuItem(title: "ADB 设备", action: nil, keyEquivalent: "")
+        // --- ADB 设备显示区域 --- 
+        let adbTitleItem = NSMenuItem(title: "已连接设备", action: nil, keyEquivalent: "")
         adbTitleItem.isEnabled = false
+        adbTitleItem.attributedTitle = NSAttributedString(
+            string: "已连接设备",
+            attributes: [
+                .foregroundColor: NSColor.tertiaryLabelColor,
+                .font: NSFont.systemFont(ofSize: 12, weight: .regular)
+            ]
+        )
         menu.addItem(adbTitleItem)
+        self.devicesTitleMenuItem = adbTitleItem
         
         // 添加一个临时的"检测中..."项，稍后会被替换
         let detectingItem = NSMenuItem(title: "检测中...", action: nil, keyEquivalent: "")
@@ -199,46 +240,16 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
     // 更新IP地址显示
     private func updateIPAddress() {
         if let ip = UploadServer.shared.getLocalIPAddress() {
-            if let menu = statusItem.menu {
-                // 去掉端口号
+            if let ipDisplayItem = self.ipDisplayMenuItem {
                 let components = ip.split(separator: ":")
                 if let ipWithoutPort = components.first.map(String.init) {
-                    menu.item(at: 1)?.attributedTitle = NSAttributedString(
+                    ipDisplayItem.attributedTitle = NSAttributedString(
                         string: ipWithoutPort,
                         attributes: [
-                            .foregroundColor: NSColor.black,
-                            .font: NSFont.systemFont(ofSize: 14, weight: .semibold)
+                            .foregroundColor: NSColor.controlTextColor, // 改为 controlTextColor
+                            .font: NSFont.systemFont(ofSize: 14, weight: .regular) // 字重改为 regular
                         ]
                     )
-                }
-            }
-        }
-    }
-    
-    // Copy IP address to clipboard
-    @objc private func copyIPAddress() {
-        if let ip = UploadServer.shared.getLocalIPAddress() {
-            let components = ip.split(separator: ":")
-            if let ipWithoutPort = components.first.map(String.init) {
-                let pasteboard = NSPasteboard.general
-                pasteboard.clearContents()
-                pasteboard.setString(ipWithoutPort, forType: .string)
-                
-                // Provide visual feedback for successful copy
-        if let menu = statusItem.menu {
-                    let originalTitle = menu.item(at: 1)?.attributedTitle
-                    menu.item(at: 1)?.attributedTitle = NSAttributedString(
-                        string: "已复制",
-                        attributes: [
-                            .foregroundColor: NSColor.systemGreen,
-                            .font: NSFont.systemFont(ofSize: 14, weight: .semibold)
-                        ]
-                    )
-                    
-                    // Restore original title after 1 second
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        menu.item(at: 1)?.attributedTitle = originalTitle
-                    }
                 }
             }
         }
@@ -247,4 +258,60 @@ class StatusMenuController: NSObject, NSMenuDelegate, URLSessionDownloadDelegate
     // --- File Handling Methods Removed (Moved to StatusMenuController+FileHandling.swift) ---
     // Deleting methods from openMediaPicker to updateCurrentFile
     
+    // --- 全局快捷键设置 ---
+    private func setupGlobalHotKeys() {
+        openMediaHotKey = HotKey(key: .m, modifiers: [.control, .option, .command])
+        openMediaHotKey?.keyDownHandler = { [weak self] in
+            print("全局快捷键触发：上传图片/视频")
+            self?.openMediaPicker()
+        }
+
+        openRiveHotKey = HotKey(key: .r, modifiers: [.control, .option, .command])
+        openRiveHotKey?.keyDownHandler = { [weak self] in
+            print("全局快捷键触发：上传 Rive 文件")
+            self?.openRivePicker()
+        }
+    }
+} 
+
+// MARK: - NSImage Extension for Icon with Background
+
+extension NSImage {
+    // iconTint is now a required parameter
+    static func createIconWithBackground(iconName: String, iconTint: NSColor, iconSize: NSSize, backgroundColor: NSColor, backgroundSize: NSSize, cornerRadius: CGFloat = 0) -> NSImage? {
+        guard let originalIcon = NSImage(named: iconName) else {
+            print("Error: Icon '\(iconName)' not found in assets.")
+            return nil
+        }
+
+        let finalImage = NSImage(size: backgroundSize, flipped: false) { (dstRect) -> Bool in
+            // Draw background
+            backgroundColor.setFill()
+            if cornerRadius > 0 {
+                let path = NSBezierPath(roundedRect: dstRect, xRadius: cornerRadius, yRadius: cornerRadius)
+                path.fill()
+            } else {
+                dstRect.fill()
+            }
+
+            // Calculate icon rect to center it
+            let iconX = (dstRect.width - iconSize.width) / 2
+            let iconY = (dstRect.height - iconSize.height) / 2
+            let targetIconRect = NSRect(x: iconX, y: iconY, width: iconSize.width, height: iconSize.height)
+
+            // Create a tinted version of the icon.
+            // This assumes originalIcon is a template image (e.g., black with transparency).
+            let tintedIconImage = NSImage(size: originalIcon.size, flipped: false, drawingHandler: { (imageDstRect) -> Bool in
+                iconTint.setFill()
+                imageDstRect.fill() // Fill with the tint color
+                originalIcon.draw(in: imageDstRect, from: .zero, operation: .destinationIn, fraction: 1.0) // Use original icon as a mask
+                return true
+            })
+            
+            tintedIconImage.draw(in: targetIconRect, from: .zero, operation: .sourceOver, fraction: 1.0, respectFlipped: true, hints: [.interpolation: NSImageInterpolation.high.rawValue])
+            
+            return true
+        }
+        return finalImage
+    }
 } 

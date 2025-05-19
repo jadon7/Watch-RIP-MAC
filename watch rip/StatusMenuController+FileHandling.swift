@@ -464,14 +464,16 @@ extension StatusMenuController {
 
     // Update menu item title for the currently uploaded file
     func updateCurrentFile(_ filename: String) {
-        // Accessing main class property - ensure it's not private
         currentUploadedFile = filename 
-        if let menu = statusItem?.menu { // Use optional chaining for statusItem
+        if let fileDisplayItem = self.currentFileDisplayMenuItem { 
             DispatchQueue.main.async {
-                 // Assuming item at index 3 is the file display item
-                 if menu.items.count > 3 {
-                      menu.item(at: 3)?.title = "当前文件：\(filename)"
-                 }
+                fileDisplayItem.attributedTitle = NSAttributedString(
+                    string: "当前文件：\(filename)",
+                    attributes: [
+                        .foregroundColor: NSColor.controlTextColor,
+                        .font: NSFont.systemFont(ofSize: 14, weight: .regular)
+                    ]
+                )
             }
         }
     }

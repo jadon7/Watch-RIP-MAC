@@ -182,12 +182,20 @@ extension StatusMenuController {
     }
     
     func updateMenuWithADBDevices(_ devices: [String: String]) {
-        guard let menu = self.statusItem.menu else { return }
-        let adbTitleIndex = menu.indexOfItem(withTitle: "ADB 设备")
+        guard let menu = self.statusItem.menu, let devicesTitle = self.devicesTitleMenuItem else { return }
+        let adbTitleIndex = menu.index(of: devicesTitle)
         guard adbTitleIndex != -1 else {
-             print("[updateMenuWithADBDevices] 错误：未找到 ADB 标题菜单项")
+             print("[updateMenuWithADBDevices] 错误：未找到 设备标题 菜单项")
              return
          }
+
+        let iconS = NSSize(width: 20, height: 20)
+        let backgroundS = NSSize(width: 28, height: 28)
+        let cornerR: CGFloat = 14
+        let selectedBGColor = NSColor.controlAccentColor
+        let selectedIconTint = NSColor.white
+        let unselectedBGColor = NSColor.black.withAlphaComponent(0.10)
+        let unselectedIconTint = NSColor.labelColor
 
         let currentDeviceItems = menu.items.filter { $0.action == #selector(selectADBDevice(_:)) }
         let currentDeviceIDs = currentDeviceItems.compactMap { $0.representedObject as? String }.sorted()
@@ -210,7 +218,16 @@ extension StatusMenuController {
                     let deviceName = devices[serial] {
                      let title = (deviceName == serial) ? serial : "\(deviceName) (\(serial))"
                      item.title = title
-                     item.state = (serial == selectedADBDeviceID) ? .on : .off
+                     
+                     let isSelected = (serial == selectedADBDeviceID)
+                     item.image = NSImage.createIconWithBackground(
+                         iconName: "watch",
+                         iconTint: isSelected ? selectedIconTint : unselectedIconTint,
+                         iconSize: iconS,
+                         backgroundColor: isSelected ? selectedBGColor : unselectedBGColor,
+                         backgroundSize: backgroundS,
+                         cornerRadius: cornerR
+                     )
                  }
              }
             self.adbDevices = devices
@@ -250,7 +267,16 @@ extension StatusMenuController {
                 deviceItem.target = self
                 deviceItem.representedObject = serial
                 deviceItem.isEnabled = true
-                deviceItem.state = (serial == selectedADBDeviceID) ? .on : .off
+                
+                let isSelected = (serial == selectedADBDeviceID)
+                deviceItem.image = NSImage.createIconWithBackground(
+                    iconName: "watch",
+                    iconTint: isSelected ? selectedIconTint : unselectedIconTint,
+                    iconSize: iconS,
+                    backgroundColor: isSelected ? selectedBGColor : unselectedBGColor,
+                    backgroundSize: backgroundS,
+                    cornerRadius: cornerR
+                )
                 menu.insertItem(deviceItem, at: adbTitleIndex + 1 + index)
             }
             // self.installWatchAppMenuItem?.isHidden = false // 已在开头处理
@@ -262,20 +288,38 @@ extension StatusMenuController {
     
     @objc func selectADBDevice(_ sender: NSMenuItem) {
         guard let newlySelectedID = sender.representedObject as? String else { return }
+        selectedADBDeviceID = newlySelectedID
+        print("Selected ADB device: \(selectedADBDeviceID!)")
 
-        if let menu = statusItem.menu {
-            let adbTitleIndex = menu.indexOfItem(withTitle: "ADB 设备")
-            if adbTitleIndex != -1 {
-                var loopIndex = adbTitleIndex + 1
-                while let item = menu.item(at: loopIndex), item !== adbStatusMenuItem, !item.isSeparatorItem {
-                    item.state = NSControl.StateValue.off
-                    loopIndex += 1
+        // Update all device item icons
+        if let menu = statusItem.menu, let devicesTitle = self.devicesTitleMenuItem {
+            let adbTitleIndex = menu.index(of: devicesTitle)
+            guard adbTitleIndex != -1 else { return }
+
+            let iconS = NSSize(width: 20, height: 20)
+            let backgroundS = NSSize(width: 28, height: 28)
+            let cornerR: CGFloat = 14
+            let selectedBGColor = NSColor.controlAccentColor
+            let selectedIconTint = NSColor.white
+            let unselectedBGColor = NSColor.black.withAlphaComponent(0.10)
+            let unselectedIconTint = NSColor.labelColor
+
+            var currentIndex = adbTitleIndex + 1
+            while let item = menu.item(at: currentIndex), item !== adbStatusMenuItem, !item.isSeparatorItem {
+                if let serial = item.representedObject as? String {
+                    let isSelected = (serial == selectedADBDeviceID)
+                    item.image = NSImage.createIconWithBackground(
+                        iconName: "watch",
+                        iconTint: isSelected ? selectedIconTint : unselectedIconTint,
+                        iconSize: iconS,
+                        backgroundColor: isSelected ? selectedBGColor : unselectedBGColor,
+                        backgroundSize: backgroundS,
+                        cornerRadius: cornerR
+                    )
                 }
+                currentIndex += 1
             }
         }
-        selectedADBDeviceID = newlySelectedID
-        sender.state = .on
-        print("Selected ADB device: \(selectedADBDeviceID!)")
     }
     
     func runADBCommand(adbPath: String, arguments: [String], completion: ((Bool, String) -> Void)? = nil) {
@@ -489,9 +533,12 @@ extension StatusMenuController {
     }
     
     func updateMenuWithADBError(_ errorMessage: String) {
-        guard let menu = self.statusItem.menu else { return }
-        let adbTitleIndex = menu.indexOfItem(withTitle: "ADB 设备")
-        guard adbTitleIndex != -1 else { return }
+        guard let menu = self.statusItem.menu, let devicesTitle = self.devicesTitleMenuItem else { return }
+        let adbTitleIndex = menu.index(of: devicesTitle)
+        guard adbTitleIndex != -1 else { 
+            print("[updateMenuWithADBError] 错误：未找到 设备标题 菜单项")
+            return
+        }
 
         let currentIndex = adbTitleIndex + 1
         while let itemToRemove = menu.item(at: currentIndex),

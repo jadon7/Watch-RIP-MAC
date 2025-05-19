@@ -10,6 +10,7 @@
 		EA6E0EFA2D55F644009A4E0D /* Swifter in Frameworks */ = {isa = PBXBuildFile; productRef = EA6E0EF92D55F644009A4E0D /* Swifter */; };
 		EA6E0EFC2D55F644009A4E0D /* Example in Frameworks */ = {isa = PBXBuildFile; productRef = EA6E0EFB2D55F644009A4E0D /* Example */; };
 		EA9354562DAA22CA00584A78 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = EA9354552DAA22CA00584A78 /* Sparkle */; };
+		EAE714182DDAAEFC00A83401 /* HotKey in Frameworks */ = {isa = PBXBuildFile; productRef = EAE714172DDAAEFC00A83401 /* HotKey */; };
 		EAEE978E2D5EC36F001D65BA /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = EAEE978D2D5EC36F001D65BA /* ZIPFoundation */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAE714182DDAAEFC00A83401 /* HotKey in Frameworks */,
 				EA6E0EFA2D55F644009A4E0D /* Swifter in Frameworks */,
 				EA9354562DAA22CA00584A78 /* Sparkle in Frameworks */,
 				EA6E0EFC2D55F644009A4E0D /* Example in Frameworks */,
@@ -108,6 +110,7 @@
 				EA6E0EFB2D55F644009A4E0D /* Example */,
 				EAEE978D2D5EC36F001D65BA /* ZIPFoundation */,
 				EA9354552DAA22CA00584A78 /* Sparkle */,
+				EAE714172DDAAEFC00A83401 /* HotKey */,
 			);
 			productName = "watch rip";
 			productReference = EA6E0EC62D55F4AE009A4E0D /* watch rip.app */;
@@ -142,6 +145,7 @@
 				EA6E0EF82D55F644009A4E0D /* XCRemoteSwiftPackageReference "swifter" */,
 				EAEE978C2D5EC36F001D65BA /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				EA9354542DAA22CA00584A78 /* XCRemoteSwiftPackageReference "Sparkle" */,
+				EAE714162DDAAEFC00A83401 /* XCRemoteSwiftPackageReference "HotKey" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EA6E0EC72D55F4AE009A4E0D /* Products */;
@@ -394,6 +398,14 @@
 				minimumVersion = 2.7.0;
 			};
 		};
+		EAE714162DDAAEFC00A83401 /* XCRemoteSwiftPackageReference "HotKey" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/soffes/HotKey";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		EAEE978C2D5EC36F001D65BA /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/weichsel/ZIPFoundation.git";
@@ -419,6 +431,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EA9354542DAA22CA00584A78 /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
+		};
+		EAE714172DDAAEFC00A83401 /* HotKey */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAE714162DDAAEFC00A83401 /* XCRemoteSwiftPackageReference "HotKey" */;
+			productName = HotKey;
 		};
 		EAEE978D2D5EC36F001D65BA /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
